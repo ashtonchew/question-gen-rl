@@ -1,87 +1,192 @@
 # Question Generation RL
 
-Train a language model to generate technical screening questions using reinforcement learning with LLM-as-judge rewards.
+Train a language model to generate technical screening questions using reinforcement learning with LLM-as-judge or human feedback rewards.
+
+**What it does:**
+- Takes a role description (title, skills, tech stack) → generates a targeted screening question
+- Trains Qwen3-4B using GRPO (Group Relative Policy Optimization)
+- Supports both automated (LLM judge) and human-in-the-loop feedback
+
+```bash
+# Quick start
+python scripts/prepare_dataset.py      # 1. Create data (once)
+python -m src.recruiter.main           # 2. Train
+python scripts/eval.py --model rl      # 3. Evaluate
+```
+
+---
 
 ## Setup
 
+**Recommended:** Spin up a GPU instance on [Lambda Labs](https://lambdalabs.com/), [RunPod](https://runpod.io/), or your cloud provider of choice. Training requires a GPU with 24GB+ VRAM (A10, A100, or similar).
+
 ```bash
-# Install dependencies
 pip install -r requirements.txt
 
-# Set up environment variables
 cp .env.example .env
-# Edit .env with your XAI_API_KEY for the Grok judge
+# Edit .env with your API keys (see Environment Variables below)
 ```
 
-## Quick Start
+---
+
+## Training Modes
+
+### Offline Mode (LLM Judge) — Default
+
+Uses Grok to automatically score generated questions. Fast, no human involvement.
 
 ```bash
-# 1. Create raw data (once, or when adding new roles)
-python scripts/prepare_dataset.py
-
-# 2. Train (auto-formats prompts if needed)
-python -m src.recruiter.main
+python -m src.recruiter.main --config-name=offline_config
 ```
 
-That's it. Prompt formatting happens automatically when training starts.
+| Setting | Value |
+|---------|-------|
+| Config | `configs/offline_config.yaml` |
+| Base model | `Qwen/Qwen3-4B-Instruct-2507` |
+| Reward source | Grok LLM judge |
+| Batch size | 64 |
 
-## Downloading a Trained Model
+### Online Mode (Human Feedback)
 
-Download the RL-trained model from HuggingFace Hub for evaluation or continued training:
+Uses human ratings from the feedback UI. Start the UI first, then train.
 
 ```bash
-# Download model to exports/ directory
-python scripts/download_model.py
-# Downloads to: exports/qwen3-4b-question-gen
+# Terminal 1: Start feedback UI
+cd feedback-ui && uvicorn app:app --port 8000
+
+# Terminal 2: Start training
+python -m src.recruiter.main --config-name=online_config
 ```
 
-The script uses the `HF_REPO` environment variable (default: `ash256/qwen3-4b-question-gen`).
+| Setting | Value |
+|---------|-------|
+| Config | `configs/online_config.yaml` |
+| Base model | `exports/qwen3-4b-question-gen` (pre-trained) |
+| Reward source | Human feedback API |
+| Batch size | 16 (smaller, humans are the bottleneck) |
 
-### For Online RL (Continued Training)
+---
 
-After downloading, update your training config to start from the trained model:
+## Human Feedback UI
 
-```yaml
-# configs/train_config.yaml
-trainer:
-  policy:
-    model:
-      path: "exports/qwen3-4b-question-gen"  # Use downloaded model as base
-```
-
-Then run training as usual:
+Web interface for rating AI-generated questions. Used for online RL training.
 
 ```bash
-python -m src.recruiter.main
+cd feedback-ui
+pip install -r requirements.txt
+uvicorn app:app --port 8000
 ```
 
-## Exporting the Trained Model
+Open http://localhost:8000 to:
+- Rate questions on relevance, clarity, and discriminative power (1-5 scale)
+- View statistics and recent ratings at `/stats`
+- Export feedback data via `/api/export?format=json` or `?format=parquet`
 
-After training, merge LoRA adapters with the base model and export as a standalone HuggingFace model:
+**Queue API** (for online training integration):
+- `POST /api/queue/submit` — Submit question for rating
+- `GET /api/queue/result/{id}` — Poll for rating result
+- `GET /api/queue/pending` — List pending questions
+
+---
+
+## Evaluation
 
 ```bash
-# Install export dependencies
+# Single model
+python scripts/eval.py --model rl
+
+# Compare multiple models
+python scripts/eval.py --model baseline rl grok-4-1
+
+# Use local checkpoint
+python scripts/eval.py --model rl --checkpoint exports/my-model
+```
+
+**Available models:**
+
+| Alias | Model | Provider |
+|-------|-------|----------|
+| `baseline` | Qwen3-4B-Instruct | Local (vLLM) |
+| `rl` | ash256/qwen3-4b-question-gen | Local (auto-downloads) |
+| `grok-4-1` | grok-4-1-fast-non-reasoning | xAI API |
+| `claude-4-5-haiku` | claude-haiku-4-5-20251001 | Anthropic API |
+| `gpt-5-mini` | gpt-5-mini-2025-08-07 | OpenAI API |
+
+**Metrics** (scored 0-10 by LLM judge):
+- **Relevance** — Does the question test skills needed for the role?
+- **Clarity** — Is the question unambiguous and well-formed?
+- **Discriminative** — Does it distinguish good candidates from weak ones?
+- **Composite** — Average of the three
+
+---
+
+## Model Export & Deployment
+
+### Export from Checkpoint
+
+Merge LoRA adapters with base model:
+
+```bash
 pip install -e ".[export]"
 
-# Export from checkpoint
 python scripts/export_merged_model.py \
     --checkpoint checkpoints/global_step_100 \
     --output exports/qwen3-4b-question-gen \
     --verify
 ```
 
-### Export Options
-
 | Option | Default | Description |
 |--------|---------|-------------|
-| `--max_model_len` | 8192 | Max context length (vLLM compatible). Set to 0 to keep original. |
-| `--torch_dtype` | bfloat16 | Model dtype: float32, float16, or bfloat16 |
-| `--verify` | - | Run generation test after export |
-| `--push_to_hub` | - | Upload to HuggingFace Hub |
-| `--create_endpoint` | - | Create inference endpoint after push |
+| `--max_model_len` | 8192 | Max context length (vLLM compatible) |
+| `--torch_dtype` | bfloat16 | Model dtype |
+| `--verify` | — | Run generation test after export |
+| `--push_to_hub` | — | Upload to HuggingFace Hub |
+| `--create_endpoint` | — | Create inference endpoint |
 
-## Using the Exported Model
+### Download Pre-trained Model
 
+```bash
+python scripts/download_model.py
+# Downloads to: exports/qwen3-4b-question-gen
+```
+
+### Push to HuggingFace Hub
+
+```bash
+python scripts/export_merged_model.py \
+    --checkpoint checkpoints/global_step_100 \
+    --output exports/qwen3-4b-question-gen \
+    --push_to_hub \
+    --hub_repo your-username/your-model-name
+```
+
+### Deploy to HuggingFace Inference Endpoints
+
+```bash
+python scripts/export_merged_model.py \
+    --checkpoint checkpoints/global_step_100 \
+    --output exports/qwen3-4b-question-gen \
+    --push_to_hub \
+    --create_endpoint
+```
+
+Creates an endpoint with:
+- vLLM v0.8.5 (T4/L4 compatible)
+- Nvidia T4 GPU ($0.50/hr)
+- Scale-to-zero after 1 hour
+
+Use `--instance_type nvidia-l4` for larger models.
+
+### Test Inference Endpoint
+
+```bash
+python scripts/test_endpoint.py
+python scripts/test_endpoint.py --prompt "Generate a screening question for a DevOps engineer:"
+```
+
+### Using the Exported Model
+
+**With Transformers:**
 ```python
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -93,8 +198,7 @@ outputs = model.generate(**inputs, max_new_tokens=100)
 print(tokenizer.decode(outputs[0]))
 ```
 
-Or with vLLM for faster inference:
-
+**With vLLM (faster):**
 ```python
 from vllm import LLM, SamplingParams
 
@@ -103,205 +207,82 @@ outputs = llm.generate(["Your prompt here"], SamplingParams(max_tokens=100))
 print(outputs[0].outputs[0].text)
 ```
 
-## Uploading to HuggingFace Hub
-
-Push your trained model to HuggingFace Hub:
-
-```bash
-# Set your HF credentials in .env
-# HF_TOKEN=hf_xxxxx
-# HF_REPO=your-username/your-model-name
-
-# Export and upload
-python scripts/export_merged_model.py \
-    --checkpoint checkpoints/global_step_100 \
-    --output exports/qwen3-4b-question-gen \
-    --push_to_hub
-```
-
-Or specify the repo directly:
-
-```bash
-python scripts/export_merged_model.py \
-    --checkpoint checkpoints/global_step_100 \
-    --output exports/qwen3-4b-question-gen \
-    --push_to_hub \
-    --hub_repo your-username/your-model-name
-```
-
-## Deploying to HuggingFace Inference Endpoints
-
-Create an inference endpoint programmatically after pushing to Hub:
-
-```bash
-# Push to Hub AND create endpoint (T4 GPU, vLLM v0.8.5)
-python scripts/export_merged_model.py \
-    --checkpoint checkpoints/global_step_100 \
-    --output exports/qwen3-4b-question-gen \
-    --push_to_hub \
-    --hub_repo your-username/your-model-name \
-    --create_endpoint
-```
-
-This creates an endpoint with:
-- **vLLM v0.8.5** (stable for T4/older GPUs)
-- **Nvidia T4** GPU (16GB, $0.50/hr)
-- **Public access** (no authentication required)
-- **Scale-to-zero** after 1 hour of inactivity
-
-### Endpoint Options
-
-```bash
-# Use L4 GPU instead of T4 (better for larger models)
-python scripts/export_merged_model.py \
-    --checkpoint checkpoints/global_step_100 \
-    --output exports/qwen3-4b-question-gen \
-    --push_to_hub \
-    --create_endpoint \
-    --instance_type nvidia-l4
-
-# Custom endpoint name
-python scripts/export_merged_model.py \
-    --checkpoint checkpoints/global_step_100 \
-    --output exports/qwen3-4b-question-gen \
-    --push_to_hub \
-    --create_endpoint \
-    --endpoint_name my-question-gen
-```
-
-### Manual Endpoint Creation
-
-If creating manually via the HuggingFace UI, use these settings for T4 compatibility:
-- **vLLM version**: `vllm/vllm-openai:v0.8.5` (v0.11.0 has bugs on T4)
-- **Instance**: Nvidia T4 or L4
-- **max_position_embeddings** in config.json should be ≤8192 (set automatically by export script)
-
-## Testing the Inference Endpoint
-
-After deploying to HuggingFace Inference Endpoints:
-
-```bash
-# Set your endpoint URL in .env
-# HF_ENDPOINT_URL=https://your-endpoint.us-east-1.aws.endpoints.huggingface.cloud
-
-# Test the endpoint
-python scripts/test_endpoint.py
-
-# Or with a custom prompt
-python scripts/test_endpoint.py --prompt "Generate a screening question for a DevOps engineer:"
-```
-
-## Evaluation
-
-Evaluate and compare models on the held-out test set:
-
-```bash
-# Set API keys
-export XAI_API_KEY=your-xai-key        # Required (for judge + Grok eval)
-export ANTHROPIC_API_KEY=your-key      # For Claude eval
-export OPENAI_API_KEY=your-key         # For GPT eval
-
-# Generate test set (if not already done)
-python scripts/prepare_dataset.py
-python scripts/format_prompts.py
-
-# Evaluate single model
-python scripts/eval.py --model grok-4-1
-
-# Evaluate multiple models (parallelized)
-python scripts/eval.py --model grok-4-1 claude-4-5-haiku gpt-5-mini
-
-# Evaluate RL model (auto-downloads from HuggingFace Hub)
-python scripts/eval.py --model rl
-
-# Compare baseline vs RL
-python scripts/eval.py --model baseline rl
-
-# Use a local checkpoint instead (optional)
-python scripts/eval.py --model rl --checkpoint exports/my-local-model
-```
-
-**Available models:**
-| Alias | Model | Provider |
-|-------|-------|----------|
-| `grok-4-1` | grok-4-1-fast-non-reasoning | xAI |
-| `claude-4-5-haiku` | claude-haiku-4-5-20251001 | Anthropic |
-| `gpt-5-mini` | gpt-5-mini-2025-08-07 | OpenAI |
-| `baseline` | Qwen3-4B-Instruct | Local (vLLM) |
-| `rl` | ash256/qwen3-4b-question-gen | Local (vLLM, auto-downloads) |
-
-**Metrics** (scored 0-10 by LLM judge):
-- **Relevance**: Does the question test skills needed for the role?
-- **Clarity**: Is the question unambiguous and well-formed?
-- **Discriminative Power**: Does it distinguish good candidates from weak ones?
-- **Composite**: Average of the three metrics
-
-The judge model is always `grok-4-1-fast-non-reasoning` for fair comparison.
-
-## Changing Prompts
-
-All prompt logic lives in `src/recruiter/prompts.py`. To change the prompt format:
-
-1. Edit `src/recruiter/prompts.py`
-2. Run `python -m src.recruiter.main`
-
-The training script auto-detects when `prompts.py` changes and reformats data before training.
+---
 
 ## Data Pipeline
 
 ```
 data/backend_roles.json  →  data/raw/*.parquet  →  data/processed/*.parquet  →  training
-                              (raw role data)       (formatted prompts)
-                                    ↑                       ↑
-                         prepare_dataset.py          auto-formatted
-                            (run once)              on training start
+     (500 roles)              (role data)            (formatted prompts)
+                                   ↑                        ↑
+                          prepare_dataset.py          auto-formatted
+                             (run once)              on training start
 ```
+
+**Prompt formatting** lives in `src/recruiter/prompts.py`. Edit it and training auto-detects changes.
+
+---
 
 ## Project Structure
 
 ```
 ├── configs/
-│   └── train_config.yaml      # Training hyperparameters
+│   ├── train_config.yaml         # Base training config
+│   ├── offline_config.yaml       # LLM judge mode
+│   └── online_config.yaml        # Human feedback mode
 ├── data/
-│   ├── backend_roles.json     # Source role definitions
-│   ├── raw/                   # Raw parquet (role data only)
-│   └── processed/             # Formatted parquet (with prompts)
+│   ├── backend_roles.json        # 500 role definitions
+│   ├── raw/                      # Raw parquet (role data)
+│   └── processed/                # Formatted parquet (with prompts)
+├── feedback-ui/                  # Human feedback web UI
+│   ├── app.py                    # FastAPI server
+│   ├── database.py               # SQLAlchemy models
+│   ├── generator.py              # Question generation
+│   └── templates/                # Jinja2 templates
 ├── scripts/
-│   ├── prepare_dataset.py     # JSON → raw parquet
-│   ├── format_prompts.py      # raw parquet → formatted parquet
-│   ├── export_merged_model.py # Export trained model to HuggingFace format
-│   ├── download_model.py      # Download model from HuggingFace Hub
-│   ├── eval.py                # Model evaluation on test set
-│   ├── analyze_results.py     # Results analysis and visualization
-│   └── test_endpoint.py       # Test HuggingFace inference endpoint
+│   ├── prepare_dataset.py        # JSON → raw parquet
+│   ├── format_prompts.py         # Raw → formatted parquet
+│   ├── eval.py                   # Model evaluation
+│   ├── export_merged_model.py    # Export to HuggingFace format
+│   ├── download_model.py         # Download from Hub
+│   ├── test_endpoint.py          # Test inference endpoint
+│   └── analyze_results.py        # Results visualization
 ├── src/recruiter/
-│   ├── main.py                # Training entrypoint
-│   ├── env.py                 # SkyRL environment
-│   ├── reward.py              # Grok judge reward function
-│   ├── prompts.py             # Prompt formatting (edit this!)
-│   ├── dataset.py             # Dataset loading
-│   └── schemas.py             # Pydantic schemas
-├── results/
-│   └── eval_results.json      # Evaluation results
-└── Makefile
+│   ├── main.py                   # Training entrypoint
+│   ├── env.py                    # SkyRL environments
+│   ├── reward.py                 # Grok judge reward
+│   ├── prompts.py                # Prompt formatting
+│   ├── human_feedback.py         # Human feedback client
+│   └── metrics_logger.py         # JSON metrics logging
+└── results/
+    └── eval_results.json         # Evaluation outputs
 ```
+
+---
 
 ## Configuration
 
 Key settings in `configs/train_config.yaml`:
 
-- `trainer.policy.model.path`: Base model (default: Qwen/Qwen3-4B-Instruct-2507)
-- `generator.n_samples_per_prompt`: Samples per prompt for GRPO (default: 4)
-- `generator.sampling_params.max_generate_length`: Max tokens to generate
-- `trainer.train_batch_size`: Batch size for training
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `trainer.policy.model.path` | `exports/qwen3-4b-question-gen` | Base model path |
+| `trainer.policy.lora.rank` | 8 | LoRA rank |
+| `trainer.policy.optimizer_config.lr` | 1e-5 | Learning rate |
+| `trainer.train_batch_size` | 64 | Batch size |
+| `trainer.epochs` | 5 | Training epochs |
+| `generator.n_samples_per_prompt` | 4 | Samples per role for GRPO |
+| `generator.sampling_params.max_generate_length` | 256 | Max tokens to generate |
+
+---
 
 ## Environment Variables
 
-| Variable | Description |
-|----------|-------------|
-| `XAI_API_KEY` | API key for Grok (required for training + evaluation judge) |
-| `ANTHROPIC_API_KEY` | API key for Claude evaluation |
-| `OPENAI_API_KEY` | API key for GPT evaluation |
-| `HF_TOKEN` | HuggingFace API token (required for --push_to_hub and endpoint) |
-| `HF_REPO` | HuggingFace repository name, e.g., `username/model-name` |
-| `HF_ENDPOINT_URL` | HuggingFace Inference Endpoint URL |
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `XAI_API_KEY` | Yes | Grok API key (training judge + evaluation) |
+| `ANTHROPIC_API_KEY` | For Claude eval | Anthropic API key |
+| `OPENAI_API_KEY` | For GPT eval | OpenAI API key |
+| `HF_TOKEN` | For Hub upload | HuggingFace API token |
+| `HF_REPO` | For Hub upload | HuggingFace repo name (e.g., `username/model`) |
+| `HF_ENDPOINT_URL` | For endpoint test | Inference endpoint URL |
