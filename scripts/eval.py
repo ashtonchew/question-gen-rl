@@ -42,7 +42,7 @@ Generate ONE technical screening question for this role. The question should:
 Question:"""
 
 
-def generate_question_baseline(role: dict, model_path: str = "Qwen/Qwen2.5-1.5B-Instruct") -> str:
+def generate_question_baseline(role: dict, model_path: str = "Qwen/Qwen3-4B-Instruct") -> str:
     """
     Generate question using baseline model (no RL training).
     Uses vLLM for local inference.
