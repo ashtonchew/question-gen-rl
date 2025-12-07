@@ -219,6 +219,10 @@ def push_to_hub(output_path: str, repo_id: str) -> str:
 
     api = HfApi()
 
+    # Create repo if it doesn't exist
+    print(f"Creating/checking repository: {repo_id}")
+    api.create_repo(repo_id=repo_id, repo_type="model", exist_ok=True)
+
     print(f"Uploading to: https://huggingface.co/{repo_id}")
     api.upload_folder(
         folder_path=output_path,
