@@ -22,7 +22,7 @@ trainer:
 
   policy:
     model:
-      path: "Qwen/Qwen3-4B-Instruct"
+      path: "Qwen/Qwen3-4B-Instruct-2507"
       lora:
         rank: 0
         alpha: 16
