@@ -92,12 +92,13 @@ Score this question:"""
     try:
         chat = client.chat.create(
             model="grok-4-1-fast-non-reasoning",
-            messages=[system(JUDGE_SYSTEM_PROMPT)]
+            messages=[system(JUDGE_SYSTEM_PROMPT)],
+            response_format="json_object"  # Force JSON output without markdown wrapping
         )
         chat.append(user(user_prompt))
 
-        # Use structured outputs - guaranteed schema compliance
-        response, scores = chat.parse(JudgeResponse)
+        response = chat.sample()
+        scores = JudgeResponse.model_validate_json(response.content)
 
         # Normalize to 0-1 range, weighted average
         reward = (scores.relevance + scores.clarity + scores.discriminative) / 30.0
