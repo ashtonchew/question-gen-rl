@@ -13,8 +13,9 @@ if [ ! -d "SkyRL" ]; then
     git clone https://github.com/NovaSky-AI/SkyRL.git
 fi
 
-# Setup your project
-cd ~/Desktop/question-gen-rl
+# Setup your project (use directory where script is located)
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$SCRIPT_DIR"
 uv venv --python 3.12 --seed
 source .venv/bin/activate
 
