@@ -40,7 +40,7 @@ trainer:
       num_warmup_steps: 0
       scheduler: "constant_with_warmup"
     fsdp_config:
-      cpu_offload: true
+      cpu_offload: false  # Must be false for LoRA weight sync to work
       reshard_after_forward: true
       fsdp_size: -1
     sequence_parallel_size: 1
