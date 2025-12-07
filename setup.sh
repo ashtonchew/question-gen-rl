@@ -19,8 +19,11 @@ cd "$SCRIPT_DIR"
 uv venv --python 3.12 --seed
 source .venv/bin/activate
 
-# Install SkyRL from local clone
-uv pip install -e ~/SkyRL/skyrl-train[vllm]
+# Install torch first (required for flash-attn build)
+uv pip install torch==2.8.0
+
+# Install SkyRL from local clone (--no-build-isolation for flash-attn)
+uv pip install -e ~/SkyRL/skyrl-train[vllm] --no-build-isolation
 uv pip install -e ~/SkyRL/skyrl-gym
 uv pip install -e .
 
