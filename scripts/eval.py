@@ -374,7 +374,7 @@ def evaluate_model(
             total_clarity += scores.get("clarity", 0)
             total_discriminative += scores.get("discriminative", 0)
             total_composite += scores.get("composite", 0)
-            print(f"  [{idx+1}/{len(df)}] {result['role_title']}: {scores.get('composite', 0):.2f}")
+            print(f"  [{model_alias}] [{idx+1}/{len(df)}] {result['role_title']}: {scores.get('composite', 0):.2f}")
     else:
         # Parallel execution for API models
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
@@ -393,9 +393,9 @@ def evaluate_model(
                     total_clarity += scores.get("clarity", 0)
                     total_discriminative += scores.get("discriminative", 0)
                     total_composite += scores.get("composite", 0)
-                    print(f"  [{len(results)}/{len(df)}] {result['role_title']}: {scores.get('composite', 0):.2f}")
+                    print(f"  [{model_alias}] [{len(results)}/{len(df)}] {result['role_title']}: {scores.get('composite', 0):.2f}")
                 except Exception as e:
-                    print(f"  [ERROR] Role {idx}: {e}")
+                    print(f"  [{model_alias}] [ERROR] Role {idx}: {e}")
 
     n = len(results)
     return {
@@ -440,7 +440,7 @@ Available models:
     parser.add_argument("--output", default="results/eval_results.json",
                         help="Output path for results")
     parser.add_argument("--override", action="store_true",
-                        help="Override existing results (default: append/merge)")
+                        help="(deprecated) Results always merge now - only specified models get updated")
     args = parser.parse_args()
 
     # Create results directory
@@ -466,9 +466,41 @@ Available models:
         if m == "rl" and not args.checkpoint:
             raise ValueError("--checkpoint required for 'rl' model")
 
+    # Separate local and API models
+    local_models = [m for m in models_to_eval if MODEL_ALIASES[m]["provider"] == "local"]
+    api_models = [m for m in models_to_eval if MODEL_ALIASES[m]["provider"] != "local"]
+
     all_results = {}
 
-    for model_alias in models_to_eval:
+    # Run API models in parallel
+    if api_models:
+        print(f"\n{'='*60}")
+        print(f"Evaluating API models in parallel: {', '.join(api_models)}")
+        print(f"{'='*60}")
+
+        with ThreadPoolExecutor(max_workers=len(api_models)) as executor:
+            futures = {
+                executor.submit(
+                    evaluate_model,
+                    args.test_data,
+                    model,
+                    args.checkpoint,
+                    args.num_samples,
+                    args.max_workers
+                ): model
+                for model in api_models
+            }
+
+            for future in as_completed(futures):
+                model = futures[future]
+                try:
+                    all_results[model] = future.result()
+                    print(f"\n[{model}] Completed!")
+                except Exception as e:
+                    print(f"\n[{model}] ERROR: {e}")
+
+    # Run local models sequentially (vLLM can't easily parallelize)
+    for model_alias in local_models:
         print(f"\n{'='*60}")
         print(f"Evaluating: {model_alias}")
         print(f"{'='*60}")
@@ -483,7 +515,6 @@ Available models:
             )
         except Exception as e:
             print(f"ERROR evaluating {model_alias}: {e}")
-            continue
 
     # Print summary
     print("\n" + "=" * 60)
@@ -499,18 +530,17 @@ Available models:
         print(f"  Avg Discriminative: {result['avg_discriminative']:.2f}")
         print(f"  Avg Composite: {result['avg_composite']:.2f}")
 
-    # Save results (merge with existing unless --override)
-    if not args.override and output_path.exists():
+    # Save results (always merge - only specified models get updated)
+    if output_path.exists():
         with open(output_path, "r") as f:
             existing_results = json.load(f)
         # Merge: new results override existing for same model names
         existing_results.update(all_results)
         all_results = existing_results
-        print(f"\nMerged with existing results in {output_path}")
 
     with open(output_path, "w") as f:
         json.dump(all_results, f, indent=2)
-    print(f"Results saved to {output_path}")
+    print(f"\nResults saved to {output_path}")
 
 
 if __name__ == "__main__":
