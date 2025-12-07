@@ -5,6 +5,7 @@ set -e
 # Configuration
 export CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-0}
 export XAI_API_KEY=${XAI_API_KEY:?"XAI_API_KEY must be set"}
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
 # Paths
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

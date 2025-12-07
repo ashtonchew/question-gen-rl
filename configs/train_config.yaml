@@ -40,7 +40,7 @@ trainer:
       num_warmup_steps: 0
       scheduler: "constant_with_warmup"
     fsdp_config:
-      cpu_offload: false
+      cpu_offload: true
       reshard_after_forward: true
       fsdp_size: -1
     sequence_parallel_size: 1
@@ -53,7 +53,7 @@ trainer:
     sequence_parallel_size: 1
     deepspeed_config: null
     fsdp_config:
-      cpu_offload: false
+      cpu_offload: true
       reshard_after_forward: true
       fsdp_size: -1
 
@@ -186,8 +186,8 @@ generator:
   max_num_batched_tokens: 4096
   enforce_eager: true
   fully_sharded_loras: false
-  gpu_memory_utilization: 0.7
-  max_num_seqs: 256
+  gpu_memory_utilization: 0.5
+  max_num_seqs: 128
   remote_inference_engine_urls: ["127.0.0.1:8001"]
   enable_http_endpoint: false
   http_endpoint_host: "127.0.0.1"
