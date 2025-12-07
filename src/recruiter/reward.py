@@ -1,5 +1,6 @@
 """Reward function using Grok API as judge."""
 import os
+import re
 import logging
 from typing import Tuple
 from dotenv import load_dotenv
@@ -61,7 +62,51 @@ Score the following technical screening question on three criteria (0-10 each):
 - Too broad: would take >10 min to answer properly (-2)
 
 Be strict. Most LLM-generated questions score 5-7, not 8-10. Reserve high scores for exceptional questions.
+
+Return ONLY a JSON object with this exact format, no other text:
+{"relevance": <0-10>, "clarity": <0-10>, "discriminative": <0-10>, "reasoning": "<brief explanation>"}
 """
+
+
+def extract_json(text: str) -> str:
+    """Extract JSON object from text, handling markdown and trailing content."""
+    text = text.strip()
+
+    # Remove markdown code blocks
+    if text.startswith("```"):
+        text = re.sub(r'^```(?:json)?\s*\n?', '', text)
+        text = re.sub(r'\n?```\s*$', '', text)
+        text = text.strip()
+
+    # Find JSON object boundaries
+    start = text.find('{')
+    if start == -1:
+        return text
+
+    # Find matching closing brace
+    depth = 0
+    in_string = False
+    escape = False
+    for i, c in enumerate(text[start:], start):
+        if escape:
+            escape = False
+            continue
+        if c == '\\' and in_string:
+            escape = True
+            continue
+        if c == '"' and not escape:
+            in_string = not in_string
+            continue
+        if in_string:
+            continue
+        if c == '{':
+            depth += 1
+        elif c == '}':
+            depth -= 1
+            if depth == 0:
+                return text[start:i+1]
+
+    return text[start:]
 
 
 def judge_question(role_description: str, question: str) -> Tuple[float, dict]:
@@ -98,7 +143,8 @@ Score this question:"""
         chat.append(user(user_prompt))
 
         response = chat.sample()
-        scores = JudgeResponse.model_validate_json(response.content)
+        json_str = extract_json(response.content)
+        scores = JudgeResponse.model_validate_json(json_str)
 
         # Normalize to 0-1 range, weighted average
         reward = (scores.relevance + scores.clarity + scores.discriminative) / 30.0
