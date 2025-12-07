@@ -154,11 +154,15 @@ def generate_question_openai(role: dict, model: str) -> str:
 
     # Check for API error response
     if "error" in result:
-        error_msg = result["error"].get("message", str(result["error"]))
+        err = result["error"]
+        if isinstance(err, dict):
+            error_msg = err.get("message", str(err))
+        else:
+            error_msg = str(err)
         raise ValueError(f"OpenAI API error: {error_msg}")
 
     if "output_text" not in result:
-        raise ValueError(f"Unexpected OpenAI response format: {result}")
+        raise ValueError(f"Unexpected OpenAI response format: {list(result.keys())} - {str(result)[:500]}")
 
     return result["output_text"].strip()
 
