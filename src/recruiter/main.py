@@ -4,9 +4,9 @@ import hydra
 from omegaconf import DictConfig
 import json
 
-from skyrl_train.experiments.base_ppo_exp import BasePPOExp
-from skyrl_train.utils.config import validate_cfg
-from skyrl_train.utils.ray_utils import initialize_ray
+from skyrl_train.entrypoints.main_base import BasePPOExp
+from skyrl_train.utils import validate_cfg
+from skyrl_train.utils.utils import initialize_ray
 from skyrl_gym.envs import register
 
 from .env import QuestionGenEnv, QuestionGenEnvConfig
