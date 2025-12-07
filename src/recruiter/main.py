@@ -2,7 +2,6 @@
 import ray
 import hydra
 from omegaconf import DictConfig
-import json
 
 from skyrl_train.entrypoints.main_base import BasePPOExp
 from skyrl_train.utils import validate_cfg
@@ -14,16 +13,12 @@ from .env import QuestionGenEnv, QuestionGenEnvConfig
 
 class QuestionGenEnvWrapper(QuestionGenEnv):
     """
-    Wrapper that initializes from the dataset row.
-    SkyRL passes the dataset row to the environment.
+    Wrapper for SkyRL environment registration.
+    SkyRL passes the prompt to init(), not __init__.
     """
 
     def __init__(self, **kwargs):
         super().__init__(QuestionGenEnvConfig())
-        self._role_json = kwargs.get("role_json", None)
-        if self._role_json:
-            role = json.loads(self._role_json)
-            self.set_role(role)
 
 
 @ray.remote(num_cpus=1)

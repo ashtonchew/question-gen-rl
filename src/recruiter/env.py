@@ -1,6 +1,6 @@
 """SkyRL environment for technical question generation."""
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, List, Dict, Any
 
 from skyrl_gym.envs.base_text_env import BaseTextEnv, BaseTextEnvStepOutput
 
@@ -28,50 +28,31 @@ class QuestionGenEnv(BaseTextEnv):
     def __init__(self, config: Optional[QuestionGenEnvConfig] = None):
         super().__init__()
         self.config = config or QuestionGenEnvConfig()
-        self.current_role: Optional[dict] = None
-        self._initial_prompt: Optional[str] = None
+        self._prompt: Optional[str] = None
 
-    def set_role(self, role: dict):
-        """Set the current role for this episode."""
-        self.current_role = role
-        self._initial_prompt = self._format_prompt(role)
-
-    def _format_prompt(self, role: dict) -> str:
-        """Format the role into a prompt for the model."""
-        # Handle both old schema (domain) and new schema (focus, stack)
-        focus = role.get('focus', role.get('domain', 'backend'))
-        stack = role.get('stack', [])
-        stack_str = ', '.join(stack) if stack else 'Not specified'
-
-        return f"""You are a technical recruiter creating screening questions.
-
-## Role: {role['title']}
-**Level:** {role['level']}
-**Focus Area:** {focus}
-**Tech Stack:** {stack_str}
-
-**Description:** {role['description']}
-
-**Key Skills:** {', '.join(role['key_skills'])}
-
----
-
-Generate ONE technical screening question for this role. The question should:
-- Be answerable in 2-5 minutes
-- Test practical knowledge, not trivia
-- Be appropriate for the seniority level
-
-Question:"""
+    def _extract_prompt_text(self, prompt: List[Dict[str, Any]]) -> str:
+        """Extract text content from conversation format prompt."""
+        # SkyRL passes prompt as ConversationType (List of message dicts)
+        # Extract the user message content
+        for msg in prompt:
+            if msg.get("role") == "user":
+                return msg.get("content", "")
+        # Fallback: if no user message, try first message or join all
+        if prompt:
+            return prompt[0].get("content", str(prompt))
+        return ""
 
     def init(self, prompt):
         """Initialize the environment with the prompt from the dataset.
 
         Args:
-            prompt: The prompt/conversation from the dataset
+            prompt: The prompt/conversation from the dataset (ConversationType)
 
         Returns:
             Tuple of (prompt, metadata_dict) as expected by SkyRL
         """
+        # Store the prompt text for use in step()
+        self._prompt = self._extract_prompt_text(prompt)
         return prompt, {}
 
     def step(self, action: str) -> BaseTextEnvStepOutput:
@@ -99,9 +80,9 @@ Question:"""
         if len(question) > self.config.max_question_length:
             question = question[:self.config.max_question_length]
 
-        # Get reward from judge
+        # Get reward from judge - use stored prompt as role context
         reward, judge_details = judge_question(
-            role_description=self.current_role['description'],
+            role_description=self._prompt,
             question=question
         )
 
@@ -113,6 +94,5 @@ Question:"""
             info={
                 "question": question,
                 "judge_scores": judge_details,
-                "role_id": self.current_role['id']
             }
         )
