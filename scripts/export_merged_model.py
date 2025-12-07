@@ -21,6 +21,7 @@ Environment Variables:
 
 import argparse
 import os
+import time
 from pathlib import Path
 
 import torch
@@ -205,7 +206,7 @@ def save_merged_model(
     print(f"  - Tokenizer: {output_dir / 'tokenizer.json'}")
 
 
-def push_to_hub(output_path: str, repo_id: str) -> str:
+def push_to_hub(output_path: str, repo_id: str, max_retries: int = 3) -> str:
     """Push the exported model to HuggingFace Hub."""
     print(f"\n=== Pushing to HuggingFace Hub ===")
 
@@ -223,13 +224,24 @@ def push_to_hub(output_path: str, repo_id: str) -> str:
     print(f"Creating/checking repository: {repo_id}")
     api.create_repo(repo_id=repo_id, repo_type="model", exist_ok=True)
 
+    # Upload with retry logic for race conditions
     print(f"Uploading to: https://huggingface.co/{repo_id}")
-    api.upload_folder(
-        folder_path=output_path,
-        repo_id=repo_id,
-        repo_type="model",
-        commit_message="Upload RL-trained question generation model",
-    )
+    for attempt in range(max_retries):
+        try:
+            api.upload_folder(
+                folder_path=output_path,
+                repo_id=repo_id,
+                repo_type="model",
+                commit_message="Upload RL-trained question generation model",
+            )
+            break
+        except Exception as e:
+            if attempt < max_retries - 1:
+                wait_time = 2 ** (attempt + 1)  # 2s, 4s, 8s
+                print(f"Upload failed, retrying in {wait_time}s... (attempt {attempt + 1}/{max_retries})")
+                time.sleep(wait_time)
+            else:
+                raise
 
     url = f"https://huggingface.co/{repo_id}"
     print(f"\nModel uploaded successfully!")
