@@ -63,6 +63,32 @@ outputs = llm.generate(["Your prompt here"], SamplingParams(max_tokens=100))
 print(outputs[0].outputs[0].text)
 ```
 
+## Uploading to HuggingFace Hub
+
+Push your trained model to HuggingFace Hub:
+
+```bash
+# Set your HF credentials in .env
+# HF_TOKEN=hf_xxxxx
+# HF_REPO=your-username/your-model-name
+
+# Export and upload
+python scripts/export_merged_model.py \
+    --checkpoint checkpoints/global_step_100 \
+    --output exports/qwen3-4b-question-gen \
+    --push_to_hub
+```
+
+Or specify the repo directly:
+
+```bash
+python scripts/export_merged_model.py \
+    --checkpoint checkpoints/global_step_100 \
+    --output exports/qwen3-4b-question-gen \
+    --push_to_hub \
+    --hub_repo your-username/your-model-name
+```
+
 ## Changing Prompts
 
 All prompt logic lives in `src/recruiter/prompts.py`. To change the prompt format:
@@ -116,4 +142,6 @@ Key settings in `configs/train_config.yaml`:
 
 | Variable | Description |
 |----------|-------------|
-| `XAI_API_KEY` | API key for Grok judge (required) |
+| `XAI_API_KEY` | API key for Grok judge (required for training) |
+| `HF_TOKEN` | HuggingFace API token (required for --push_to_hub) |
+| `HF_REPO` | HuggingFace repository name, e.g., `username/model-name` |
