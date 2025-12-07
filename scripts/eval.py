@@ -144,7 +144,7 @@ def generate_question_openai(role: dict, model: str) -> str:
     response = client.responses.create(
         model=model,
         input=prompt,
-        reasoning={"effort": "none"},
+        reasoning={"effort": "minimal"},
         text={"verbosity": "low"}
     )
 
