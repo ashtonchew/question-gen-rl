@@ -89,6 +89,21 @@ python scripts/export_merged_model.py \
     --hub_repo your-username/your-model-name
 ```
 
+## Testing the Inference Endpoint
+
+After deploying to HuggingFace Inference Endpoints:
+
+```bash
+# Set your endpoint URL in .env
+# HF_ENDPOINT_URL=https://your-endpoint.us-east-1.aws.endpoints.huggingface.cloud
+
+# Test the endpoint
+python scripts/test_endpoint.py
+
+# Or with a custom prompt
+python scripts/test_endpoint.py --prompt "Generate a screening question for a DevOps engineer:"
+```
+
 ## Changing Prompts
 
 All prompt logic lives in `src/recruiter/prompts.py`. To change the prompt format:
@@ -120,7 +135,8 @@ data/backend_roles.json  →  data/raw/*.parquet  →  data/processed/*.parquet 
 ├── scripts/
 │   ├── prepare_dataset.py     # JSON → raw parquet
 │   ├── format_prompts.py      # raw parquet → formatted parquet
-│   └── export_merged_model.py # Export trained model to HuggingFace format
+│   ├── export_merged_model.py # Export trained model to HuggingFace format
+│   └── test_endpoint.py       # Test HuggingFace inference endpoint
 ├── src/recruiter/
 │   ├── main.py                # Training entrypoint
 │   ├── env.py                 # SkyRL environment
@@ -143,5 +159,6 @@ Key settings in `configs/train_config.yaml`:
 | Variable | Description |
 |----------|-------------|
 | `XAI_API_KEY` | API key for Grok judge (required for training) |
-| `HF_TOKEN` | HuggingFace API token (required for --push_to_hub) |
+| `HF_TOKEN` | HuggingFace API token (required for --push_to_hub and endpoint) |
 | `HF_REPO` | HuggingFace repository name, e.g., `username/model-name` |
+| `HF_ENDPOINT_URL` | HuggingFace Inference Endpoint URL |
