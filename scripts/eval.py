@@ -152,6 +152,15 @@ def generate_question_openai(role: dict, model: str) -> str:
         timeout=60.0
     )
     result = response.json()
+
+    # Check for API error response
+    if "error" in result:
+        error_msg = result["error"].get("message", str(result["error"]))
+        raise ValueError(f"OpenAI API error: {error_msg}")
+
+    if "choices" not in result:
+        raise ValueError(f"Unexpected OpenAI response format: {result}")
+
     return result["choices"][0]["message"]["content"].strip()
 
 
