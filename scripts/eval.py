@@ -180,28 +180,68 @@ def generate_question(role: dict, model_alias: str, checkpoint_path: Optional[st
         raise ValueError(f"Unknown provider: {provider}")
 
 
-JUDGE_SYSTEM_PROMPT = """You are an expert technical recruiter evaluating screening questions.
+JUDGE_SYSTEM_PROMPT = """You are an expert technical recruiter evaluating screening questions. Be critical and precise.
 
 Score the following technical screening question on three criteria (0-10 each):
 
-1. **Relevance** (0-10): Does this question test skills actually needed for the role?
-   - 0: Completely unrelated to the role
-   - 5: Tangentially related
-   - 10: Directly tests core job requirements
+## 1. Relevance (0-10): Does this question test skills actually needed for the role?
+- 0-2: Completely unrelated or tests wrong domain entirely
+- 3-4: Superficially mentions tech stack but tests generic programming
+- 5-6: Tests general skills, only tangentially related to role focus
+- 7-8: Tests relevant skills but misses the specific role requirements
+- 9-10: Directly tests core skills AND tech stack listed in role description
 
-2. **Clarity** (0-10): Is the question unambiguous and well-formed?
-   - 0: Confusing, multiple interpretations possible
-   - 5: Understandable but could be clearer
-   - 10: Crystal clear, one obvious interpretation
+**Red flags (subtract points):**
+- Generic interview questions that could apply to any software role (-3)
+- Only tests one minor technology, ignores role's main focus area (-2)
+- Asks about technologies not listed in the role description (-2)
 
-3. **Discriminative Power** (0-10): Would this question distinguish good candidates from weak ones?
-   - 0: Anyone could answer OR no one could answer
-   - 5: Moderate differentiation
-   - 10: Strong candidates would excel, weak candidates would struggle
+## 2. Clarity (0-10): Is the question unambiguous and well-formed?
+- 0-2: Confusing, grammatically broken, impossible to answer as written
+- 3-4: Multiple valid interpretations, unclear what's being asked
+- 5-6: Understandable but vague about expected depth or scope
+- 7-8: Clear intent but missing constraints (time, format, depth)
+- 9-10: Crystal clear, unambiguous, well-scoped for a screening question
+
+**Red flags (subtract points):**
+- Multiple questions bundled into one (-2)
+- "Design a system" without scope constraints (-2)
+- Ambiguous technical jargon without context (-1)
+
+## 3. Discriminative Power (0-10): Would this question distinguish good candidates from weak ones?
+- 0-2: Trivial (anyone passes) OR impossible (no one passes)
+- 3-4: Pure recall/trivia, doesn't test understanding
+- 5-6: Tests basic knowledge, weak differentiation
+- 7-8: Tests applied knowledge, good candidate separation
+- 9-10: Tests trade-offs and deep understanding, strong separation
+
+**Red flags (subtract points):**
+- "Name X features of Y" style recall questions (-3)
+- Yes/no or single-word answer questions (-2)
+- Requires insider knowledge not in job requirements (-2)
+- Too broad: would take >10 min to answer properly (-2)
+
+Be strict. Most LLM-generated questions score 5-7, not 8-10. Reserve high scores for exceptional questions.
 
 Return ONLY a JSON object with this exact format, no other text:
 {"relevance": <0-10>, "clarity": <0-10>, "discriminative": <0-10>, "reasoning": "<brief explanation>"}
 """
+
+
+def sanitize_json_string(text: str) -> str:
+    """Remove or escape control characters that break JSON parsing."""
+    result = []
+    for char in text:
+        code = ord(char)
+        if code < 0x20:  # Control character range
+            if code == 0x09:  # tab
+                result.append(' ')
+            elif code in (0x0A, 0x0D):  # newline, carriage return
+                result.append(' ')
+            # Skip other control characters (null, etc.)
+        else:
+            result.append(char)
+    return ''.join(result)
 
 
 def extract_json(text: str) -> str:
@@ -241,9 +281,10 @@ def extract_json(text: str) -> str:
         elif c == '}':
             depth -= 1
             if depth == 0:
-                return text[start:i+1]
+                json_str = text[start:i+1]
+                return sanitize_json_string(json_str)
 
-    return text[start:]
+    return sanitize_json_string(text[start:])
 
 
 def judge_question(role_description: str, question: str) -> dict:
