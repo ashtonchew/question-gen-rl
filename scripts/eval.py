@@ -133,21 +133,20 @@ def generate_question_anthropic(role: dict, model: str) -> str:
 
 
 def generate_question_openai(role: dict, model: str) -> str:
-    """Generate question using OpenAI API (GPT)."""
+    """Generate question using OpenAI Responses API (GPT-5 series)."""
     if not OPENAI_API_KEY:
         raise ValueError("OPENAI_API_KEY environment variable not set")
 
     prompt = format_prompt(role)
     response = httpx.post(
-        "https://api.openai.com/v1/chat/completions",
+        "https://api.openai.com/v1/responses",
         headers={
             "Authorization": f"Bearer {OPENAI_API_KEY}",
             "Content-Type": "application/json"
         },
         json={
             "model": model,
-            "max_completion_tokens": 256,
-            "messages": [{"role": "user", "content": prompt}]
+            "input": prompt
         },
         timeout=60.0
     )
@@ -158,10 +157,10 @@ def generate_question_openai(role: dict, model: str) -> str:
         error_msg = result["error"].get("message", str(result["error"]))
         raise ValueError(f"OpenAI API error: {error_msg}")
 
-    if "choices" not in result:
+    if "output_text" not in result:
         raise ValueError(f"Unexpected OpenAI response format: {result}")
 
-    return result["choices"][0]["message"]["content"].strip()
+    return result["output_text"].strip()
 
 
 def generate_question(role: dict, model_alias: str, checkpoint_path: Optional[str] = None) -> str:
