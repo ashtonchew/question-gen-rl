@@ -188,6 +188,7 @@ generator:
   fully_sharded_loras: false
   gpu_memory_utilization: 0.5
   max_num_seqs: 128
+  max_model_len: 2048
   remote_inference_engine_urls: ["127.0.0.1:8001"]
   enable_http_endpoint: false
   http_endpoint_host: "127.0.0.1"
