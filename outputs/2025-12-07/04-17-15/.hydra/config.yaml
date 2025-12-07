@@ -1,0 +1,35 @@
+data:
+  train_data:
+  - data/processed/train.parquet
+  val_data:
+  - data/processed/test.parquet
+trainer:
+  policy:
+    model:
+      path: Qwen/Qwen2.5-1.5B-Instruct
+  algorithm:
+    advantage_estimator: grpo
+  placement:
+    colocate_all: true
+    policy_num_gpus_per_node: 1
+    ref_num_gpus_per_node: 1
+    policy_num_nodes: 1
+    ref_num_nodes: 1
+  strategy: fsdp2
+  epochs: 20
+  train_batch_size: 64
+  eval_batch_size: 32
+  micro_train_batch_size_per_gpu: 4
+  micro_forward_batch_size_per_gpu: 4
+  eval_before_train: true
+  eval_interval: 5
+  update_epochs_per_batch: 1
+  logger: console
+generator:
+  num_inference_engines: 1
+  inference_engine_tensor_parallel_size: 1
+  max_new_tokens: 256
+  batched: true
+  async_engine: false
+env:
+  id: question-gen
