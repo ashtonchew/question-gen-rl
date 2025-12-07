@@ -124,11 +124,12 @@ python scripts/eval.py --model grok-4-1
 # Evaluate multiple models (parallelized)
 python scripts/eval.py --model grok-4-1 claude-4-5-haiku gpt-5-nano
 
-# Evaluate with RL checkpoint
-python scripts/eval.py --model baseline rl --checkpoint checkpoints/step_100
+# Evaluate RL checkpoint (must export first!)
+python scripts/export_merged_model.py --checkpoint checkpoints/global_step_31 --output exports/rl-step31
+python scripts/eval.py --model rl --checkpoint exports/rl-step31
 
-# Evaluate all models
-python scripts/eval.py --model all --checkpoint checkpoints/step_100
+# Compare baseline vs RL
+python scripts/eval.py --model baseline rl --checkpoint exports/rl-step31
 ```
 
 **Available models:**
