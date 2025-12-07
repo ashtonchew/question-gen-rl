@@ -5,14 +5,22 @@ from pathlib import Path
 import argparse
 
 
-def format_prompt(role: dict) -> str:
-    """Format role into training prompt."""
+def format_prompt(role: dict) -> list:
+    """Format role into chat conversation for instruction-tuned models.
+
+    Returns a list of message dicts with proper system/user separation
+    for Qwen3-Instruct and similar chat models.
+    """
     # Handle both old schema (domain) and new schema (focus, stack)
     focus = role.get('focus', role.get('domain', 'backend'))
     stack = role.get('stack', [])
     stack_str = ', '.join(stack) if stack else 'Not specified'
 
-    return f"""You are a technical recruiter creating screening questions.
+    system_message = """You are an expert technical recruiter creating screening questions.
+Your goal is to generate clear, relevant questions that test practical knowledge.
+Questions should be answerable in 2-5 minutes and appropriate for the candidate's level."""
+
+    user_message = f"""Generate ONE technical screening question for this role:
 
 ## Role: {role['title']}
 **ID:** {role['id']}
@@ -24,14 +32,12 @@ def format_prompt(role: dict) -> str:
 
 **Key Skills:** {', '.join(role['key_skills'])}
 
----
-
-Generate ONE technical screening question for this role. The question should:
-- Be answerable in 2-5 minutes
-- Test practical knowledge, not trivia
-- Be appropriate for the seniority level
-
 Question:"""
+
+    return [
+        {"role": "system", "content": system_message},
+        {"role": "user", "content": user_message}
+    ]
 
 
 def main(input_path: str, output_dir: str, train_split: float = 0.8):
