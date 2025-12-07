@@ -22,7 +22,7 @@ trainer:
 
   policy:
     model:
-      path: "Qwen/Qwen2.5-1.5B-Instruct"
+      path: "Qwen/Qwen3-4B-Instruct"
       lora:
         rank: 0
         alpha: 16
@@ -156,7 +156,7 @@ trainer:
   target_modules: null
   exclude_modules: null
   project_name: "question-gen-rl"
-  run_name: "qwen-1.5b-grpo"
+  run_name: "qwen3-4b-grpo"
   logger: "console"
   dump_data_batch: false
   dump_eval_results: true
