@@ -68,6 +68,25 @@ Return ONLY a JSON object with this exact format, no other text:
 """
 
 
+def sanitize_json_string(text: str) -> str:
+    """Remove or escape control characters that break JSON parsing."""
+    # Remove control characters (0x00-0x1F) except for valid JSON whitespace
+    # Valid: \t (0x09), \n (0x0A), \r (0x0D) - but these should be escaped in strings
+    # We'll remove all control chars and let the JSON handle escaped versions
+    result = []
+    for char in text:
+        code = ord(char)
+        if code < 0x20:  # Control character range
+            if code == 0x09:  # tab
+                result.append(' ')  # Replace with space
+            elif code in (0x0A, 0x0D):  # newline, carriage return
+                result.append(' ')  # Replace with space
+            # Skip other control characters (null, etc.)
+        else:
+            result.append(char)
+    return ''.join(result)
+
+
 def extract_json(text: str) -> str:
     """Extract JSON object from text, handling markdown and trailing content."""
     text = text.strip()
@@ -104,9 +123,11 @@ def extract_json(text: str) -> str:
         elif c == '}':
             depth -= 1
             if depth == 0:
-                return text[start:i+1]
+                json_str = text[start:i+1]
+                # Sanitize control characters before returning
+                return sanitize_json_string(json_str)
 
-    return text[start:]
+    return sanitize_json_string(text[start:])
 
 
 def judge_question(role_description: str, question: str) -> Tuple[float, dict]:
