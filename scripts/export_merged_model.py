@@ -7,29 +7,14 @@ Usage:
         --checkpoint checkpoints/global_step_100 \
         --output exports/qwen3-4b-question-gen \
         --verify
-
-    # Push to HuggingFace Hub (set HF_TOKEN and HF_REPO env vars, or use --hub_repo)
-    python scripts/export_merged_model.py \
-        --checkpoint checkpoints/global_step_100 \
-        --output exports/qwen3-4b-question-gen \
-        --push_to_hub
-
-Environment Variables:
-    HF_TOKEN: HuggingFace API token for authentication
-    HF_REPO: Default repository name (optional, can be overridden with --hub_repo)
 """
 
 import argparse
-import os
 from pathlib import Path
 
 import torch
-from dotenv import load_dotenv
-from huggingface_hub import HfApi, login
 from peft import LoraConfig, PeftModel, get_peft_model
 from transformers import AutoModelForCausalLM, AutoTokenizer
-
-load_dotenv()
 
 
 def load_skyrl_checkpoint(checkpoint_path: Path) -> tuple[dict, dict]:
@@ -205,34 +190,6 @@ def save_merged_model(
     print(f"  - Tokenizer: {output_dir / 'tokenizer.json'}")
 
 
-def push_to_hub(output_path: str, repo_id: str) -> str:
-    """Push the exported model to HuggingFace Hub."""
-    print(f"\n=== Pushing to HuggingFace Hub ===")
-
-    # Authenticate with HF
-    hf_token = os.getenv("HF_TOKEN")
-    if hf_token:
-        print("Authenticating with HF_TOKEN environment variable...")
-        login(token=hf_token)
-    else:
-        print("No HF_TOKEN found, using cached credentials...")
-
-    api = HfApi()
-
-    print(f"Uploading to: https://huggingface.co/{repo_id}")
-    api.upload_folder(
-        folder_path=output_path,
-        repo_id=repo_id,
-        repo_type="model",
-        commit_message="Upload RL-trained question generation model",
-    )
-
-    url = f"https://huggingface.co/{repo_id}"
-    print(f"\nModel uploaded successfully!")
-    print(f"View at: {url}")
-    return url
-
-
 def verify_export(output_path: str, test_prompt: str | None = None) -> bool:
     """Verify the exported model loads and generates correctly."""
     print("\n=== Verification Test ===")
@@ -314,17 +271,6 @@ def main():
         default=None,
         help="Custom prompt for verification test",
     )
-    parser.add_argument(
-        "--push_to_hub",
-        action="store_true",
-        help="Push the exported model to HuggingFace Hub",
-    )
-    parser.add_argument(
-        "--hub_repo",
-        type=str,
-        default=None,
-        help="HuggingFace Hub repository (default: HF_REPO env var)",
-    )
 
     args = parser.parse_args()
 
@@ -364,15 +310,6 @@ def main():
     # Verify if requested
     if args.verify:
         verify_export(args.output, args.test_prompt)
-
-    # Push to HuggingFace Hub if requested
-    if args.push_to_hub:
-        hub_repo = args.hub_repo or os.getenv("HF_REPO")
-        if not hub_repo:
-            parser.error(
-                "--push_to_hub requires --hub_repo or HF_REPO environment variable"
-            )
-        push_to_hub(args.output, hub_repo)
 
 
 if __name__ == "__main__":
