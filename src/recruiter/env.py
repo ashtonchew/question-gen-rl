@@ -88,8 +88,8 @@ class QuestionGenEnv(BaseTextEnv):
         if len(question) > self.config.max_question_length:
             question = question[:self.config.max_question_length]
 
-        # Guard against step() being called before init()
-        if self._prompt is None:
+        # Guard against step() being called before init() or with empty prompt
+        if not self._prompt:
             return BaseTextEnvStepOutput(
                 observation="",
                 reward=-1.0,
