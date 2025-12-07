@@ -47,7 +47,7 @@ def main(input_path: str, output_dir: str, train_split: float = 0.8):
     print(f"Created {len(train_df)} training examples")
     print(f"Created {len(test_df)} test examples")
     print(f"Saved to {output_dir}")
-    print(f"\nNext: run 'python scripts/format_prompts.py' to format prompts")
+    print(f"\nReady! Run 'python -m src.recruiter.main' to train.")
 
 
 if __name__ == "__main__":
