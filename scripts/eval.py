@@ -161,10 +161,11 @@ def generate_question_openai(role: dict, model: str) -> str:
             error_msg = str(err)
         raise ValueError(f"OpenAI API error: {error_msg}")
 
-    if "output_text" not in result:
+    # The raw API returns 'text', not 'output_text' (that's the SDK property)
+    if "text" not in result:
         raise ValueError(f"Unexpected OpenAI response format: {list(result.keys())} - {str(result)[:500]}")
 
-    return result["output_text"].strip()
+    return result["text"].strip()
 
 
 def generate_question(role: dict, model_alias: str, checkpoint_path: Optional[str] = None) -> str:
