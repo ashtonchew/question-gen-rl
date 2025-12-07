@@ -40,3 +40,4 @@ ENV/
 checkpoints/
 wandb/
 logs/
+exports/

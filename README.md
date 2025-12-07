@@ -25,6 +25,36 @@ python -m src.recruiter.main
 
 That's it. Prompt formatting happens automatically when training starts.
 
+## Downloading a Trained Model
+
+Download the RL-trained model from HuggingFace Hub for evaluation or continued training:
+
+```bash
+# Download model to exports/ directory
+python scripts/download_model.py
+# Downloads to: exports/qwen3-4b-question-gen
+```
+
+The script uses the `HF_REPO` environment variable (default: `ash256/qwen3-4b-question-gen`).
+
+### For Online RL (Continued Training)
+
+After downloading, update your training config to start from the trained model:
+
+```yaml
+# configs/train_config.yaml
+trainer:
+  policy:
+    model:
+      path: "exports/qwen3-4b-question-gen"  # Use downloaded model as base
+```
+
+Then run training as usual:
+
+```bash
+python -m src.recruiter.main
+```
+
 ## Exporting the Trained Model
 
 After training, merge LoRA adapters with the base model and export as a standalone HuggingFace model:
@@ -181,12 +211,14 @@ python scripts/eval.py --model grok-4-1
 # Evaluate multiple models (parallelized)
 python scripts/eval.py --model grok-4-1 claude-4-5-haiku gpt-5-mini
 
-# Evaluate RL checkpoint (must export first!)
-python scripts/export_merged_model.py --checkpoint checkpoints/global_step_31 --output exports/rl-step31
-python scripts/eval.py --model rl --checkpoint exports/rl-step31
+# Evaluate RL model (auto-downloads from HuggingFace Hub)
+python scripts/eval.py --model rl
 
 # Compare baseline vs RL
-python scripts/eval.py --model baseline rl --checkpoint exports/rl-step31
+python scripts/eval.py --model baseline rl
+
+# Use a local checkpoint instead (optional)
+python scripts/eval.py --model rl --checkpoint exports/my-local-model
 ```
 
 **Available models:**
@@ -196,7 +228,7 @@ python scripts/eval.py --model baseline rl --checkpoint exports/rl-step31
 | `claude-4-5-haiku` | claude-haiku-4-5-20251001 | Anthropic |
 | `gpt-5-mini` | gpt-5-mini-2025-08-07 | OpenAI |
 | `baseline` | Qwen3-4B-Instruct | Local (vLLM) |
-| `rl` | RL checkpoint | Local (vLLM) |
+| `rl` | ash256/qwen3-4b-question-gen | Local (vLLM, auto-downloads) |
 
 **Metrics** (scored 0-10 by LLM judge):
 - **Relevance**: Does the question test skills needed for the role?
@@ -238,6 +270,7 @@ data/backend_roles.json  →  data/raw/*.parquet  →  data/processed/*.parquet 
 │   ├── prepare_dataset.py     # JSON → raw parquet
 │   ├── format_prompts.py      # raw parquet → formatted parquet
 │   ├── export_merged_model.py # Export trained model to HuggingFace format
+│   ├── download_model.py      # Download model from HuggingFace Hub
 │   ├── eval.py                # Model evaluation on test set
 │   ├── analyze_results.py     # Results analysis and visualization
 │   └── test_endpoint.py       # Test HuggingFace inference endpoint
