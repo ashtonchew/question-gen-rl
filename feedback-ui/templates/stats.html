@@ -26,18 +26,40 @@
         <div class="stat-card highlight">
             <h3>Avg Reward</h3>
             <p class="stat-value">{{ "%.3f"|format(avg_reward) }}</p>
-            <p class="stat-note">(r+c+d)/15</p>
         </div>
     </div>
 
     <div class="export-section">
-        <h2>Export Data</h2>
-        <p>Export feedback data for training integration.</p>
+        <h2>Online RL Training</h2>
+        <p>Start reinforcement learning training with collected feedback.</p>
         <div class="export-links">
-            <a href="/api/export" class="btn btn-primary">Download JSON</a>
-            <a href="/api/export?format=parquet" class="btn btn-secondary">Download Parquet</a>
+            <button id="start-training-btn" class="btn btn-primary" onclick="startTraining()">Start Training</button>
         </div>
+        <p id="training-status" class="stat-note" style="margin-top: 10px;"></p>
     </div>
+
+    <script>
+    async function startTraining() {
+        const btn = document.getElementById('start-training-btn');
+        const status = document.getElementById('training-status');
+        btn.disabled = true;
+        btn.textContent = 'Starting...';
+        status.textContent = '';
+
+        try {
+            const response = await fetch('/api/start-training', { method: 'POST' });
+            const data = await response.json();
+            status.textContent = data.message;
+            status.style.color = data.success ? '#28a745' : '#dc3545';
+        } catch (error) {
+            status.textContent = 'Error: ' + error.message;
+            status.style.color = '#dc3545';
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Start Training';
+        }
+    }
+    </script>
 
     {% if recent_feedback %}
     <div class="recent-feedback">

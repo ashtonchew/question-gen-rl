@@ -31,9 +31,9 @@ class Feedback(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     __table_args__ = (
-        CheckConstraint('relevance >= 1 AND relevance <= 5', name='check_relevance'),
-        CheckConstraint('clarity >= 1 AND clarity <= 5', name='check_clarity'),
-        CheckConstraint('discriminative >= 1 AND discriminative <= 5', name='check_discriminative'),
+        CheckConstraint('relevance >= 0 AND relevance <= 10', name='check_relevance'),
+        CheckConstraint('clarity >= 0 AND clarity <= 10', name='check_clarity'),
+        CheckConstraint('discriminative >= 0 AND discriminative <= 10', name='check_discriminative'),
     )
 
     def to_dict(self):

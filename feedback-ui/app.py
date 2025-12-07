@@ -2,6 +2,8 @@
 import json
 import io
 import logging
+import subprocess
+import os
 from contextlib import asynccontextmanager
 from typing import Optional
 
@@ -13,7 +15,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 
 from database import init_db, get_db, Feedback
-from generator import load_roles, get_random_role, generate_question
+from generator import load_roles, get_random_role, generate_question, _roles
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -33,10 +35,31 @@ templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
+def get_role_by_id(role_id: str):
+    """Get a specific role by ID."""
+    if not _roles:
+        load_roles()
+    for role in _roles:
+        if role.get('id') == role_id:
+            return role
+    return None
+
+
 @app.get("/")
-async def index(request: Request):
+async def index(
+    request: Request,
+    regenerate: Optional[int] = Query(None),
+    role_id: Optional[str] = Query(None)
+):
     """Main rating page - displays role info, generated question, and rating form."""
-    role = get_random_role()
+    # If regenerating for a specific role, use that role
+    if regenerate and role_id:
+        role = get_role_by_id(role_id)
+        if not role:
+            role = get_random_role()
+    else:
+        role = get_random_role()
+
     question = generate_question(role)
 
     return templates.TemplateResponse("index.html", {
@@ -56,6 +79,7 @@ async def submit_rating(
     clarity: int = Form(...),
     discriminative: int = Form(...),
     comments: str = Form(""),
+    source: str = Form("generated"),
     db: Session = Depends(get_db)
 ):
     """Submit a rating and redirect to a new question."""
@@ -67,7 +91,7 @@ async def submit_rating(
         clarity=clarity,
         discriminative=discriminative,
         comments=comments if comments else None,
-        source="generated"
+        source=source
     )
     db.add(feedback)
     db.commit()
@@ -175,10 +199,64 @@ async def export_feedback(
     return data
 
 
+@app.get("/api/regenerate")
+async def regenerate(
+    role_id: Optional[str] = Query(None),
+    new_role: bool = Query(False)
+):
+    """Regenerate question (and optionally role) via AJAX."""
+    if new_role or not role_id:
+        role = get_random_role()
+    else:
+        role = get_role_by_id(role_id)
+        if not role:
+            role = get_random_role()
+
+    question = generate_question(role)
+
+    return {
+        "role": role,
+        "question": question
+    }
+
+
 @app.get("/api/health")
 async def health_check():
     """Health check endpoint."""
     return {"status": "healthy", "service": "feedback-ui"}
+
+
+# Track training process
+_training_process = None
+
+
+@app.post("/api/start-training")
+async def start_training():
+    """Start online RL training in background."""
+    global _training_process
+
+    # Check if training is already running
+    if _training_process is not None and _training_process.poll() is None:
+        return {"success": False, "message": "Training is already running"}
+
+    try:
+        # Get project root (parent of feedback-ui)
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+        # Start training subprocess
+        _training_process = subprocess.Popen(
+            ["python", "-m", "src.recruiter.main"],
+            cwd=project_root,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+
+        logger.info(f"Started training process with PID: {_training_process.pid}")
+        return {"success": True, "message": f"Training started (PID: {_training_process.pid})"}
+
+    except Exception as e:
+        logger.error(f"Failed to start training: {e}")
+        return {"success": False, "message": f"Failed to start training: {str(e)}"}
 
 
 if __name__ == "__main__":

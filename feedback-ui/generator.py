@@ -94,7 +94,7 @@ def generate_question(role: Dict) -> str:
 
     try:
         chat = client.chat.create(
-            model="grok-4-1-fast-non-reasoning",
+            model="grok-4-1-fast-reasoning",
             messages=[system(GENERATOR_SYSTEM_PROMPT)]
         )
         chat.append(user(user_prompt))
