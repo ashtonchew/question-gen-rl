@@ -1,0 +1,902 @@
+[
+  {
+    "id": "be-001",
+    "title": "Senior Backend Engineer",
+    "level": "senior",
+    "focus": "distributed-systems",
+    "stack": ["Go", "Kubernetes", "PostgreSQL", "Kafka"],
+    "description": "Design and build distributed systems handling 100k+ RPS. Own service reliability, data consistency, and cross-team API contracts.",
+    "key_skills": ["distributed systems", "Go", "system design", "reliability"]
+  },
+  {
+    "id": "be-002",
+    "title": "Backend Engineer",
+    "level": "mid",
+    "focus": "api-development",
+    "stack": ["Python", "FastAPI", "PostgreSQL", "Redis"],
+    "description": "Build and maintain REST APIs for our core product. Focus on clean abstractions, test coverage, and performance optimization.",
+    "key_skills": ["Python", "API design", "SQL", "testing"]
+  },
+  {
+    "id": "be-003",
+    "title": "Junior Backend Developer",
+    "level": "junior",
+    "focus": "api-development",
+    "stack": ["Node.js", "Express", "MongoDB"],
+    "description": "Entry-level backend developer working on REST APIs. Will implement endpoints, write tests, and learn best practices with mentorship.",
+    "key_skills": ["Node.js", "REST APIs", "JavaScript", "MongoDB"]
+  },
+  {
+    "id": "be-004",
+    "title": "Staff Backend Engineer",
+    "level": "staff",
+    "focus": "distributed-systems",
+    "stack": ["Java", "Kafka", "Cassandra", "Kubernetes"],
+    "description": "Lead backend architecture for high-scale event-driven systems. Define technical standards, mentor engineers, and drive cross-team initiatives.",
+    "key_skills": ["system design", "technical leadership", "event-driven architecture", "Java"]
+  },
+  {
+    "id": "be-005",
+    "title": "Backend Engineer - Payments",
+    "level": "senior",
+    "focus": "api-development",
+    "stack": ["Java", "Spring Boot", "PostgreSQL", "RabbitMQ"],
+    "description": "Build payment processing systems with strict reliability requirements. Handle transaction processing, PCI compliance, and financial reconciliation.",
+    "key_skills": ["payments", "Java", "Spring Boot", "PCI compliance"]
+  },
+  {
+    "id": "be-006",
+    "title": "Backend Engineer - Search",
+    "level": "mid",
+    "focus": "databases",
+    "stack": ["Python", "Elasticsearch", "Redis", "PostgreSQL"],
+    "description": "Build and optimize search infrastructure. Work on query optimization, relevance tuning, and search performance at scale.",
+    "key_skills": ["Elasticsearch", "search systems", "Python", "query optimization"]
+  },
+  {
+    "id": "be-007",
+    "title": "Principal Backend Engineer",
+    "level": "principal",
+    "focus": "distributed-systems",
+    "stack": ["Go", "gRPC", "Kubernetes", "Consul"],
+    "description": "Define company-wide backend architecture standards. Lead migration to microservices, establish SLO frameworks, and mentor staff engineers.",
+    "key_skills": ["architecture", "microservices", "technical strategy", "mentorship"]
+  },
+  {
+    "id": "be-008",
+    "title": "Backend Engineer - Real-time",
+    "level": "senior",
+    "focus": "distributed-systems",
+    "stack": ["Rust", "WebSocket", "Redis", "Kafka"],
+    "description": "Build real-time messaging infrastructure supporting millions of concurrent connections. Focus on low-latency communication and connection management.",
+    "key_skills": ["real-time systems", "WebSocket", "Rust", "low-latency"]
+  },
+  {
+    "id": "be-009",
+    "title": "Backend Developer",
+    "level": "junior",
+    "focus": "api-development",
+    "stack": ["Python", "Django", "PostgreSQL"],
+    "description": "Junior developer building web application backends. Will work on CRUD operations, database queries, and API endpoints.",
+    "key_skills": ["Python", "Django", "SQL", "REST APIs"]
+  },
+  {
+    "id": "be-010",
+    "title": "Backend Engineer - Notifications",
+    "level": "mid",
+    "focus": "distributed-systems",
+    "stack": ["Go", "Kafka", "Redis", "PostgreSQL"],
+    "description": "Build notification delivery systems handling millions of messages per day. Work on delivery guarantees, rate limiting, and multi-channel routing.",
+    "key_skills": ["messaging systems", "Go", "Kafka", "delivery optimization"]
+  },
+  {
+    "id": "be-011",
+    "title": "Senior Backend Engineer - Identity",
+    "level": "senior",
+    "focus": "security",
+    "stack": ["Java", "Spring Security", "OAuth2", "PostgreSQL"],
+    "description": "Build identity and access management systems. Implement OAuth2/OIDC flows, SSO integration, and secure authentication mechanisms.",
+    "key_skills": ["identity management", "OAuth2", "security", "Java"]
+  },
+  {
+    "id": "be-012",
+    "title": "Backend Engineer - Data Pipeline",
+    "level": "mid",
+    "focus": "databases",
+    "stack": ["Python", "Apache Beam", "BigQuery", "Pub/Sub"],
+    "description": "Build data ingestion pipelines processing terabytes daily. Focus on data quality, schema evolution, and pipeline reliability.",
+    "key_skills": ["data pipelines", "Python", "streaming", "BigQuery"]
+  },
+  {
+    "id": "be-013",
+    "title": "Staff Backend Engineer - Platform",
+    "level": "staff",
+    "focus": "devops",
+    "stack": ["Go", "Kubernetes", "Terraform", "Prometheus"],
+    "description": "Build internal developer platform and tooling. Create service templates, deployment automation, and observability infrastructure.",
+    "key_skills": ["platform engineering", "Kubernetes", "developer experience", "Go"]
+  },
+  {
+    "id": "be-014",
+    "title": "Backend Engineer - GraphQL",
+    "level": "mid",
+    "focus": "api-development",
+    "stack": ["TypeScript", "Apollo Server", "PostgreSQL", "Redis"],
+    "description": "Build and maintain GraphQL API layer. Focus on schema design, resolver optimization, and federation across services.",
+    "key_skills": ["GraphQL", "TypeScript", "API design", "schema design"]
+  },
+  {
+    "id": "be-015",
+    "title": "Junior Backend Engineer",
+    "level": "junior",
+    "focus": "api-development",
+    "stack": ["Go", "PostgreSQL", "Docker"],
+    "description": "Entry-level Go developer building backend services. Will learn Go idioms, write tests, and contribute to API development.",
+    "key_skills": ["Go", "SQL", "Docker", "testing"]
+  },
+  {
+    "id": "be-016",
+    "title": "Backend Engineer - Billing",
+    "level": "senior",
+    "focus": "api-development",
+    "stack": ["Python", "FastAPI", "PostgreSQL", "Stripe"],
+    "description": "Build subscription and billing systems. Handle usage metering, invoice generation, and payment provider integrations.",
+    "key_skills": ["billing systems", "Python", "Stripe API", "financial systems"]
+  },
+  {
+    "id": "be-017",
+    "title": "Backend Engineer - Cache",
+    "level": "mid",
+    "focus": "performance",
+    "stack": ["Go", "Redis", "Memcached", "PostgreSQL"],
+    "description": "Design and implement caching strategies across the platform. Focus on cache invalidation, hit rates, and memory optimization.",
+    "key_skills": ["caching", "Redis", "Go", "performance optimization"]
+  },
+  {
+    "id": "be-018",
+    "title": "Senior Backend Engineer - E-commerce",
+    "level": "senior",
+    "focus": "api-development",
+    "stack": ["Java", "Spring Boot", "PostgreSQL", "Elasticsearch"],
+    "description": "Build e-commerce backend handling inventory, orders, and fulfillment. Focus on high availability during peak traffic.",
+    "key_skills": ["e-commerce", "Java", "inventory management", "high availability"]
+  },
+  {
+    "id": "be-019",
+    "title": "Backend Engineer - Media",
+    "level": "mid",
+    "focus": "distributed-systems",
+    "stack": ["Python", "FFmpeg", "S3", "CDN"],
+    "description": "Build media processing pipelines for video transcoding and delivery. Handle upload processing, format conversion, and CDN integration.",
+    "key_skills": ["media processing", "Python", "video transcoding", "CDN"]
+  },
+  {
+    "id": "be-020",
+    "title": "Principal Backend Engineer - Data",
+    "level": "principal",
+    "focus": "databases",
+    "stack": ["Scala", "Spark", "Kafka", "Delta Lake"],
+    "description": "Define data platform architecture and standards. Lead data infrastructure strategy, establish governance, and drive adoption.",
+    "key_skills": ["data architecture", "Spark", "technical leadership", "data governance"]
+  },
+  {
+    "id": "be-021",
+    "title": "Backend Engineer - Fraud Detection",
+    "level": "senior",
+    "focus": "security",
+    "stack": ["Python", "Kafka", "Redis", "PostgreSQL"],
+    "description": "Build real-time fraud detection systems. Implement rule engines, ML model serving, and investigation tooling.",
+    "key_skills": ["fraud detection", "real-time processing", "Python", "rule engines"]
+  },
+  {
+    "id": "be-022",
+    "title": "Backend Developer - CMS",
+    "level": "junior",
+    "focus": "api-development",
+    "stack": ["Node.js", "Strapi", "PostgreSQL"],
+    "description": "Junior developer working on content management backend. Will build content APIs, handle media uploads, and implement workflows.",
+    "key_skills": ["Node.js", "CMS", "REST APIs", "content modeling"]
+  },
+  {
+    "id": "be-023",
+    "title": "Staff Backend Engineer - Reliability",
+    "level": "staff",
+    "focus": "devops",
+    "stack": ["Go", "Prometheus", "Grafana", "PagerDuty"],
+    "description": "Lead site reliability engineering practices. Establish SLO/SLI frameworks, incident response processes, and reliability standards.",
+    "key_skills": ["SRE", "reliability", "observability", "incident management"]
+  },
+  {
+    "id": "be-024",
+    "title": "Backend Engineer - Scheduling",
+    "level": "mid",
+    "focus": "distributed-systems",
+    "stack": ["Python", "Celery", "Redis", "PostgreSQL"],
+    "description": "Build job scheduling and workflow systems. Handle task queuing, retry logic, and distributed job execution.",
+    "key_skills": ["job scheduling", "Celery", "Python", "distributed systems"]
+  },
+  {
+    "id": "be-025",
+    "title": "Senior Backend Engineer - Geo",
+    "level": "senior",
+    "focus": "databases",
+    "stack": ["Python", "PostGIS", "Redis", "Elasticsearch"],
+    "description": "Build location-based services and geospatial systems. Handle geocoding, spatial queries, and map tile serving.",
+    "key_skills": ["geospatial", "PostGIS", "Python", "location services"]
+  },
+  {
+    "id": "be-026",
+    "title": "Backend Engineer - Analytics",
+    "level": "mid",
+    "focus": "databases",
+    "stack": ["Python", "ClickHouse", "Kafka", "Redis"],
+    "description": "Build analytics data infrastructure. Handle event collection, aggregation pipelines, and dashboard APIs.",
+    "key_skills": ["analytics", "ClickHouse", "Python", "data aggregation"]
+  },
+  {
+    "id": "be-027",
+    "title": "Junior Backend Engineer - Testing",
+    "level": "junior",
+    "focus": "api-development",
+    "stack": ["Python", "pytest", "PostgreSQL", "Docker"],
+    "description": "Entry-level engineer focused on test automation. Will write integration tests, set up test fixtures, and improve coverage.",
+    "key_skills": ["testing", "pytest", "Python", "test automation"]
+  },
+  {
+    "id": "be-028",
+    "title": "Backend Engineer - Rate Limiting",
+    "level": "senior",
+    "focus": "performance",
+    "stack": ["Go", "Redis", "Envoy", "Kubernetes"],
+    "description": "Build rate limiting and quota management systems. Implement token buckets, distributed rate limiting, and API throttling.",
+    "key_skills": ["rate limiting", "Go", "Redis", "API gateway"]
+  },
+  {
+    "id": "be-029",
+    "title": "Backend Engineer - Webhooks",
+    "level": "mid",
+    "focus": "api-development",
+    "stack": ["Node.js", "PostgreSQL", "Redis", "SQS"],
+    "description": "Build webhook delivery infrastructure. Handle event fanout, delivery retries, and customer endpoint management.",
+    "key_skills": ["webhooks", "Node.js", "event delivery", "reliability"]
+  },
+  {
+    "id": "be-030",
+    "title": "Staff Backend Engineer - Security",
+    "level": "staff",
+    "focus": "security",
+    "stack": ["Go", "Vault", "AWS KMS", "PostgreSQL"],
+    "description": "Lead security infrastructure development. Build secrets management, encryption services, and security tooling.",
+    "key_skills": ["security engineering", "cryptography", "Vault", "Go"]
+  },
+  {
+    "id": "be-031",
+    "title": "Backend Engineer - Sync",
+    "level": "senior",
+    "focus": "distributed-systems",
+    "stack": ["Rust", "CRDTs", "WebSocket", "PostgreSQL"],
+    "description": "Build real-time sync infrastructure for collaborative applications. Handle conflict resolution, offline support, and sync protocols.",
+    "key_skills": ["real-time sync", "CRDTs", "Rust", "distributed systems"]
+  },
+  {
+    "id": "be-032",
+    "title": "Backend Developer",
+    "level": "junior",
+    "focus": "api-development",
+    "stack": ["Ruby", "Rails", "PostgreSQL", "Redis"],
+    "description": "Junior Rails developer building web application backends. Will work on ActiveRecord models, controllers, and background jobs.",
+    "key_skills": ["Ruby", "Rails", "PostgreSQL", "REST APIs"]
+  },
+  {
+    "id": "be-033",
+    "title": "Backend Engineer - Logging",
+    "level": "mid",
+    "focus": "devops",
+    "stack": ["Go", "Elasticsearch", "Kafka", "Kubernetes"],
+    "description": "Build centralized logging infrastructure. Handle log ingestion, indexing, retention policies, and search APIs.",
+    "key_skills": ["logging", "Elasticsearch", "Go", "observability"]
+  },
+  {
+    "id": "be-034",
+    "title": "Senior Backend Engineer - ML Infrastructure",
+    "level": "senior",
+    "focus": "distributed-systems",
+    "stack": ["Python", "Kubernetes", "Ray", "Redis"],
+    "description": "Build ML model serving infrastructure. Handle model deployment, A/B testing, and inference optimization.",
+    "key_skills": ["ML infrastructure", "model serving", "Python", "Kubernetes"]
+  },
+  {
+    "id": "be-035",
+    "title": "Backend Engineer - File Storage",
+    "level": "mid",
+    "focus": "distributed-systems",
+    "stack": ["Go", "S3", "PostgreSQL", "MinIO"],
+    "description": "Build file storage and management systems. Handle uploads, processing pipelines, and storage optimization.",
+    "key_skills": ["file storage", "Go", "S3", "object storage"]
+  },
+  {
+    "id": "be-036",
+    "title": "Principal Backend Engineer - API",
+    "level": "principal",
+    "focus": "api-development",
+    "stack": ["Go", "gRPC", "OpenAPI", "Kubernetes"],
+    "description": "Define API strategy and standards across the organization. Lead API design reviews, establish conventions, and drive developer experience.",
+    "key_skills": ["API design", "technical leadership", "gRPC", "developer experience"]
+  },
+  {
+    "id": "be-037",
+    "title": "Backend Engineer - Inventory",
+    "level": "senior",
+    "focus": "databases",
+    "stack": ["Java", "PostgreSQL", "Kafka", "Redis"],
+    "description": "Build inventory management systems for e-commerce. Handle stock tracking, reservations, and multi-warehouse operations.",
+    "key_skills": ["inventory systems", "Java", "transactional systems", "data consistency"]
+  },
+  {
+    "id": "be-038",
+    "title": "Junior Backend Developer",
+    "level": "junior",
+    "focus": "api-development",
+    "stack": ["Java", "Spring Boot", "MySQL"],
+    "description": "Entry-level Java developer building REST APIs. Will learn Spring ecosystem, write unit tests, and implement CRUD operations.",
+    "key_skills": ["Java", "Spring Boot", "MySQL", "REST APIs"]
+  },
+  {
+    "id": "be-039",
+    "title": "Backend Engineer - Queue",
+    "level": "mid",
+    "focus": "distributed-systems",
+    "stack": ["Go", "RabbitMQ", "PostgreSQL", "Redis"],
+    "description": "Build message queue infrastructure and tooling. Handle queue management, dead letter processing, and consumer scaling.",
+    "key_skills": ["message queues", "RabbitMQ", "Go", "async processing"]
+  },
+  {
+    "id": "be-040",
+    "title": "Staff Backend Engineer - Database",
+    "level": "staff",
+    "focus": "databases",
+    "stack": ["Go", "PostgreSQL", "CockroachDB", "Vitess"],
+    "description": "Lead database infrastructure and scaling initiatives. Drive sharding strategies, migration tooling, and database reliability.",
+    "key_skills": ["database engineering", "sharding", "PostgreSQL", "distributed databases"]
+  },
+  {
+    "id": "be-041",
+    "title": "Backend Engineer - Auth",
+    "level": "senior",
+    "focus": "security",
+    "stack": ["Node.js", "PostgreSQL", "Redis", "JWT"],
+    "description": "Build authentication systems supporting multiple auth methods. Handle session management, MFA, and SSO integration.",
+    "key_skills": ["authentication", "JWT", "security", "Node.js"]
+  },
+  {
+    "id": "be-042",
+    "title": "Backend Engineer - Config",
+    "level": "mid",
+    "focus": "devops",
+    "stack": ["Go", "etcd", "Consul", "Kubernetes"],
+    "description": "Build configuration management systems. Handle feature flags, dynamic config, and service discovery.",
+    "key_skills": ["configuration management", "feature flags", "Go", "service discovery"]
+  },
+  {
+    "id": "be-043",
+    "title": "Backend Developer - Integrations",
+    "level": "junior",
+    "focus": "api-development",
+    "stack": ["Python", "FastAPI", "PostgreSQL", "Celery"],
+    "description": "Junior developer building third-party integrations. Will work on OAuth flows, webhook handlers, and API wrappers.",
+    "key_skills": ["integrations", "Python", "OAuth", "REST APIs"]
+  },
+  {
+    "id": "be-044",
+    "title": "Senior Backend Engineer - Compliance",
+    "level": "senior",
+    "focus": "security",
+    "stack": ["Java", "PostgreSQL", "Kafka", "Elasticsearch"],
+    "description": "Build compliance and audit systems. Handle data retention, audit logging, and regulatory reporting.",
+    "key_skills": ["compliance", "audit logging", "Java", "data governance"]
+  },
+  {
+    "id": "be-045",
+    "title": "Backend Engineer - Recommendations",
+    "level": "mid",
+    "focus": "databases",
+    "stack": ["Python", "Redis", "PostgreSQL", "Vespa"],
+    "description": "Build recommendation serving infrastructure. Handle candidate retrieval, ranking, and real-time personalization.",
+    "key_skills": ["recommendations", "Python", "vector search", "personalization"]
+  },
+  {
+    "id": "be-046",
+    "title": "Backend Engineer - Export",
+    "level": "mid",
+    "focus": "distributed-systems",
+    "stack": ["Go", "S3", "PostgreSQL", "Temporal"],
+    "description": "Build data export systems for large-scale data extraction. Handle async job processing, format conversion, and delivery.",
+    "key_skills": ["data export", "Go", "async processing", "file generation"]
+  },
+  {
+    "id": "be-047",
+    "title": "Principal Backend Engineer - Performance",
+    "level": "principal",
+    "focus": "performance",
+    "stack": ["Go", "pprof", "Prometheus", "Jaeger"],
+    "description": "Lead performance engineering across the organization. Establish benchmarking practices, profiling tooling, and optimization standards.",
+    "key_skills": ["performance engineering", "profiling", "optimization", "technical leadership"]
+  },
+  {
+    "id": "be-048",
+    "title": "Backend Engineer - Email",
+    "level": "senior",
+    "focus": "distributed-systems",
+    "stack": ["Python", "Celery", "Redis", "PostgreSQL"],
+    "description": "Build email delivery infrastructure. Handle template rendering, delivery optimization, and bounce processing.",
+    "key_skills": ["email systems", "Python", "delivery optimization", "templating"]
+  },
+  {
+    "id": "be-049",
+    "title": "Junior Backend Engineer",
+    "level": "junior",
+    "focus": "databases",
+    "stack": ["Python", "SQLAlchemy", "PostgreSQL", "Redis"],
+    "description": "Entry-level engineer focused on database interactions. Will write queries, optimize indexes, and handle migrations.",
+    "key_skills": ["SQL", "Python", "SQLAlchemy", "database optimization"]
+  },
+  {
+    "id": "be-050",
+    "title": "Backend Engineer - Events",
+    "level": "mid",
+    "focus": "distributed-systems",
+    "stack": ["TypeScript", "Kafka", "PostgreSQL", "Redis"],
+    "description": "Build event sourcing infrastructure. Handle event storage, replay mechanisms, and projection management.",
+    "key_skills": ["event sourcing", "Kafka", "TypeScript", "CQRS"]
+  },
+  {
+    "id": "be-051",
+    "title": "Staff Backend Engineer - API Gateway",
+    "level": "staff",
+    "focus": "api-development",
+    "stack": ["Go", "Envoy", "Kubernetes", "Prometheus"],
+    "description": "Lead API gateway development and operations. Build routing, authentication, and traffic management capabilities.",
+    "key_skills": ["API gateway", "Envoy", "Go", "traffic management"]
+  },
+  {
+    "id": "be-052",
+    "title": "Backend Engineer - Subscription",
+    "level": "senior",
+    "focus": "api-development",
+    "stack": ["Ruby", "Rails", "PostgreSQL", "Stripe"],
+    "description": "Build subscription management systems. Handle plan management, upgrades/downgrades, and proration calculations.",
+    "key_skills": ["subscriptions", "Ruby", "billing", "Stripe"]
+  },
+  {
+    "id": "be-053",
+    "title": "Backend Engineer - Workflow",
+    "level": "mid",
+    "focus": "distributed-systems",
+    "stack": ["Go", "Temporal", "PostgreSQL", "Redis"],
+    "description": "Build workflow orchestration systems. Handle long-running processes, state machines, and saga patterns.",
+    "key_skills": ["workflow orchestration", "Temporal", "Go", "saga patterns"]
+  },
+  {
+    "id": "be-054",
+    "title": "Backend Developer",
+    "level": "junior",
+    "focus": "api-development",
+    "stack": ["PHP", "Laravel", "MySQL", "Redis"],
+    "description": "Junior Laravel developer building web backends. Will work on Eloquent models, controllers, and queue jobs.",
+    "key_skills": ["PHP", "Laravel", "MySQL", "REST APIs"]
+  },
+  {
+    "id": "be-055",
+    "title": "Senior Backend Engineer - Caching",
+    "level": "senior",
+    "focus": "performance",
+    "stack": ["Go", "Redis Cluster", "Memcached", "CDN"],
+    "description": "Design caching architecture for high-traffic systems. Handle cache hierarchies, invalidation strategies, and CDN integration.",
+    "key_skills": ["caching architecture", "Redis", "Go", "CDN"]
+  },
+  {
+    "id": "be-056",
+    "title": "Backend Engineer - Import",
+    "level": "mid",
+    "focus": "databases",
+    "stack": ["Python", "Celery", "PostgreSQL", "S3"],
+    "description": "Build data import systems for bulk data ingestion. Handle file parsing, validation, and incremental processing.",
+    "key_skills": ["data import", "Python", "ETL", "data validation"]
+  },
+  {
+    "id": "be-057",
+    "title": "Backend Engineer - Permissions",
+    "level": "senior",
+    "focus": "security",
+    "stack": ["Go", "PostgreSQL", "Redis", "OpenFGA"],
+    "description": "Build authorization and permissions systems. Handle RBAC, ABAC, and fine-grained access control.",
+    "key_skills": ["authorization", "RBAC", "Go", "access control"]
+  },
+  {
+    "id": "be-058",
+    "title": "Junior Backend Developer",
+    "level": "junior",
+    "focus": "api-development",
+    "stack": ["TypeScript", "NestJS", "PostgreSQL"],
+    "description": "Entry-level NestJS developer building APIs. Will learn dependency injection, decorators, and TypeScript patterns.",
+    "key_skills": ["TypeScript", "NestJS", "PostgreSQL", "REST APIs"]
+  },
+  {
+    "id": "be-059",
+    "title": "Staff Backend Engineer - Messaging",
+    "level": "staff",
+    "focus": "distributed-systems",
+    "stack": ["Java", "Kafka", "Redis", "Cassandra"],
+    "description": "Lead messaging platform development. Define messaging patterns, establish reliability standards, and drive adoption.",
+    "key_skills": ["messaging systems", "Kafka", "Java", "technical leadership"]
+  },
+  {
+    "id": "be-060",
+    "title": "Backend Engineer - Metrics",
+    "level": "mid",
+    "focus": "devops",
+    "stack": ["Go", "Prometheus", "InfluxDB", "Grafana"],
+    "description": "Build metrics collection and aggregation systems. Handle metric ingestion, storage, and alerting infrastructure.",
+    "key_skills": ["metrics", "Prometheus", "Go", "time-series data"]
+  },
+  {
+    "id": "be-061",
+    "title": "Backend Engineer - API Versioning",
+    "level": "senior",
+    "focus": "api-development",
+    "stack": ["Go", "gRPC", "OpenAPI", "Kong"],
+    "description": "Build API versioning and deprecation systems. Handle backward compatibility, migration tooling, and version routing.",
+    "key_skills": ["API versioning", "backward compatibility", "Go", "API design"]
+  },
+  {
+    "id": "be-062",
+    "title": "Backend Engineer - Audit",
+    "level": "mid",
+    "focus": "security",
+    "stack": ["Python", "Kafka", "Elasticsearch", "PostgreSQL"],
+    "description": "Build audit logging infrastructure. Handle event capture, secure storage, and compliance reporting.",
+    "key_skills": ["audit logging", "Python", "Elasticsearch", "compliance"]
+  },
+  {
+    "id": "be-063",
+    "title": "Principal Backend Engineer - Infra",
+    "level": "principal",
+    "focus": "devops",
+    "stack": ["Go", "Kubernetes", "Terraform", "AWS"],
+    "description": "Define infrastructure strategy and standards. Lead cloud architecture, establish IaC practices, and drive cost optimization.",
+    "key_skills": ["infrastructure", "Kubernetes", "technical leadership", "cloud architecture"]
+  },
+  {
+    "id": "be-064",
+    "title": "Backend Engineer - Localization",
+    "level": "mid",
+    "focus": "api-development",
+    "stack": ["Node.js", "PostgreSQL", "Redis", "i18next"],
+    "description": "Build localization infrastructure for multi-language support. Handle translation management, content delivery, and locale detection.",
+    "key_skills": ["localization", "i18n", "Node.js", "content management"]
+  },
+  {
+    "id": "be-065",
+    "title": "Senior Backend Engineer - Concurrency",
+    "level": "senior",
+    "focus": "performance",
+    "stack": ["Go", "PostgreSQL", "Redis", "Kubernetes"],
+    "description": "Build high-concurrency systems with optimistic locking. Handle race conditions, deadlock prevention, and lock-free algorithms.",
+    "key_skills": ["concurrency", "Go", "lock-free programming", "performance"]
+  },
+  {
+    "id": "be-066",
+    "title": "Backend Developer",
+    "level": "junior",
+    "focus": "databases",
+    "stack": ["Python", "Django ORM", "PostgreSQL", "Redis"],
+    "description": "Junior developer focused on database layer. Will write migrations, optimize queries, and manage data models.",
+    "key_skills": ["Django ORM", "PostgreSQL", "Python", "data modeling"]
+  },
+  {
+    "id": "be-067",
+    "title": "Backend Engineer - Testing Infrastructure",
+    "level": "mid",
+    "focus": "devops",
+    "stack": ["Python", "Docker", "PostgreSQL", "GitHub Actions"],
+    "description": "Build test infrastructure and CI/CD pipelines. Handle test environments, parallel execution, and flaky test detection.",
+    "key_skills": ["test infrastructure", "CI/CD", "Python", "Docker"]
+  },
+  {
+    "id": "be-068",
+    "title": "Staff Backend Engineer - Observability",
+    "level": "staff",
+    "focus": "devops",
+    "stack": ["Go", "OpenTelemetry", "Jaeger", "Prometheus"],
+    "description": "Lead observability platform development. Build tracing, metrics, and logging infrastructure across services.",
+    "key_skills": ["observability", "OpenTelemetry", "Go", "distributed tracing"]
+  },
+  {
+    "id": "be-069",
+    "title": "Backend Engineer - Document Processing",
+    "level": "senior",
+    "focus": "distributed-systems",
+    "stack": ["Python", "Celery", "S3", "Elasticsearch"],
+    "description": "Build document processing pipelines. Handle PDF extraction, OCR, indexing, and search integration.",
+    "key_skills": ["document processing", "Python", "OCR", "text extraction"]
+  },
+  {
+    "id": "be-070",
+    "title": "Backend Engineer - Microservices",
+    "level": "mid",
+    "focus": "distributed-systems",
+    "stack": ["Go", "gRPC", "Kubernetes", "Consul"],
+    "description": "Build and maintain microservices infrastructure. Handle service communication, discovery, and deployment patterns.",
+    "key_skills": ["microservices", "gRPC", "Go", "service mesh"]
+  },
+  {
+    "id": "be-071",
+    "title": "Junior Backend Engineer",
+    "level": "junior",
+    "focus": "api-development",
+    "stack": ["Kotlin", "Spring Boot", "PostgreSQL"],
+    "description": "Entry-level Kotlin developer building Spring Boot services. Will learn coroutines, dependency injection, and testing.",
+    "key_skills": ["Kotlin", "Spring Boot", "PostgreSQL", "REST APIs"]
+  },
+  {
+    "id": "be-072",
+    "title": "Senior Backend Engineer - Secrets",
+    "level": "senior",
+    "focus": "security",
+    "stack": ["Go", "Vault", "AWS KMS", "PostgreSQL"],
+    "description": "Build secrets management infrastructure. Handle secret rotation, access policies, and encryption key management.",
+    "key_skills": ["secrets management", "Vault", "Go", "encryption"]
+  },
+  {
+    "id": "be-073",
+    "title": "Backend Engineer - Batch Processing",
+    "level": "mid",
+    "focus": "databases",
+    "stack": ["Python", "Apache Spark", "Airflow", "S3"],
+    "description": "Build batch processing systems for large-scale data. Handle job scheduling, checkpointing, and failure recovery.",
+    "key_skills": ["batch processing", "Spark", "Python", "data engineering"]
+  },
+  {
+    "id": "be-074",
+    "title": "Backend Engineer - Reports",
+    "level": "mid",
+    "focus": "api-development",
+    "stack": ["Python", "FastAPI", "PostgreSQL", "Celery"],
+    "description": "Build report generation systems. Handle async report processing, template rendering, and scheduled delivery.",
+    "key_skills": ["report generation", "Python", "async processing", "PDF generation"]
+  },
+  {
+    "id": "be-075",
+    "title": "Principal Backend Engineer - Payments",
+    "level": "principal",
+    "focus": "api-development",
+    "stack": ["Java", "Kafka", "PostgreSQL", "AWS"],
+    "description": "Lead payments platform architecture. Define payment processing standards, compliance requirements, and reliability targets.",
+    "key_skills": ["payments architecture", "Java", "technical leadership", "financial systems"]
+  },
+  {
+    "id": "be-076",
+    "title": "Backend Engineer - Throttling",
+    "level": "senior",
+    "focus": "performance",
+    "stack": ["Go", "Redis", "Lua", "Kubernetes"],
+    "description": "Build sophisticated throttling systems. Handle adaptive rate limiting, client quotas, and abuse prevention.",
+    "key_skills": ["throttling", "rate limiting", "Go", "Redis scripting"]
+  },
+  {
+    "id": "be-077",
+    "title": "Backend Developer - Health",
+    "level": "junior",
+    "focus": "devops",
+    "stack": ["Go", "Kubernetes", "Prometheus", "PostgreSQL"],
+    "description": "Junior developer building health check systems. Will implement liveness probes, readiness checks, and status endpoints.",
+    "key_skills": ["health checks", "Go", "Kubernetes", "monitoring"]
+  },
+  {
+    "id": "be-078",
+    "title": "Backend Engineer - Tenant Isolation",
+    "level": "senior",
+    "focus": "databases",
+    "stack": ["Go", "PostgreSQL", "Redis", "Kubernetes"],
+    "description": "Build multi-tenant infrastructure with strong isolation. Handle data partitioning, tenant routing, and resource quotas.",
+    "key_skills": ["multi-tenancy", "data isolation", "Go", "PostgreSQL"]
+  },
+  {
+    "id": "be-079",
+    "title": "Staff Backend Engineer - Edge",
+    "level": "staff",
+    "focus": "distributed-systems",
+    "stack": ["Rust", "WebAssembly", "Cloudflare Workers", "Redis"],
+    "description": "Lead edge computing platform development. Build edge functions, caching strategies, and global deployment systems.",
+    "key_skills": ["edge computing", "Rust", "WebAssembly", "CDN"]
+  },
+  {
+    "id": "be-080",
+    "title": "Backend Engineer - SSO",
+    "level": "mid",
+    "focus": "security",
+    "stack": ["Java", "SAML", "OAuth2", "PostgreSQL"],
+    "description": "Build SSO integration systems. Handle SAML/OIDC providers, identity mapping, and enterprise authentication.",
+    "key_skills": ["SSO", "SAML", "OAuth2", "identity federation"]
+  },
+  {
+    "id": "be-081",
+    "title": "Backend Engineer - Content Moderation",
+    "level": "mid",
+    "focus": "api-development",
+    "stack": ["Python", "FastAPI", "Redis", "PostgreSQL"],
+    "description": "Build content moderation systems. Handle automated filtering, queue management, and moderation tooling.",
+    "key_skills": ["content moderation", "Python", "queue systems", "ML integration"]
+  },
+  {
+    "id": "be-082",
+    "title": "Junior Backend Developer",
+    "level": "junior",
+    "focus": "api-development",
+    "stack": ["C#", ".NET", "SQL Server", "Redis"],
+    "description": "Entry-level .NET developer building web APIs. Will learn Entity Framework, dependency injection, and testing.",
+    "key_skills": ["C#", ".NET", "SQL Server", "REST APIs"]
+  },
+  {
+    "id": "be-083",
+    "title": "Senior Backend Engineer - Streaming",
+    "level": "senior",
+    "focus": "distributed-systems",
+    "stack": ["Scala", "Kafka Streams", "Flink", "Cassandra"],
+    "description": "Build stream processing systems for real-time analytics. Handle windowing, stateful processing, and exactly-once semantics.",
+    "key_skills": ["stream processing", "Kafka Streams", "Scala", "real-time analytics"]
+  },
+  {
+    "id": "be-084",
+    "title": "Backend Engineer - Feature Flags",
+    "level": "mid",
+    "focus": "devops",
+    "stack": ["Go", "Redis", "PostgreSQL", "LaunchDarkly"],
+    "description": "Build feature flag infrastructure. Handle flag evaluation, targeting rules, and experiment integration.",
+    "key_skills": ["feature flags", "Go", "experimentation", "progressive rollout"]
+  },
+  {
+    "id": "be-085",
+    "title": "Backend Engineer - Compression",
+    "level": "senior",
+    "focus": "performance",
+    "stack": ["Rust", "zstd", "Redis", "S3"],
+    "description": "Build compression and optimization systems. Handle data compaction, storage optimization, and transfer encoding.",
+    "key_skills": ["compression", "Rust", "performance optimization", "storage efficiency"]
+  },
+  {
+    "id": "be-086",
+    "title": "Backend Developer - Notifications",
+    "level": "junior",
+    "focus": "api-development",
+    "stack": ["Python", "Django", "Celery", "Firebase"],
+    "description": "Junior developer working on push notification systems. Will implement notification APIs, handle delivery, and manage preferences.",
+    "key_skills": ["push notifications", "Python", "Firebase", "async processing"]
+  },
+  {
+    "id": "be-087",
+    "title": "Staff Backend Engineer - Resilience",
+    "level": "staff",
+    "focus": "distributed-systems",
+    "stack": ["Go", "Envoy", "Kubernetes", "Chaos Mesh"],
+    "description": "Lead resilience engineering initiatives. Build circuit breakers, chaos engineering tools, and failure injection systems.",
+    "key_skills": ["resilience engineering", "chaos engineering", "Go", "fault tolerance"]
+  },
+  {
+    "id": "be-088",
+    "title": "Backend Engineer - Data Sync",
+    "level": "mid",
+    "focus": "databases",
+    "stack": ["Python", "Debezium", "Kafka", "PostgreSQL"],
+    "description": "Build data synchronization systems. Handle CDC pipelines, data replication, and consistency guarantees.",
+    "key_skills": ["data sync", "CDC", "Python", "data replication"]
+  },
+  {
+    "id": "be-089",
+    "title": "Senior Backend Engineer - API Analytics",
+    "level": "senior",
+    "focus": "api-development",
+    "stack": ["Go", "ClickHouse", "Kafka", "Kubernetes"],
+    "description": "Build API analytics and usage tracking systems. Handle request logging, aggregation, and developer dashboards.",
+    "key_skills": ["API analytics", "Go", "ClickHouse", "usage tracking"]
+  },
+  {
+    "id": "be-090",
+    "title": "Backend Engineer - Backup",
+    "level": "mid",
+    "focus": "databases",
+    "stack": ["Go", "PostgreSQL", "S3", "WAL-G"],
+    "description": "Build backup and recovery systems. Handle point-in-time recovery, cross-region replication, and disaster recovery.",
+    "key_skills": ["backup systems", "PostgreSQL", "Go", "disaster recovery"]
+  },
+  {
+    "id": "be-091",
+    "title": "Principal Backend Engineer - Scale",
+    "level": "principal",
+    "focus": "distributed-systems",
+    "stack": ["Go", "Kubernetes", "Kafka", "CockroachDB"],
+    "description": "Lead scaling initiatives for high-growth systems. Define sharding strategies, capacity planning, and global distribution.",
+    "key_skills": ["scalability", "distributed systems", "technical leadership", "capacity planning"]
+  },
+  {
+    "id": "be-092",
+    "title": "Backend Engineer - SDK",
+    "level": "senior",
+    "focus": "api-development",
+    "stack": ["TypeScript", "Python", "Go", "OpenAPI"],
+    "description": "Build and maintain client SDKs in multiple languages. Handle code generation, versioning, and developer documentation.",
+    "key_skills": ["SDK development", "code generation", "API design", "multi-language"]
+  },
+  {
+    "id": "be-093",
+    "title": "Backend Developer - Queue Consumer",
+    "level": "junior",
+    "focus": "distributed-systems",
+    "stack": ["Python", "SQS", "PostgreSQL", "Docker"],
+    "description": "Junior developer building queue consumers. Will implement message handlers, retry logic, and dead letter processing.",
+    "key_skills": ["message queues", "SQS", "Python", "async processing"]
+  },
+  {
+    "id": "be-094",
+    "title": "Backend Engineer - Cron",
+    "level": "mid",
+    "focus": "devops",
+    "stack": ["Go", "Kubernetes CronJob", "PostgreSQL", "Redis"],
+    "description": "Build scheduled job infrastructure. Handle job scheduling, distributed locking, and execution monitoring.",
+    "key_skills": ["scheduled jobs", "Go", "Kubernetes", "distributed locking"]
+  },
+  {
+    "id": "be-095",
+    "title": "Staff Backend Engineer - Data Privacy",
+    "level": "staff",
+    "focus": "security",
+    "stack": ["Go", "PostgreSQL", "Kafka", "Vault"],
+    "description": "Lead data privacy engineering. Build data deletion pipelines, anonymization systems, and privacy compliance tooling.",
+    "key_skills": ["data privacy", "GDPR", "Go", "data governance"]
+  },
+  {
+    "id": "be-096",
+    "title": "Backend Engineer - Connection Pooling",
+    "level": "senior",
+    "focus": "databases",
+    "stack": ["Go", "PgBouncer", "PostgreSQL", "Kubernetes"],
+    "description": "Build database connection management systems. Handle connection pooling, load balancing, and failover routing.",
+    "key_skills": ["connection pooling", "PgBouncer", "Go", "database performance"]
+  },
+  {
+    "id": "be-097",
+    "title": "Backend Engineer - API Mocking",
+    "level": "mid",
+    "focus": "devops",
+    "stack": ["Go", "WireMock", "Docker", "Kubernetes"],
+    "description": "Build API mocking and testing infrastructure. Handle mock servers, contract testing, and integration test environments.",
+    "key_skills": ["API mocking", "contract testing", "Go", "test infrastructure"]
+  },
+  {
+    "id": "be-098",
+    "title": "Junior Backend Developer",
+    "level": "junior",
+    "focus": "databases",
+    "stack": ["Node.js", "Prisma", "PostgreSQL", "Redis"],
+    "description": "Entry-level developer working with Prisma ORM. Will write migrations, build queries, and manage database schemas.",
+    "key_skills": ["Prisma", "Node.js", "PostgreSQL", "TypeScript"]
+  },
+  {
+    "id": "be-099",
+    "title": "Senior Backend Engineer - Load Testing",
+    "level": "senior",
+    "focus": "performance",
+    "stack": ["Go", "k6", "Grafana", "Kubernetes"],
+    "description": "Build load testing infrastructure and frameworks. Handle performance benchmarking, bottleneck detection, and capacity testing.",
+    "key_skills": ["load testing", "performance testing", "Go", "k6"]
+  },
+  {
+    "id": "be-100",
+    "title": "Backend Engineer - Service Registry",
+    "level": "mid",
+    "focus": "distributed-systems",
+    "stack": ["Go", "Consul", "Kubernetes", "gRPC"],
+    "description": "Build service registry and discovery systems. Handle service registration, health checking, and DNS integration.",
+    "key_skills": ["service discovery", "Consul", "Go", "distributed systems"]
+  }
+]

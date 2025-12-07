@@ -1,0 +1,54 @@
+# Hydra config for question generation training with grok-4-1-fast-non-reasoning
+
+defaults:
+  - _self_
+
+# Data paths (override on CLI)
+data:
+  train_data: ["data/processed/train.parquet"]
+  val_data: ["data/processed/test.parquet"]
+
+# Model config
+trainer:
+  policy:
+    model:
+      path: "Qwen/Qwen2.5-1.5B-Instruct"  # Small model for 1 GPU
+
+  # Algorithm
+  algorithm:
+    advantage_estimator: "grpo"
+
+  # Placement for 1 GPU
+  placement:
+    colocate_all: true
+    policy_num_gpus_per_node: 1
+    ref_num_gpus_per_node: 1
+    policy_num_nodes: 1
+    ref_num_nodes: 1
+
+  strategy: fsdp2
+
+  # Training params
+  epochs: 20
+  train_batch_size: 64        # Smaller for 1 GPU
+  eval_batch_size: 32
+  micro_train_batch_size_per_gpu: 4
+  micro_forward_batch_size_per_gpu: 4
+  eval_before_train: true
+  eval_interval: 5
+  update_epochs_per_batch: 1
+
+  # Logging
+  logger: "console"  # or "wandb"
+
+# Generator config
+generator:
+  num_inference_engines: 1
+  inference_engine_tensor_parallel_size: 1
+  max_new_tokens: 256         # Questions shouldn't be super long
+  batched: true               # Single-turn, can batch
+  async_engine: false
+
+# Environment config
+env:
+  id: "question-gen"
