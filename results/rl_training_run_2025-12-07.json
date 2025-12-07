@@ -1,0 +1,294 @@
+{
+  "training_run": {
+    "date": "2025-12-07",
+    "total_steps": 30,
+    "total_time": "1h 40m",
+    "final_checkpoint": "checkpoints/global_step_31/policy/lora_adapter",
+    "task": "technical_screening_question_generation"
+  },
+  "steps": [
+    {
+      "step": 1,
+      "epoch": 0,
+      "eval_score": null,
+      "train_reward": 0.7904,
+      "policy_kl": 0.0010,
+      "policy_entropy": 0.4385,
+      "avg_tokens": 91.08
+    },
+    {
+      "step": 2,
+      "epoch": 0,
+      "eval_score": 0.8050,
+      "train_reward": 0.7967,
+      "policy_kl": 0.0016,
+      "policy_entropy": 0.4490,
+      "avg_tokens": 88.48
+    },
+    {
+      "step": 3,
+      "epoch": 0,
+      "eval_score": null,
+      "train_reward": 0.8146,
+      "policy_kl": 0.0023,
+      "policy_entropy": 0.4056,
+      "avg_tokens": 84.66
+    },
+    {
+      "step": 4,
+      "epoch": 0,
+      "eval_score": 0.8243,
+      "train_reward": 0.8296,
+      "policy_kl": 0.0043,
+      "policy_entropy": 0.4273,
+      "avg_tokens": 81.37
+    },
+    {
+      "step": 5,
+      "epoch": 0,
+      "eval_score": null,
+      "train_reward": 0.8193,
+      "policy_kl": 0.0059,
+      "policy_entropy": 0.4055,
+      "avg_tokens": 77.31
+    },
+    {
+      "step": 6,
+      "epoch": 0,
+      "eval_score": 0.8317,
+      "train_reward": 0.8038,
+      "policy_kl": 0.0079,
+      "policy_entropy": 0.4195,
+      "avg_tokens": 75.57
+    },
+    {
+      "step": 7,
+      "epoch": 1,
+      "eval_score": null,
+      "train_reward": 0.8190,
+      "policy_kl": 0.0116,
+      "policy_entropy": 0.3951,
+      "avg_tokens": 66.76
+    },
+    {
+      "step": 8,
+      "epoch": 1,
+      "eval_score": 0.8443,
+      "train_reward": 0.8243,
+      "policy_kl": 0.0136,
+      "policy_entropy": 0.4119,
+      "avg_tokens": 69.36
+    },
+    {
+      "step": 9,
+      "epoch": 1,
+      "eval_score": null,
+      "train_reward": 0.8405,
+      "policy_kl": 0.0156,
+      "policy_entropy": 0.4062,
+      "avg_tokens": 70.32
+    },
+    {
+      "step": 10,
+      "epoch": 1,
+      "eval_score": 0.8533,
+      "train_reward": 0.8305,
+      "policy_kl": 0.0215,
+      "policy_entropy": 0.4010,
+      "avg_tokens": 66.95
+    },
+    {
+      "step": 11,
+      "epoch": 1,
+      "eval_score": null,
+      "train_reward": 0.8348,
+      "policy_kl": 0.0307,
+      "policy_entropy": 0.4097,
+      "avg_tokens": 68.32
+    },
+    {
+      "step": 12,
+      "epoch": 1,
+      "eval_score": 0.8567,
+      "train_reward": 0.8535,
+      "policy_kl": 0.0455,
+      "policy_entropy": 0.3855,
+      "avg_tokens": 64.20
+    },
+    {
+      "step": 13,
+      "epoch": 2,
+      "eval_score": null,
+      "train_reward": 0.8427,
+      "policy_kl": 0.0551,
+      "policy_entropy": 0.3832,
+      "avg_tokens": 62.95
+    },
+    {
+      "step": 14,
+      "epoch": 2,
+      "eval_score": 0.8660,
+      "train_reward": 0.8501,
+      "policy_kl": 0.0647,
+      "policy_entropy": 0.3921,
+      "avg_tokens": 62.32
+    },
+    {
+      "step": 15,
+      "epoch": 2,
+      "eval_score": null,
+      "train_reward": 0.8773,
+      "policy_kl": 0.0774,
+      "policy_entropy": 0.3909,
+      "avg_tokens": 62.26
+    },
+    {
+      "step": 16,
+      "epoch": 2,
+      "eval_score": 0.8757,
+      "train_reward": 0.8624,
+      "policy_kl": 0.0948,
+      "policy_entropy": 0.4055,
+      "avg_tokens": 67.16
+    },
+    {
+      "step": 17,
+      "epoch": 2,
+      "eval_score": null,
+      "train_reward": 0.8667,
+      "policy_kl": 0.1156,
+      "policy_entropy": 0.4176,
+      "avg_tokens": 62.81
+    },
+    {
+      "step": 18,
+      "epoch": 2,
+      "eval_score": 0.8773,
+      "train_reward": 0.8796,
+      "policy_kl": 0.1340,
+      "policy_entropy": 0.3798,
+      "avg_tokens": 59.55
+    },
+    {
+      "step": 19,
+      "epoch": 3,
+      "eval_score": null,
+      "train_reward": 0.8720,
+      "policy_kl": 0.1526,
+      "policy_entropy": 0.3991,
+      "avg_tokens": 61.38
+    },
+    {
+      "step": 20,
+      "epoch": 3,
+      "eval_score": 0.8903,
+      "train_reward": 0.8799,
+      "policy_kl": 0.1623,
+      "policy_entropy": 0.3953,
+      "avg_tokens": 58.21
+    },
+    {
+      "step": 21,
+      "epoch": 3,
+      "eval_score": null,
+      "train_reward": 0.9003,
+      "policy_kl": 0.1881,
+      "policy_entropy": 0.4060,
+      "avg_tokens": 57.64
+    },
+    {
+      "step": 22,
+      "epoch": 3,
+      "eval_score": 0.8897,
+      "train_reward": 0.8893,
+      "policy_kl": 0.2072,
+      "policy_entropy": 0.4044,
+      "avg_tokens": 60.99
+    },
+    {
+      "step": 23,
+      "epoch": 3,
+      "eval_score": null,
+      "train_reward": 0.8885,
+      "policy_kl": 0.2023,
+      "policy_entropy": 0.3794,
+      "avg_tokens": 59.11
+    },
+    {
+      "step": 24,
+      "epoch": 3,
+      "eval_score": 0.8910,
+      "train_reward": 0.8964,
+      "policy_kl": 0.2092,
+      "policy_entropy": 0.4076,
+      "avg_tokens": 61.72
+    },
+    {
+      "step": 25,
+      "epoch": 4,
+      "eval_score": null,
+      "train_reward": 0.8918,
+      "policy_kl": 0.2122,
+      "policy_entropy": 0.4050,
+      "avg_tokens": 64.03
+    },
+    {
+      "step": 26,
+      "epoch": 4,
+      "eval_score": 0.9007,
+      "train_reward": 0.8936,
+      "policy_kl": 0.2068,
+      "policy_entropy": 0.4023,
+      "avg_tokens": 63.71
+    },
+    {
+      "step": 27,
+      "epoch": 4,
+      "eval_score": null,
+      "train_reward": 0.8962,
+      "policy_kl": 0.1930,
+      "policy_entropy": 0.4131,
+      "avg_tokens": 63.66
+    },
+    {
+      "step": 28,
+      "epoch": 4,
+      "eval_score": 0.8990,
+      "train_reward": 0.8987,
+      "policy_kl": 0.2164,
+      "policy_entropy": 0.4238,
+      "avg_tokens": 64.57
+    },
+    {
+      "step": 29,
+      "epoch": 4,
+      "eval_score": null,
+      "train_reward": 0.8997,
+      "policy_kl": 0.2180,
+      "policy_entropy": 0.4062,
+      "avg_tokens": 65.56
+    },
+    {
+      "step": 30,
+      "epoch": 4,
+      "eval_score": 0.9033,
+      "train_reward": 0.9029,
+      "policy_kl": 0.2066,
+      "policy_entropy": 0.4150,
+      "avg_tokens": 67.30
+    }
+  ],
+  "summary": {
+    "eval_start": 0.8050,
+    "eval_final": 0.9033,
+    "eval_improvement": 0.0983,
+    "eval_improvement_pct": 12.2,
+    "train_reward_start": 0.7904,
+    "train_reward_final": 0.9029,
+    "tokens_start": 91.08,
+    "tokens_final": 67.30,
+    "tokens_reduction_pct": 26.1,
+    "final_kl": 0.2066,
+    "final_entropy": 0.4150
+  }
+}

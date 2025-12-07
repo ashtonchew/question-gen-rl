@@ -37,7 +37,7 @@ MODEL_ALIASES = {
     "gpt-5-mini": {"model": "gpt-5-mini-2025-08-07", "provider": "openai"},
     # Local models
     "baseline": {"model": "Qwen/Qwen3-4B-Instruct-2507", "provider": "local"},
-    "rl": {"model": None, "provider": "local"},  # Requires --checkpoint
+    "rl": {"model": "ash256/qwen3-4b-question-gen", "provider": "local"},  # HF Hub - auto downloads
 }
 
 # Judge model is hardcoded for fair comparison
@@ -161,10 +161,8 @@ def generate_question(role: dict, model_alias: str, checkpoint_path: Optional[st
     model = config["model"]
 
     if provider == "local":
-        if model_alias == "rl":
-            if not checkpoint_path:
-                raise ValueError("--checkpoint required for RL model")
-            model = checkpoint_path
+        if checkpoint_path:
+            model = checkpoint_path  # Override with local checkpoint if provided
         return generate_question_local(role, model)
     elif provider == "xai":
         return generate_question_xai(role, model)
@@ -425,7 +423,7 @@ Available models:
   claude-4-5-haiku - Claude 4.5 Haiku (Anthropic)
   gpt-5-mini     - GPT-5 Mini (OpenAI)
   baseline       - Qwen3-4B-Instruct (local, no RL)
-  rl             - RL-trained checkpoint (requires --checkpoint)
+  rl             - RL-trained model (auto-downloads from HuggingFace Hub)
   all            - All available models
 """
     )
@@ -463,8 +461,6 @@ Available models:
     for m in models_to_eval:
         if m not in MODEL_ALIASES:
             raise ValueError(f"Unknown model: {m}. Available: {list(MODEL_ALIASES.keys())}")
-        if m == "rl" and not args.checkpoint:
-            raise ValueError("--checkpoint required for 'rl' model")
 
     # Separate local and API models
     local_models = [m for m in models_to_eval if MODEL_ALIASES[m]["provider"] == "local"]

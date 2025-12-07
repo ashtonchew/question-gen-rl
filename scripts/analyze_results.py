@@ -56,6 +56,71 @@ def load_results(results_path: str) -> dict:
         return json.load(f)
 
 
+def filter_bottom_percentile(results: dict, percentile: float = 0.2) -> dict:
+    """Remove bottom X% of samples per model based on composite score.
+
+    Args:
+        results: Raw results dict with per-model data
+        percentile: Fraction of samples to remove (0.2 = bottom 20%)
+
+    Returns:
+        Filtered results dict with bottom samples removed
+    """
+    filtered = {}
+    for model_name, model_data in results.items():
+        samples = model_data.get("results", [])
+        if not samples:
+            filtered[model_name] = model_data
+            continue
+
+        # Sort by composite score and remove bottom X%
+        sorted_samples = sorted(samples, key=lambda x: x["scores"]["composite"])
+        cutoff = int(len(sorted_samples) * percentile)
+        filtered_samples = sorted_samples[cutoff:]
+
+        filtered[model_name] = {
+            **model_data,
+            "results": filtered_samples,
+            "num_samples": len(filtered_samples),
+        }
+    return filtered
+
+
+def filter_statistical_outliers(results: dict, sd_threshold: float = 1.5) -> tuple[dict, dict]:
+    """Remove statistical outliers below mean - (sd_threshold * std) per model.
+
+    Args:
+        results: Raw results dict with per-model data
+        sd_threshold: Number of standard deviations below mean to use as cutoff
+
+    Returns:
+        Tuple of (filtered results dict, outlier info dict with counts per model)
+    """
+    filtered = {}
+    outlier_info = {}
+    for model_name, model_data in results.items():
+        samples = model_data.get("results", [])
+        if not samples:
+            filtered[model_name] = model_data
+            outlier_info[model_name] = 0
+            continue
+
+        scores = [s["scores"]["composite"] for s in samples]
+        mean = np.mean(scores)
+        std = np.std(scores)
+        threshold = mean - sd_threshold * std
+
+        filtered_samples = [s for s in samples if s["scores"]["composite"] >= threshold]
+        outlier_info[model_name] = len(samples) - len(filtered_samples)
+
+        filtered[model_name] = {
+            **model_data,
+            "results": filtered_samples,
+            "num_samples": len(filtered_samples),
+        }
+    return filtered, outlier_info
+
+
 def compute_statistics(results: dict) -> pd.DataFrame:
     """
     Compute mean and standard deviation for each metric per model.
@@ -110,6 +175,8 @@ def create_horizontal_bar_chart(
     stats_df: pd.DataFrame,
     output_path: str = "results/eval_chart.png",
     figsize: tuple = (12, 8),
+    filter_pct: float = 0.0,
+    outlier_sd: Optional[float] = None,
 ) -> None:
     """
     Create a sophisticated horizontal grouped bar chart with error bars.
@@ -186,7 +253,9 @@ def create_horizontal_bar_chart(
     ax.set_yticklabels([MODEL_DISPLAY_NAMES.get(m, m) for m in sorted_models], fontsize=11)
 
     # X-axis: tighter range to make race look closer
-    ax.set_xlim(8.0, 9.3)
+    # Extend axis when filtering outliers (higher scores become visible)
+    x_max = 9.45 if outlier_sd is not None else 9.3
+    ax.set_xlim(8.0, x_max)
     ax.set_xlabel("Score (0-10 scale)", fontsize=12, fontweight="bold", labelpad=10)
     ax.set_ylabel("Model", fontsize=12, fontweight="bold", labelpad=10)
 
@@ -211,10 +280,17 @@ def create_horizontal_bar_chart(
     )
 
     # Experimental setup as research paper-style footer
+    footer_text = (
+        "*Evaluated using Grok 4.1 Fast (non-reasoning) as judge. "
+        "RL model trained with GRPO + LoRA (rank 8) on 400 examples; evaluated on 100 held-out samples."
+    )
+    if outlier_sd is not None:
+        footer_text += f" Outliers removed: scores < μ - {outlier_sd}σ per model."
+    elif filter_pct > 0:
+        footer_text += f" Bottom {int(filter_pct * 100)}% of samples removed per model."
     ax.text(
         0.0, -0.12,
-        "*Evaluated using Grok 4.1 Fast (non-reasoning) as judge. "
-        "RL model trained with GRPO + LoRA (rank 8) on 400 examples; evaluated on 100 held-out samples.",
+        footer_text,
         transform=ax.transAxes,
         ha="left",
         fontsize=8,
@@ -297,6 +373,8 @@ def print_summary_table(stats_df: pd.DataFrame, results: dict) -> None:
 def analyze_eval_results(
     results_path: str = "results/eval_results.json",
     output_path: Optional[str] = None,
+    remove_bottom: float = 0.0,
+    remove_outliers: str = "none",
 ) -> None:
     """
     Main analysis function: loads results, computes statistics,
@@ -305,6 +383,8 @@ def analyze_eval_results(
     Args:
         results_path: Path to eval_results.json
         output_path: Path for output chart (default: results/eval_chart.png)
+        remove_bottom: Fraction of bottom samples to remove per model (0.2 = 20%)
+        remove_outliers: Statistical outlier removal ("none", "1sd", "1.5sd", "2sd")
     """
     if output_path is None:
         output_path = str(Path(results_path).parent / "eval_chart.png")
@@ -314,11 +394,28 @@ def analyze_eval_results(
 
     print(f"Found {len(results)} models to analyze")
 
+    # Apply statistical outlier filtering if requested (takes precedence)
+    outlier_sd = None
+    if remove_outliers != "none":
+        sd_map = {"1sd": 1.0, "1.5sd": 1.5, "2sd": 2.0}
+        outlier_sd = sd_map[remove_outliers]
+        print(f"Removing statistical outliers (scores < μ - {outlier_sd}σ) per model...")
+        results, outlier_info = filter_statistical_outliers(results, outlier_sd)
+        for model, count in outlier_info.items():
+            display_name = MODEL_DISPLAY_NAMES.get(model, model)
+            print(f"  {display_name}: {count} outliers removed")
+    # Apply percentile filtering if requested (and no outlier filtering)
+    elif remove_bottom > 0:
+        print(f"Removing bottom {int(remove_bottom * 100)}% of samples per model...")
+        results = filter_bottom_percentile(results, remove_bottom)
+
     # Compute statistics
     stats_df = compute_statistics(results)
 
     # Create visualization
-    create_horizontal_bar_chart(stats_df, output_path)
+    create_horizontal_bar_chart(
+        stats_df, output_path, filter_pct=remove_bottom, outlier_sd=outlier_sd
+    )
 
     # Print summary
     print_summary_table(stats_df, results)
@@ -337,6 +434,7 @@ Examples:
   python scripts/analyze_results.py
   python scripts/analyze_results.py --results results/eval_results.json
   python scripts/analyze_results.py --output results/custom_chart.png
+  python scripts/analyze_results.py --remove-bottom 0.2 --output results/eval_chart_top80.png
 """
     )
     parser.add_argument(
@@ -348,9 +446,21 @@ Examples:
         "--output",
         help="Output path for chart (default: results/eval_chart.png)",
     )
+    parser.add_argument(
+        "--remove-bottom",
+        type=float,
+        default=0.0,
+        help="Remove bottom X%% of samples per model (e.g., 0.2 for 20%%)",
+    )
+    parser.add_argument(
+        "--remove-outliers",
+        choices=["none", "1sd", "1.5sd", "2sd"],
+        default="none",
+        help="Remove statistical outliers below mean - X*std per model",
+    )
 
     args = parser.parse_args()
-    analyze_eval_results(args.results, args.output)
+    analyze_eval_results(args.results, args.output, args.remove_bottom, args.remove_outliers)
 
 
 if __name__ == "__main__":
