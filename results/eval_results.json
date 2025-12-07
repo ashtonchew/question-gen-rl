@@ -1212,10 +1212,10 @@
   "rl": {
     "model": "rl",
     "num_samples": 100,
-    "avg_relevance": 9.0,
-    "avg_clarity": 8.51,
-    "avg_discriminative": 8.82,
-    "avg_composite": 8.776666666666667,
+    "avg_relevance": 9.04,
+    "avg_clarity": 8.54,
+    "avg_discriminative": 8.84,
+    "avg_composite": 8.806666666666667,
     "results": [
       {
         "role_id": "be-401",
@@ -1225,7 +1225,7 @@
           "relevance": 9,
           "clarity": 8,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly targets core role skills (distributed ML training, GPU allocation, scheduling) with Ray, a key tool for such infra (-1 for assuming Ray without explicit role mention). Clarity: Well-formed and specific, but lacks explicit constraints like cluster scale or time (-2 for minor missing scope). Discriminative: Tests deep applied knowledge, trade-offs in config/scheduling/monitoring, strong separation of experts.",
+          "reasoning": "Relevance: Directly tests Ray (core for distributed ML orchestration, GPU scheduling), minus 1 for not explicitly listed in role but perfectly matches infrastructure needs. Clarity: Well-scoped with specific aspects, but lacks explicit constraints like cluster size/time (-1 red flag: missing constraints, -1 vague jargon context). Discriminative: Probes applied knowledge, trade-offs in config/scheduling/monitoring/verification, strong separation of experts.",
           "composite": 8.666666666666666
         }
       },
@@ -1237,7 +1237,7 @@
           "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Directly targets core role skills (rollback automation, model deployment) with KServe/K8s (plausible for model deployment). Crystal clear, well-scoped for screening. Tests applied knowledge, detection logic, and automation trade-offs, strongly differentiating candidates. Minor ding for assuming KServe familiarity not explicitly listed, but highly relevant.",
+          "reasoning": "Relevance: Directly targets core role skills (deployment strategies, rollback automation) with KServe/K8s fitting model deployment context; minor ding as KServe not explicitly listed (-1). Clarity: Precise, well-scoped, no ambiguity or missing constraints. Discriminative: Requires deep applied knowledge of monitoring, detection, and automation trade-offs, strongly separating experienced candidates.",
           "composite": 9.0
         }
       },
@@ -1248,9 +1248,9 @@
         "scores": {
           "relevance": 10,
           "clarity": 9,
-          "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core role skills (quantization, batching, latency optimization) in production context, no red flags. Clarity: Crystal clear and well-scoped for behavioral screening, minor vagueness on response length but appropriate. Discriminative: Strong separation via real-world application, trade-offs, and challenges; distinguishes experienced practitioners from theorists.",
-          "composite": 9.333333333333334
+          "discriminative": 10,
+          "reasoning": "Directly targets core role skills (quantization, batching, latency optimization) in production context; crystal clear with specific guidance on steps, measurement, challenges; elicits deep experiential knowledge with trade-offs, strongly separating candidates with hands-on expertise from those without.",
+          "composite": 9.666666666666666
         }
       },
       {
@@ -1259,10 +1259,10 @@
         "question": "\"Design a feature computation pipeline using Feast and Spark to compute and store features for a user-based ML model. The pipeline should handle incremental feature updates, support feature discovery, and ensure data consistency. Walk through your design decisions, including how you'd structure the data flow, how you'd handle feature dependencies, and how you'd ensure consistency between online and offline feature stores. Provide a high-level diagram or pseudocode to illustrate your approach.\"",
         "scores": {
           "relevance": 9,
-          "clarity": 8,
+          "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core role skills (feature computation, online/offline stores, discovery) with exact tech (Feast, Spark implied for ML platform); minor generic feel -1. Clarity: Well-scoped design with specifics, but lacks explicit time/format constraints -2. Discriminative: Excellent at probing trade-offs, dependencies, consistency, and applied ML platform knowledge; strong separation of strong vs weak candidates.",
-          "composite": 8.666666666666666
+          "reasoning": "Relevance: Directly tests core role skills (feature computation, online/offline stores, discovery) with exact tech (Feast); minor generic penalty avoided (-0). Clarity: Well-scoped design question with specific requirements, no bundling or ambiguity. Discriminative: Probes deep trade-offs in incremental updates, dependencies, consistency, and Feast/Spark integration, distinguishing strong ML platform engineers.",
+          "composite": 9.0
         }
       },
       {
@@ -1270,11 +1270,11 @@
         "role_title": "Senior Backend Engineer - Model Monitoring",
         "question": "\"Design a drift detection system for a production ML model that monitors input feature distributions over time. Describe how you would implement this using Python, Prometheus, and PostgreSQL, including how you would collect, store, and visualize drift signals. Specifically, the system should detect concept drift in input features and trigger alerts when drift exceeds a configurable threshold. Include at least one example of a drift metric and explain how you would define the threshold for alerting.\"",
         "scores": {
-          "relevance": 10,
+          "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Perfectly matches role's core focus on drift detection in production ML, uses relevant tools (Python, Prometheus, PostgreSQL implied for monitoring/alerting/storage), no red flags. Clarity: Crystal clear, well-scoped with specific components and requirements, minor deduction for lacking explicit time/format constraints. Discriminative: Tests applied system design, trade-offs in metrics/thresholds, and integration knowledge, strongly separates candidates with production ML experience.",
-          "composite": 9.333333333333334
+          "reasoning": "Relevance: Directly tests core drift detection for production ML monitoring using specified stack; minor ding for not explicitly covering performance tracking/alerting breadth (-1). Clarity: Crystal clear, well-scoped with specific tech, requirements, and example; no bundling or ambiguity. Discriminative: Tests applied system design, trade-offs in metrics/thresholds, and implementation depth, strongly separating strong ML engineers from weak ones.",
+          "composite": 9.0
         }
       },
       {
@@ -1285,7 +1285,7 @@
           "relevance": 10,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Perfectly matches role's core focus on batching optimization, KV cache management, and LLM serving (vLLM is directly relevant). No red flags.\nClarity: Crystal clear, well-scoped to vLLM pipeline with specific focuses; minor deduction for lacking explicit time/format constraints.\nDiscriminative: Tests deep applied knowledge, trade-offs (e.g., mixed workloads), and configuration expertise, strongly separating strong candidates.",
+          "reasoning": "Relevance: Directly targets core role responsibilities (batching optimization, KV cache management) and exact tech (vLLM) from description; no red flags. Clarity: Crystal clear, well-scoped with specific focus areas, minor deduction for lacking explicit time constraints. Discriminative: Tests deep applied knowledge, trade-offs (e.g., mixed workloads, sharing), and configuration expertise, strongly separating candidates.",
           "composite": 9.333333333333334
         }
       },
@@ -1296,9 +1296,9 @@
         "scores": {
           "relevance": 10,
           "clarity": 9,
-          "discriminative": 10,
-          "reasoning": "Relevance: Perfectly matches role's core focus on ML infrastructure, training platforms, scaling, fault tolerance, and cost optimization; uses Ray/K8s which align with distributed ML infra needs (no red flags). Clarity: Crystal clear, well-scoped for design discussion with specific tech and considerations; minor deduction only for lacking explicit time/format constraints. Discriminative: Excellent at testing deep applied knowledge, trade-offs in scheduling/allocation, and specific integrations\u2014strong separation of experts from superficial knowledge.",
-          "composite": 9.666666666666666
+          "discriminative": 9,
+          "reasoning": "Relevance: Perfectly matches role's core focus on ML training platforms, distributed systems, and cost optimization; uses Ray/K8s directly relevant to scalable ML infra. Clarity: Crystal clear, well-scoped design question with specific tech and considerations; minor deduction for lacking explicit time/format constraints. Discriminative: Tests deep applied knowledge of Ray/K8s integrations, trade-offs in scheduling/scaling/fault tolerance, strongly separates experts from generalists.",
+          "composite": 9.333333333333334
         }
       },
       {
@@ -1307,10 +1307,10 @@
         "question": "\"Design and implement a health check endpoint in Go that:\n1. Returns a 200 OK status for liveness and readiness probes\n2. Returns a 503 Service Unavailable when the service is not ready (e.g., during startup)\n3. Exposes metrics via a separate endpoint (e.g. /metrics) that can be scraped by Prometheus\n4. Uses Docker and Kubernetes to run the service and expose the health endpoints\"",
         "scores": {
           "relevance": 9,
-          "clarity": 5,
+          "clarity": 7,
           "discriminative": 8,
-          "reasoning": "Relevance: Directly tests core role skills (health checks, liveness/readiness, metrics) and Go (implied), minor ding for assuming Docker/K8s not explicitly listed. Clarity: Clear intent but vague on implementation depth, no code length/format constraints, bundles design+Docker+K8s (-2 bundled, -1 vague scope). Discriminative: Strong on applied Go/web skills and trade-offs (e.g., startup checks), differentiates solid entry-level devs.",
-          "composite": 7.333333333333333
+          "reasoning": "Relevance: Directly tests core role skills (health checks, liveness/readiness, metrics) and Go; minor ding for Docker/K8s not in role desc (-2 red flag overridden by core match). Clarity: Clear intent but bundles multiple endpoints + infra setup without time/format constraints (-2 for multiple questions). Discriminative: Tests applied design/implementation with trade-offs (startup logic, Prometheus), distinguishes strong implementers from weak ones.",
+          "composite": 8.0
         }
       },
       {
@@ -1321,7 +1321,7 @@
           "relevance": 10,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core role skills (file upload API, validation, S3 storage) with exact constraints matching entry-level needs; no red flags. Clarity: Crystal clear, well-scoped endpoint design with specific requirements; minor deduction for no explicit time constraint. Discriminative: Requires applied knowledge of FastAPI, validation, S3 integration, error handling, and trade-offs (e.g., multipart handling), strongly separating capable candidates.",
+          "reasoning": "Relevance: Directly tests core role skills (file upload API, multipart implied, validation, S3 storage) with exact tech (FastAPI). No red flags. Clarity: Crystal clear, well-scoped endpoint design with specific constraints; minor deduction as no explicit time/format limit. Discriminative: Requires applied knowledge of FastAPI uploads, validation, S3 integration, error handling, and trade-offs (e.g., async, security), strongly separating capable entry-level candidates.",
           "composite": 9.333333333333334
         }
       },
@@ -1333,7 +1333,7 @@
           "relevance": 7,
           "clarity": 4,
           "discriminative": 6,
-          "reasoning": "Relevance: Tests bulk API handling relevant to role but incomplete (cuts off requirements, generic JSON array lacks idempotency/partial success specifics; -1 superficial). Clarity: Truncated/incomplete, multiple interpretations possible due to missing details/constraints (-2 bundled/incomplete). Discriminative: Basic setup tests batch processing but too open-ended/vague for strong separation without full reqs.",
+          "reasoning": "Relevance: Tests bulk API handling relevant to role but lacks explicit role description/tech stack and ignores idempotency/partial success (-3 generic). Clarity: Incomplete/incomplete prompt cuts off requirements, multiple interpretations, missing constraints (-4 for vagueness, bundled/missing scope -2). Discriminative: Scenario-based but superficial without full specs, tests basic knowledge not trade-offs.",
           "composite": 5.666666666666667
         }
       },
@@ -1342,11 +1342,11 @@
         "role_title": "Backend Engineer - Admin APIs",
         "question": "You're building an admin API endpoint to manage user roles in a system. The endpoint needs to:\n- Accept a user ID and a new role (e.g., \"admin\", \"moderator\", \"viewer\")\n- Validate the role is in a predefined list of allowed roles\n- Check that the current user making the request has sufficient privileges (e.g., only users with \"admin\" role can modify roles)\n- Update the user's role in the database\n- Log the action with timestamp, user ID, role before/after, and a descriptive message\n- Return a 200 OK response if successful, or a 400/403/500 error with descriptive messages",
         "scores": {
-          "relevance": 9,
+          "relevance": 10,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core admin API skills (privileged access, audit logging, workflows) from role description; minor deduction as no specific tech stack mentioned (-1). Clarity: Crystal clear requirements, well-scoped for screening, no ambiguity or bundling. Discriminative: Requires applied knowledge of validation, auth, DB ops, logging, and error handling with trade-offs (e.g., privilege checks, audit details), strongly separates candidates.",
-          "composite": 9.0
+          "reasoning": "Relevance: Directly tests core admin API skills (privileged access, audit logging, workflows) from role description, no red flags. Clarity: Crystal clear requirements, well-scoped; minor deduction for unspecified implementation language/format. Discriminative: Requires applied knowledge of auth, validation, DB ops, logging, and error handling with trade-offs (e.g., privilege checks, audit details), strongly separates candidates.",
+          "composite": 9.333333333333334
         }
       },
       {
@@ -1354,11 +1354,11 @@
         "role_title": "Backend Engineer - Analytics APIs",
         "question": "\"Design a Go-based analytics API endpoint that retrieves user session duration statistics for a given date range. The endpoint must support filtering by user ID, and it should efficiently handle time-series aggregation (e.g., average session duration per day). Use ClickHouse as the primary data store, Redis for caching, and PostgreSQL for metadata (e.g., user IDs). Assume the session data is stored in ClickHouse with a schema like: `user_id, session_start, session_end, session_duration`. The endpoint should return a structured response including daily averages and total counts. Explain your design decisions, including how you'd handle caching, query optimization, and data consistency.\"",
         "scores": {
-          "relevance": 9,
+          "relevance": 10,
           "clarity": 9,
-          "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core role skills (analytics APIs, time-series aggregation, caching) with exact tech stack (Go, ClickHouse, Redis, PostgreSQL); minor ding for assuming specific schema not in JD (-1). Clarity: Crystal clear with schema, requirements, and explicit explanation ask; well-scoped for screening. Discriminative: Requires applied knowledge of query opt, caching trade-offs, consistency\u2014strong separation of strong vs weak candidates.",
-          "composite": 9.0
+          "discriminative": 10,
+          "reasoning": "Relevance: Perfectly matches role's focus on analytics APIs, aggregation, time-series, and caching with exact tech stack (Go, ClickHouse, Redis, PostgreSQL). No red flags.\nClarity: Crystal clear with schema, requirements, and scope; minor deduction for lacking explicit time/format constraints.\nDiscriminative: Excellent at testing applied knowledge, trade-offs (caching, optimization, consistency), and deep design skills; strong separation of strong vs weak candidates.",
+          "composite": 9.666666666666666
         }
       },
       {
@@ -1369,7 +1369,7 @@
           "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core skills in Envoy plugin development with Go for API gateway extensions like request transformation (-1 for no explicit role tech stack match but perfect conceptual fit). Clarity: Crystal clear, well-scoped with specific focus on header modification and key considerations. Discriminative: Requires deep applied knowledge of Envoy's filter system, Go Wasm/HTTP filter APIs, and trade-offs in performance/memory/security, strongly separating experts.",
+          "reasoning": "Directly targets Envoy plugin development in Go for HTTP header modification and routing logic, core to API gateway extensions role. Crystal clear with specific scope (custom filter, integration, performance/security trade-offs). Tests deep applied knowledge and design decisions, strongly differentiating strong candidates familiar with Envoy's WASM/Go filter system from others.",
           "composite": 9.0
         }
       },
@@ -1381,7 +1381,7 @@
           "relevance": 9,
           "clarity": 8,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly targets core role skills (long-polling, connection mgmt, timeouts, fallbacks) with Go and relevant stores; minor ding for adding health checks not explicit in role. Clarity: Clear and well-scoped but bundles multiple elements (design + health checks) without time/format constraints (-2). Discriminative: Tests applied design with trade-offs (connections, disconnects, fallback), Redis/PG integration, distinguishes strong systems thinkers.",
+          "reasoning": "Relevance: Directly tests core long-polling, connection management, timeouts, fallbacks, and async ops with role's tech (Go implied, Redis/PostgreSQL specified); minor ding for extra health checks. Clarity: Well-scoped and unambiguous, but bundles multiple elements (design + health checks) and lacks response format/time constraints (-2). Discriminative: Requires deep applied knowledge of trade-offs in connection handling, DB integration, fallbacks, and edge cases like disconnects, strongly separating strong candidates.",
           "composite": 8.666666666666666
         }
       },
@@ -1393,7 +1393,7 @@
           "relevance": 10,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Perfectly matches role's core focus on resumable uploads, chunk management, and resumption using relevant tech (FastAPI/S3). No red flags. Clarity: Crystal clear and well-scoped for screening, minor deduction for lacking explicit time/format constraints. Discriminative: Tests deep applied knowledge, trade-offs, and edge cases, strongly separating strong candidates who can reason through design from weak ones.",
+          "reasoning": "Relevance: Directly targets core role skills (resumable uploads, chunk management, S3 APIs) with specified tech (FastAPI/S3); no red flags. Clarity: Well-scoped design question with specific components and edge cases listed, minor deduction for lacking time/format constraints. Discriminative: Tests deep applied knowledge, trade-offs, and edge cases, strongly separating strong candidates who can reason through state/integrity issues from weak ones.",
           "composite": 9.333333333333334
         }
       },
@@ -1405,7 +1405,7 @@
           "relevance": 4,
           "clarity": 9,
           "discriminative": 7,
-          "reasoning": "Relevance: Generic Go API implementation; superficially mentions tech stack but tests basic programming, not core role skills like API strategy, monetization, or integration patterns (-3 generic). Clarity: Crystal clear, well-scoped specs with precise requirements. Discriminative: Tests applied Go/web skills with error handling, differentiates solid coders but lacks trade-offs.",
+          "reasoning": "Relevance: Generic Go API coding tests superficially mention tech (Go, OpenAPI) but unrelated to core role of API strategy/monetization/enablement; misses role focus (-3 generic, -2 minor tech). Clarity: Crystal clear specs, well-scoped, unambiguous. Discriminative: Tests applied Go/web skills with error handling, differentiates solid coders but not deeply strategic.",
           "composite": 6.666666666666667
         }
       },
@@ -1417,7 +1417,7 @@
           "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core event handling, persistence, and event emission with exact tech stack (Java, Kafka, PostgreSQL); minor Docker mention doesn't detract (-0). Clarity: Precise scope, explicit constraints, no ambiguity. Discriminative: Requires integrating Kafka listener, async delay, JDBC persistence, and event emission\u2014tests applied event sourcing skills and trade-offs effectively without being trivial or excessive.",
+          "reasoning": "Relevance: Directly tests core event handling, persistence, and event emission with exact tech stack (Java, Kafka, PostgreSQL); minor Docker mention doesn't detract (-0). Clarity: Crystal clear scope, explicit constraints, no ambiguity. Discriminative: Requires integrating streaming, DB ops, delays, and sequencing\u2014tests applied event sourcing skills and trade-offs (e.g., exactly-once, error handling), strongly separates candidates.",
           "composite": 9.0
         }
       },
@@ -1429,7 +1429,7 @@
           "relevance": 9,
           "clarity": 8,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core role skills (retries, circuit breakers, error handling) in Go for service clients; minor deduction as gRPC is implied but not explicit in role. Clarity: Clear intent and well-scoped for screening, but lacks minor constraints like max retries or thresholds. Discriminative: Excellent at probing applied knowledge, trade-offs (e.g., backoff params, circuit states), and integration, separating strong entry-level candidates.",
+          "reasoning": "Relevance: Directly tests core role skills (retries, circuit breakers) in Go for service clients; minor deduction as gRPC not explicitly listed (-1). Clarity: Clear intent and well-scoped for screening, but lacks explicit constraints like max retries or thresholds (-1). Discriminative: Excellent at probing applied knowledge, trade-offs (backoff tuning, circuit states), and integration depth.",
           "composite": 8.666666666666666
         }
       },
@@ -1441,7 +1441,7 @@
           "relevance": 9,
           "clarity": 8,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core retry infrastructure skills (backoff, jitter, budgets) with role-relevant tech (Go, Redis, PostgreSQL for state); minor ding for Redis/PostgreSQL not explicitly in role (-1). Clarity: Clear and well-scoped, but 'design' lacks minor constraints like time or scale (-1, -1 red flag). Discriminative: Excellent at probing trade-offs in state storage, backoff logic, and budget enforcement, distinguishing strong distributed systems thinkers.",
+          "reasoning": "Relevance: Directly tests core retry infrastructure skills (backoff, jitter, budgets) and specifies Go/Redis/PostgreSQL relevant to distributed ops (-1 for assuming specific DBs not in role desc). Clarity: Well-scoped with clear requirements, but 'design' lacks minor constraints like perf or scale (8). Discriminative: Probes applied knowledge, trade-offs (storage, budgeting, indefinite prevention), strong separation of strong vs weak candidates.",
           "composite": 8.666666666666666
         }
       },
@@ -1453,7 +1453,7 @@
           "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly targets core role requirements (graceful shutdown, connection draining, signals) with exact tech stack (Go gRPC, Kubernetes); minor -1 for not explicitly mentioning zero-downtime deploys. Clarity: Crystal clear, well-scoped with specific elements and considerations, no ambiguity or bundling. Discriminative: Tests deep applied knowledge of signals, gRPC lifecycle, K8s integration, and trade-offs (timeouts, draining), strongly separates strong candidates.",
+          "reasoning": "Relevance: Directly targets core role requirements (graceful shutdown, connection draining, signals) using Go gRPC and Kubernetes from context (-0 red flags). Clarity: Precise, well-scoped for screening, no ambiguity or bundling. Discriminative: Probes deep applied knowledge of signals, draining, trade-offs (e.g., timeouts), distinguishing strong candidates via reasoning over recall.",
           "composite": 9.0
         }
       },
@@ -1465,7 +1465,7 @@
           "relevance": 10,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly targets core role skills (security automation, secrets rotation, AWS, Python) with exact tech (Vault, Terraform). Clarity: Well-scoped and unambiguous, minor deduction for lacking explicit time/format constraints. Discriminative: Requires applied knowledge, trade-offs in detection/rotation/compliance, strong separation of strong vs weak candidates; not pure recall.",
+          "reasoning": "Relevance: Directly targets core role skills (security automation, secrets rotation in AWS) with exact tech stack (Python, Vault, Terraform). No red flags. Clarity: Well-scoped with specific parameters and components; minor deduction for lacking explicit time/format constraints. Discriminative: Tests applied knowledge, trade-offs (detection, rotation, compliance), error handling; strong separation without being too broad or recall-based.",
           "composite": 9.333333333333334
         }
       },
@@ -1477,7 +1477,7 @@
           "relevance": 9,
           "clarity": 9,
           "discriminative": 8,
-          "reasoning": "Relevance: Directly tests pytest fixtures, FastAPI testing, and error handling\u2014core to API test writing role (-1 for not explicitly covering contract testing). Clarity: Precise scope, unambiguous requirements, well-formed for screening. Discriminative: Tests practical applied skills in test setup, assertions, and error handling, distinguishing those with hands-on pytest/FastAPI experience from theorists.",
+          "reasoning": "Relevance: Directly tests pytest fixtures, FastAPI testing, and error handling\u2014core to API tests role; minor ding as role emphasizes contract testing/fixtures more explicitly (-1). Clarity: Crystal clear, well-scoped with specific requirements and fixture use. Discriminative: Tests applied pytest/FastAPI knowledge with fixture and error handling, separates those who can write functional tests from trivia knowers.",
           "composite": 8.666666666666666
         }
       },
@@ -1489,7 +1489,7 @@
           "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core SLO tracking, incident response, and on-call tooling in Kubernetes/Go (inferred from tooling context), with PagerDuty integration; minor ding for unmentioned PostgreSQL/Slack (-1). Clarity: Well-scoped design question with specific requirements, integrations, and components; no bundling or vagueness. Discriminative: Probes architecture, specific algorithms (dedup/suppression), and failure handling for deep trade-offs and applied knowledge, strongly separating candidates.",
+          "reasoning": "Relevance: Directly tests core SLO tracking, alerting, and incident response in Kubernetes/Go, matching role; minor ding for specifying PagerDuty/Slack/PostgreSQL not in desc (-1). Clarity: Well-scoped design question with specific integrations, components, and aspects to cover; no bundling or vagueness. Discriminative: Probes architecture, implementation details (dedup/suppression), and trade-offs (failures), separating strong engineers who can apply knowledge from weak ones.",
           "composite": 9.0
         }
       },
@@ -1500,9 +1500,9 @@
         "scores": {
           "relevance": 10,
           "clarity": 9,
-          "discriminative": 9,
-          "reasoning": "Relevance: Perfectly matches role's core needs (Avro serialization, schema evolution, compatibility, validation); no red flags. Clarity: Crystal clear and well-scoped with specific components, minor deduction for lacking explicit time/format constraints. Discriminative: Tests deep applied knowledge, trade-offs, and concrete examples distinguishing strong candidates; appropriately scoped for screening.",
-          "composite": 9.333333333333334
+          "discriminative": 10,
+          "reasoning": "Relevance: Perfectly matches role's core focus on message serialization, schema evolution, backward/forward compatibility, and validation; directly tests Avro/Kafka which align with infrastructure needs (no red flags). Clarity: Crystal clear and well-scoped with specific requirements, concrete example requested; minor deduction for no explicit time/format constraints. Discriminative: Excellent at testing deep applied knowledge, trade-offs in versioning/conflicts, and practical adaptation, strongly separating strong candidates.",
+          "composite": 9.666666666666666
         }
       },
       {
@@ -1512,9 +1512,9 @@
         "scores": {
           "relevance": 9,
           "clarity": 9,
-          "discriminative": 9,
-          "reasoning": "Relevance: Directly targets core role skills (graph analytics, billion-edge scale, social networks) with specified tech (Neo4j, Spark); minor ding as Spark isn't explicitly in role but fits pipelines perfectly (-1). Clarity: Well-scoped design question with clear requirements (scale, real-time, incremental); no bundling or vagueness. Discriminative: Probes deep trade-offs in performance/scalability, streaming, incremental computation\u2014separates experts handling real-world challenges from superficial knowledge.",
-          "composite": 9.0
+          "discriminative": 10,
+          "reasoning": "Relevance: Directly targets core role skills (graph analytics, billion-edge scale, social networks) with specified tech (Neo4j, Spark); minor ding for assuming Spark/Neo4j in role desc (-1). Clarity: Well-scoped design question with explicit constraints (scale, real-time, incremental); no bundling or vagueness. Discriminative: Excellent at testing trade-offs, deep understanding of challenges in distributed graph processing, streaming, and optimization\u2014strong separation of strong vs weak candidates.",
+          "composite": 9.333333333333334
         }
       },
       {
@@ -1525,7 +1525,7 @@
           "relevance": 4,
           "clarity": 8,
           "discriminative": 6,
-          "reasoning": "Relevance: Generic Bash scripting with superficial DevOps steps, but conflates GitHub Actions (CI/CD workflow) with Bash script execution; misses core role focus on writing CI pipelines; -3 for generic programming. Clarity: Well-scoped requirements, unambiguous steps. Discriminative: Tests basic scripting/automation but mostly recall of commands, limited trade-off testing.",
+          "reasoning": "Relevance: Generic Bash scripting with superficial DevOps elements (cloning/pip), but fundamentally mismatches role by asking for Bash script *within* GitHub Actions (a YAML CI workflow), not actual pipeline writing; generic programming (-3), misses core CI pipeline skills. Clarity: Well-formed requirements, unambiguous steps, good scope for screening. Discriminative: Tests basic Bash scripting and applied DevOps tasks (logging, env vars), differentiates weak scripters, but lacks trade-offs/depth; somewhat basic.",
           "composite": 6.0
         }
       },
@@ -1537,7 +1537,7 @@
           "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Directly tests core role skills (feature stores, versioning, batch/real-time serving) using Feast from role context. Crystal clear with specific tables and aspects scoped, no bundling or vagueness. Strong differentiation via design trade-offs, consistency challenges, and Feast application\u2014requires deep applied knowledge, not recall.",
+          "reasoning": "Directly tests core feature store skills (schema, versioning, batch/real-time serving) using Feast, matching role focus. Crystal clear with specific tables and aspects, well-scoped for screening. Probes applied knowledge of trade-offs in versioning and consistency, distinguishing strong ML infra candidates. Minor ding for lacking explicit time constraint.",
           "composite": 9.0
         }
       },
@@ -1549,7 +1549,7 @@
           "relevance": 10,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Perfect match to role's core focus on payment routing, failover, cost/success optimization using exact tech stack. Clarity: Crystal clear with specific components scoped, minor deduction for no time/format constraints. Discriminative: Tests deep applied knowledge, trade-offs in distributed systems, consistency, and tech integration to separate strong candidates.",
+          "reasoning": "Relevance: Perfectly matches role's core needs (routing, failover, cost/success optimization) and exact tech stack. Clarity: Crystal clear with specific components scoped; minor deduction for no time limit. Discriminative: Tests deep applied knowledge, trade-offs (e.g., consistency in distributed systems), and integration; excellent separation of strong vs weak candidates.",
           "composite": 9.333333333333334
         }
       },
@@ -1558,11 +1558,11 @@
         "role_title": "Backend Engineer - Log Aggregation",
         "question": "Explain how you would design a log aggregation pipeline using Go, Kafka, and ClickHouse to handle 1 million events per second. Include specific details on how you\u2019d handle log parsing, message enrichment, and retention policies in ClickHouse. Be sure to address scalability and data durability.",
         "scores": {
-          "relevance": 9,
-          "clarity": 8,
+          "relevance": 10,
+          "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core skills (pipelines, parsing, enrichment, retention) and matches tech (Go, Kafka, ClickHouse implied for high-throughput logs); minor ding for not explicitly listing all tech in role (-1). Clarity: Clear intent and specific components, but lacks explicit constraints like time or diagram format (-1, -1 red flag). Discriminative: Requires applied knowledge, trade-offs in scalability/durability, strong separation of strong vs weak candidates.",
-          "composite": 8.666666666666666
+          "reasoning": "Relevance: Directly targets core role skills (log pipelines, parsing, enrichment, retention) with exact tech stack implied by high-throughput needs (Go, Kafka, ClickHouse ideal). No red flags. Clarity: Crystal clear, well-scoped with specific components, throughput, and requirements; minor deduction for no explicit time/format constraints. Discriminative: Tests deep applied knowledge, trade-offs in scalability/durability, distinguishes strong architects from weak ones; appropriately scoped for screening.",
+          "composite": 9.333333333333334
         }
       },
       {
@@ -1573,7 +1573,7 @@
           "relevance": 9,
           "clarity": 8,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core skills (bulk indexing, mapping implied) for entry-level search indexing role using Elasticsearch/Python; minor deduction for not explicitly mentioning mapping design (-1). Clarity: Well-formed and unambiguous, but lacks minor constraints like scale/volume (-1, near 9). Discriminative: Excellent at probing applied knowledge, trade-offs (e.g., duplicate handling methods, consistency strategies), distinguishing thoughtful candidates.",
+          "reasoning": "Relevance: Directly targets core role skills (bulk indexing in Elasticsearch, mapping implied), matches tech stack; minor ding for not explicitly mentioning mapping design (-1). Clarity: Well-formed and unambiguous, but lacks explicit constraints like scale or time (-2). Discriminative: Excellent at testing applied knowledge, trade-offs (e.g., duplicate handling, consistency), and validation\u2014strong separation of candidates.",
           "composite": 8.666666666666666
         }
       },
@@ -1585,7 +1585,7 @@
           "relevance": 10,
           "clarity": 9,
           "discriminative": 10,
-          "reasoning": "Directly tests core role skills (real-time collab, conflict resolution, operational transforms via CRDTs) with exact tech (WebSockets). Crystal clear, well-scoped scenario with specific conflict example. Probes deep trade-offs in CRDT determinism/consistency, strongly separates strong candidates who understand causal ordering/tombstones from superficial ones. Minor subtract for no explicit time constraint but excellent overall.",
+          "reasoning": "Relevance: Directly targets core role skills (real-time collaboration, conflict resolution, operational transforms via CRDTs). Clarity: Crystal clear, well-scoped example with specific conflict scenario; minor deduction only for unspecified time constraints. Discriminative: Forces deep understanding of CRDTs, concurrency, determinism, and trade-offs, strongly separating experts from surface-level knowers.",
           "composite": 9.666666666666666
         }
       },
@@ -1597,7 +1597,7 @@
           "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests Great Expectations for data validation (core to role), schema/stats checks, with relevant tech (S3, Postgres, Airflow); minor ding for assuming GE familiarity not explicit in role (-1). Clarity: Precise scope, specific fields/pipeline, clear components requested, well-constrained. Discriminative: Requires applied design knowledge, trade-offs in expectations/integration, statistical example tests depth; strong separation of strong vs weak candidates.",
+          "reasoning": "Relevance: Directly tests Great Expectations for data validation (core to role), schema/statistical checks, with pipeline context; minor ding for assuming Airflow/S3/PostgreSQL not explicitly listed (-1). Clarity: Well-scoped design question with specific tech/context, no ambiguity. Discriminative: Requires applied knowledge of GE suites, expectations, integration, and trade-offs in statistical checks, strongly separates skilled candidates.",
           "composite": 9.0
         }
       },
@@ -1606,11 +1606,11 @@
         "role_title": "Senior Backend Engineer - Platform APIs",
         "question": "\"Design a scalable and robust service catalog API in Go using gRPC that supports service discovery, versioning, and self-service provisioning. The API must support listing available services, retrieving service details, and triggering a provisioning workflow. Include considerations for service discovery, versioning, and error handling in your design.\"",
         "scores": {
-          "relevance": 10,
+          "relevance": 8,
           "clarity": 8,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly targets core role responsibilities (service catalog, provisioning, self-service APIs) with Go/gRPC implied in platform context, no red flags. Clarity: Clear intent and scope but lacks explicit constraints (e.g., scale metrics, time limits). Discriminative: Tests applied design skills, trade-offs in discovery/versioning/provisioning/error handling, strong separation of strong vs weak candidates; appropriately scoped for screening (not >10min).",
-          "composite": 9.0
+          "reasoning": "Relevance: Directly tests core service catalog and provisioning skills for the role, but specifies Go/gRPC (not explicitly listed) and misses resource provisioning depth (-2). Clarity: Clear intent and scope for screening, but lacks constraints like scale/performance metrics or time limits (-2). Discriminative: Excellent at probing trade-offs in discovery, versioning, workflows, and error handling, strongly separating strong candidates.",
+          "composite": 8.333333333333334
         }
       },
       {
@@ -1619,10 +1619,10 @@
         "question": "*You are leading a migration from a monolithic PostgreSQL database to a distributed database architecture using CockroachDB across multiple AWS regions. The current system has a 100GB monolithic PostgreSQL instance with 10TB of transactional data and 5TB of analytical data. The migration must preserve data consistency, minimize downtime, and ensure low-latency access for both transactional and analytical workloads. How would you design the data distribution and partitioning strategy to meet these requirements, and what specific steps would you take to ensure data consistency during the migration?*",
         "scores": {
           "relevance": 9,
-          "clarity": 8,
-          "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core role skills in multi-region DB strategy, migration planning, tech selection (CockroachDB fits distributed/multi-region), and operational excellence for transactional/analytical workloads; minor ding as CockroachDB not explicitly listed (-1). Clarity: Well-formed and unambiguous, but lacks explicit constraints like time or output format (-1) and bundles data distribution + migration steps (-1). Discriminative: Excellent at testing applied knowledge, trade-offs (distribution/partitioning in CockroachDB, consistency methods like dual-writes/CDC), and deep planning, strongly separating candidates.",
-          "composite": 8.666666666666666
+          "clarity": 9,
+          "discriminative": 10,
+          "reasoning": "Relevance: Directly tests core role skills in multi-region DB strategy, migration planning, and tech selection (CockroachDB fits distributed/multi-region); minor ding as CockroachDB not explicitly listed (-1). Clarity: Crystal clear, well-scoped with specific data sizes, workloads, and constraints. Discriminative: Excellent at testing deep trade-offs in partitioning, data distribution, consistency models, and migration steps, strongly separating strong DB architects from others.",
+          "composite": 9.333333333333334
         }
       },
       {
@@ -1633,7 +1633,7 @@
           "relevance": 4,
           "clarity": 3,
           "discriminative": 2,
-          "reasoning": "Relevance: Superficially mentions RabbitMQ (relevant) but incomplete/incomplete question tests nothing specific; ignores core role skills like ack patterns, dead letter, idempotency (-3 generic/incomplete, -2 misses main focus). Clarity: Truncated/incomplete, impossible to answer as written; multiple interpretations due to missing requirements (-2). Discriminative: No actual problem to solve, trivial/zero differentiation.",
+          "reasoning": "Relevance: Superficially mentions RabbitMQ (relevant) but incomplete/incomplete question tests nothing specific; misses core skills like ack patterns, dead letters, idempotency (-3 generic/incomplete, -2 ignores main focus). Clarity: Grammatically broken/incomplete (cuts off mid-sentence), multiple interpretations (-2). Discriminative: No actual requirements or task, trivial/impossible (-2).",
           "composite": 3.0
         }
       },
@@ -1645,7 +1645,7 @@
           "relevance": 8,
           "clarity": 7,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly matches role's core focus on API docs, auto-specs, versioning, examples, and SDKs with Node.js/TS (-2 for no explicit role tech stack match like specific libs). Clarity: Clear intent and well-scoped to steps/considerations/trade-offs, but lacks explicit constraints like time or scale (-1 red flag for minor vagueness). Discriminative: Excellent at probing applied design knowledge, trade-offs, and depth to separate strong architects from basics.",
+          "reasoning": "Relevance: Directly tests core role skills (auto-gen specs, versioning, examples, SDKs) and Node.js/TS stack, but generic phrasing subtracts 2. Clarity: Clear intent matching role, but 'design a system' lacks explicit scoping/constraints (-2). Discriminative: Excellent at probing applied knowledge, trade-offs, and depth for strong separation among candidates.",
           "composite": 8.0
         }
       },
@@ -1657,7 +1657,7 @@
           "relevance": 10,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Perfectly matches role's core needs (secrets rotation, encryption-at-rest, access policies, audit logging) with exact tech (Vault, K8s, KMS implied by AWS). Clarity: Crystal clear, well-scoped for screening despite lacking strict time constraint. Discriminative: Tests deep applied knowledge, trade-offs in integration/security; distinguishes experts via verification/audit details (not pure recall).",
+          "reasoning": "Relevance: Perfectly matches role's core needs (secrets rotation, encryption-at-rest, access policies, audit logging) with exact tech (Vault, KMS, K8s). Clarity: Well-scoped design question with specific requirements, minor deduction for lacking time/format constraints. Discriminative: Tests deep applied knowledge, trade-offs in integration/security, verification\u2014strong separation of experts from juniors.",
           "composite": 9.333333333333334
         }
       },
@@ -1669,7 +1669,7 @@
           "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Directly targets core role skills (ML serving infra, batching, versioning, latency opt) with Triton (relevant for ML serving). Crystal clear, well-scoped for screening with specific strategies requested. Tests deep applied knowledge, trade-offs (variable sizes/patterns), distinguishes strong architects from basics. Minor ding for assuming Triton familiarity, but aligns perfectly with role.",
+          "reasoning": "Directly targets core role skills (ML serving infra, batching, model versioning, latency opt) with Triton (common for inference serving). Crystal clear scope for screening, tests applied trade-offs in batching/versioning for variable workloads. Minor ding for assuming Triton expertise without role mention, but highly relevant overall.",
           "composite": 9.0
         }
       },
@@ -1678,11 +1678,11 @@
         "role_title": "Backend Engineer - Billing Integration",
         "question": "\"Design a system to handle proration for a subscription upgrade. A user upgrades from a $10/month plan to a $20/month plan on the 15th of the month. The original plan ran from the 1st to the 15th, and the new plan starts on the 15th. The user should only be charged for the difference in cost (i.e., $10) for the period from the 15th to the end of the month. How would you design the billing calculation to ensure this proration is accurate and handled correctly in a real-world system?\"",
         "scores": {
-          "relevance": 10,
+          "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core proration for subscription upgrades, matching role's billing integrations focus (no red flags). Clarity: Crystal clear scenario with precise example, well-scoped; minor deduction for lacking explicit constraints like edge cases or tech stack. Discriminative: Tests applied knowledge of proration math, real-world system design (idempotency, precision), and trade-offs, strongly separating candidates.",
-          "composite": 9.333333333333334
+          "reasoning": "Relevance: Directly tests core proration for subscription upgrades, matching role's billing focus (-0 red flags). Clarity: Precise scenario with clear dates, expected charge, and real-world system scope. Discriminative: Requires deep understanding of proration math, edge cases, and system design trade-offs, strongly separating candidates.",
+          "composite": 9.0
         }
       },
       {
@@ -1693,7 +1693,7 @@
           "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Directly tests core role skills (gauges, counters) in Go for service instrumentation, Prometheus exposure, and Grafana visualization\u2014perfect match for entry-level metrics focus. Crystal clear with specific metrics and full flow, well-scoped. Strong differentiation via applied knowledge requiring integration understanding, not just recall; no red flags.",
+          "reasoning": "Directly tests core instrumentation skills (gauge/counter) with Go, Prometheus, and Grafana visualization\u2014perfectly matches entry-level role focus. Crystal clear with specific metrics and full stack. Strong separation via applied knowledge requiring trade-offs in implementation/exposure.",
           "composite": 9.0
         }
       },
@@ -1703,10 +1703,10 @@
         "question": "Imagine you're building a global autocomplete system that must support 100K QPS with sub-50ms latency. How would you design the caching layer for autocomplete queries using Redis and Elasticsearch, and what specific strategies would you employ to handle sudden spikes in traffic and prevent cache thrashing? Please include how you'd balance personalization (e.g., user-specific suggestions) with performance, and how you'd validate performance under load.",
         "scores": {
           "relevance": 9,
-          "clarity": 9,
-          "discriminative": 10,
-          "reasoning": "Directly targets core role skills (autocomplete, prefix matching implied, 100K QPS, sub-50ms latency) with exact metrics from JD. Clear scope on Redis/ES caching, spikes/thrashing, personalization balance; tests deep trade-offs and validation. Minor ding for assuming Redis/ES (not explicitly in JD) but highly relevant. No red flags.",
-          "composite": 9.333333333333334
+          "clarity": 8,
+          "discriminative": 9,
+          "reasoning": "Relevance: Directly tests core autocomplete caching, latency/QPS from role, Redis/ES implied as standard; minor ding for not explicitly listing them (-1). Clarity: Well-scoped with specifics, but open-ended design lacks strict constraints (-1). Discriminative: Probes trade-offs (personalization vs perf, spikes/thrashing), deep applied knowledge separates strong candidates.",
+          "composite": 8.666666666666666
         }
       },
       {
@@ -1714,11 +1714,11 @@
         "role_title": "Backend Engineer - Event Streaming",
         "question": "Design a system that routes real-time user activity events (e.g., \"user clicked a button\") to multiple downstream consumers (e.g., analytics, notifications, audit logs) using NATS and Rust. The system must support fan-out, filtering (e.g., only events from users with `role: admin`), and replay capabilities. Describe the architecture, data flows, and how you would implement the fan-out and filtering. Be specific about how you\u2019d use NATS features, and how you\u2019d ensure replay is accurate and consistent.",
         "scores": {
-          "relevance": 9,
-          "clarity": 9,
+          "relevance": 8,
+          "clarity": 8,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly targets core role needs (event streaming, fan-out, filtering, replay) with specified tech (NATS, Rust); minor ding as Rust details are secondary to infra focus (-1). Clarity: Well-scoped design question with specific requirements and NATS context; no bundling or vagueness. Discriminative: Probes applied architecture knowledge, trade-offs in NATS usage (streams, subjects, JetStream), and implementation depth for strong separation.",
-          "composite": 9.0
+          "reasoning": "Relevance: Directly tests core role skills (event streaming, fan-out, filtering, replay) but specifies unmentioned tech (NATS/Rust; -2). Clarity: Well-scoped with specific requirements and NATS focus, though minor lack of constraints like scale (-1 from 9). Discriminative: Excellent at probing applied knowledge, trade-offs in NATS features, Rust integration, and consistency challenges for strong separation.",
+          "composite": 8.333333333333334
         }
       },
       {
@@ -1729,7 +1729,7 @@
           "relevance": 9,
           "clarity": 8,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly targets core role skills (Iceberg tables, partition pruning, schema evolution, time travel) with Spark/S3 stack (-1 for not explicitly listing Spark in role). Clarity: Well-formed and unambiguous, but bundles multiple validations without time constraints (-2). Discriminative: Tests applied configuration knowledge, debugging, and verification steps requiring deep understanding and trade-offs, strongly separates candidates.",
+          "reasoning": "Relevance: Directly tests core role skills (Iceberg tables, partition pruning, schema evolution, time travel) with Spark/S3 stack (-1 for no explicit Spark mention in role, but highly aligned). Clarity: Well-formed and unambiguous, but minor deduction for lacking explicit constraints on response format/depth. Discriminative: Excellent at separating candidates via applied knowledge, configuration steps, and validation (trade-offs in verification methods), not mere recall.",
           "composite": 8.666666666666666
         }
       },
@@ -1741,7 +1741,7 @@
           "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core role skills (service templates, CI/CD, observability, security) with Go and specific tools like Cookiecutter, GitHub Actions, ArgoCD; minor ding as role doesn't explicitly list these tools (-1). Clarity: Well-scoped, unambiguous, clear structure and expectations. Discriminative: Requires applied knowledge, trade-offs, and reasoning across multiple interconnected areas, strongly separates candidates.",
+          "reasoning": "Relevance: Directly tests core role skills (service templates, CI/CD, observability, security) with Go/Cookiecutter/ArgoCD; minor ding for GitHub Actions specificity not in desc (-1). Clarity: Well-scoped, unambiguous, single focused walkthrough with clear components. Discriminative: Requires applied knowledge, trade-offs, and reasoning, strongly separating candidates with role-specific expertise.",
           "composite": 9.0
         }
       },
@@ -1753,7 +1753,7 @@
           "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core migration failure handling, rollback/downgrade, and recovery - perfect for entry-level database migrations role with Alembic/PostgreSQL; minor -1 for assuming SQLAlchemy/Alembic familiarity but aligns with role learning path. Clarity: Crystal clear scenario, specific failure mode, well-scoped steps without ambiguity. Discriminative: Probes applied knowledge of Alembic's downgrade mechanics, failure recovery strategies, and consistency patterns, distinguishing those understanding trade-offs from rote memorizers.",
+          "reasoning": "Relevance: Directly targets core role skills (database migrations, PostgreSQL/Alembic implied, rollback/consistency) without red flags (-0). Clarity: Well-scoped scenario with specific context, unambiguous intent and depth. Discriminative: Probes applied knowledge of Alembic failure handling, downgrade invocation, recovery steps, and trade-offs like zero-downtime/rollback strategies, strongly separating candidates.",
           "composite": 9.0
         }
       },
@@ -1765,7 +1765,7 @@
           "relevance": 10,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly targets core role responsibility of designing sampling strategies for distributed tracing at scale, matches 500+ services context perfectly, no red flags. Clarity: Crystal clear, well-scoped with specific constraints (cost, data volume, observability), minor deduction for not specifying response time/format. Discriminative: Excellent at testing trade-offs, applied knowledge, metrics design, and validation\u2014strong separation of strong vs weak candidates.",
+          "reasoning": "Relevance: Directly targets core role responsibility of designing sampling strategies for distributed tracing at scale, matches 500+ services scenario perfectly, no red flags. Clarity: Crystal clear with specific context (microservices, 500+ services, balance factors), well-scoped for screening, minor deduction for lacking explicit time/format constraints. Discriminative: Tests applied design thinking, trade-offs (cost vs. observability), metrics, and validation\u2014strong separation of strong vs. weak candidates, not mere recall.",
           "composite": 9.333333333333334
         }
       },
@@ -1775,10 +1775,10 @@
         "question": "\"Design a load shedding mechanism using Go and Envoy that detects backpressure and triggers a graceful degradation strategy. Explain how you would implement adaptive throttling based on real-time metrics from Prometheus, and how you would ensure the system remains resilient during high-load scenarios. Use specific examples of backpressure signals and how they would be translated into throttling policies.\"",
         "scores": {
           "relevance": 9,
-          "clarity": 9,
+          "clarity": 8,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly targets core role skills (load shedding, backpressure, adaptive throttling, priority queues implied); minor ding for specifying Go/Envoy not in role desc (-1). Clarity: Precise scope, unambiguous, well-formed for screening despite depth. Discriminative: Requires applied design knowledge, trade-offs, and specifics, strongly separates strong candidates.",
-          "composite": 9.0
+          "reasoning": "Relevance: Directly tests core role skills (load shedding, backpressure, adaptive throttling) with priority on Go/Prometheus; minor deduction for unmentioned Envoy (-1). Clarity: Well-scoped with specifics but assumes Envoy/Go familiarity without role context. Discriminative: Requires deep applied knowledge of trade-offs, integration, and resilience, strongly separating candidates.",
+          "composite": 8.666666666666666
         }
       },
       {
@@ -1787,10 +1787,10 @@
         "question": "Design a webhook delivery system in Go that ensures guaranteed delivery using Kafka and PostgreSQL. The system must handle retry logic with exponential backoff, signature verification, and delivery analytics. Implement the core components: webhook receiver, message processor, and delivery tracker. Include error handling, idempotency, and metrics collection. Provide a high-level architecture diagram in text and describe how you would implement the consumer group, idempotency, and retry logic.",
         "scores": {
           "relevance": 10,
-          "clarity": 8,
+          "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Perfectly matches role's core requirements (guaranteed delivery, retry logic, signature verification, analytics) with appropriate tech (Go implied, Kafka/PostgreSQL for infra). No red flags.\nClarity: Well-scoped and unambiguous, directly specifies components and features; minor deduction for lacking explicit time/format constraints on diagram/code depth.\nDiscriminative: Excellent at separating candidates via trade-offs in distributed systems (idempotency, consumer groups, retries), Kafka integration, and Go implementation depth; not pure recall but requires applied knowledge.",
-          "composite": 9.0
+          "reasoning": "Relevance: Perfectly matches role requirements (guaranteed delivery, retry, signatures, analytics) with exact tech (Go, Kafka, PostgreSQL). Clarity: Precise scope with components listed, minor deduction for lacking strict time/format constraints. Discriminative: Tests deep applied knowledge of distributed systems, trade-offs in retries/idempotency/consumer groups, distinguishes strong candidates.",
+          "composite": 9.333333333333334
         }
       },
       {
@@ -1801,7 +1801,7 @@
           "relevance": 10,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Perfectly matches role's OAuth/token handling focus, including refresh flows and patterns; no red flags. Clarity: Well-scoped with clear steps, minor deduction for unspecified constraints like exact DB schema or provider details. Discriminative: Tests applied OAuth knowledge, secure storage, JWT issuance, and error handling\u2014distinguishes strong implementers from weak ones via trade-offs in security/DB design.",
+          "reasoning": "Relevance: Perfectly matches role's OAuth focus, token handling, and refresh flows; uses PostgreSQL (common for entry-level backend) without straying. Clarity: Crystal clear steps and scope, minor vagueness on exact DB schema but well-formed for screening. Discriminative: Tests applied OAuth knowledge, security (storage/JWT), DB integration, and error handling\u2014distinguishes those who understand flows from rote memorizers. Minor broadness (-1) but scoped well.",
           "composite": 9.333333333333334
         }
       },
@@ -1810,10 +1810,10 @@
         "role_title": "Principal Engineer - ML Platform Strategy",
         "question": "\"Describe a recent ML platform decision you made or influenced that had a measurable impact on team productivity or model quality. Walk through the context, your role, the technical approach, and the outcome\u2014specifically how it improved model quality or engineering velocity.\"",
         "scores": {
-          "relevance": 9,
+          "relevance": 10,
           "clarity": 9,
-          "discriminative": 10,
-          "reasoning": "Relevance: Directly tests core ML platform strategy, tooling selection, and impact on teams/productivity (9/10, not generic despite -0 red flags). Clarity: Crystal clear structure with specific elements requested, well-scoped for behavioral screening (9/10). Discriminative: Forces demonstration of real-world decision-making, trade-offs, and measurable outcomes, strongly separates experienced strategists from weak candidates (10/10).",
+          "discriminative": 9,
+          "reasoning": "Relevance: Directly tests core ML platform strategy, tooling decisions, and impact measurement\u2014perfect match for role. No red flags. Clarity: Crystal clear structure with specific components requested; minor vagueness on 'recent' depth but well-scoped. Discriminative: Forces demonstration of real-world applied experience, trade-offs, and outcomes, strongly separating strategic thinkers from weak candidates. No red flags.",
           "composite": 9.333333333333334
         }
       },
@@ -1825,7 +1825,7 @@
           "relevance": 10,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly targets core role skill of proration in subscription billing with usage metering, no red flags. Clarity: Well-scoped design question with specific elements, minor deduction for lacking explicit time/format constraints. Discriminative: Tests deep applied knowledge, trade-offs, and edge cases, strongly separates candidates without being overly broad.",
+          "reasoning": "Relevance: Directly tests core subscription billing skills (proration, plan changes, usage metering) from role description; no red flags. Clarity: Crystal clear and well-scoped for screening, minor deduction for no explicit time/format constraints. Discriminative: Requires deep applied knowledge of trade-offs and edge cases, strongly separates strong candidates.",
           "composite": 9.333333333333334
         }
       },
@@ -1837,7 +1837,7 @@
           "relevance": 10,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Perfectly matches role's core focus on faceted search, dynamic filtering, aggregation queries, facet accuracy at scale in Elasticsearch (no red flags). Clarity: Crystal clear, well-scoped with specific edge cases and dataset size; minor deduction for lacking strict time/format constraints. Discriminative: Tests deep applied knowledge, trade-offs in query structure, optimization, and accuracy\u2014strong separation of strong vs weak candidates (not recall or trivial).",
+          "reasoning": "Relevance: Directly targets core role skills (faceted search, dynamic filtering, aggregation optimization, scale) using Elasticsearch, no red flags. Clarity: Crystal clear and well-scoped for screening, minor deduction for no explicit time constraint. Discriminative: Tests deep applied knowledge, trade-offs, edge cases, and optimization, strongly separates candidates; appropriately scoped.",
           "composite": 9.333333333333334
         }
       },
@@ -1849,7 +1849,7 @@
           "relevance": 10,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Perfect match to role (device registration, batching, delivery tracking) with exact tech (PostgreSQL implied, FCM/APNS standard); no red flags. Clarity: Well-scoped with specific focus on data model, explicit considerations; minor vagueness on 'brief explanation' but excellent overall. Discriminative: Probes deep applied knowledge (scalability, consistency, token expiration, efficiency trade-offs), distinguishes strong candidates via reasoning on real-world challenges.",
+          "reasoning": "Relevance: Perfectly matches role's core requirements (device registration, batching, delivery tracking) with specified protocols (FCM/APNS implied in role context). No red flags.\nClarity: Crystal clear, well-scoped to data model + key considerations; minor deduction as it bundles data model design with explanations but remains focused.\nDiscriminative: Tests deep applied knowledge of modeling for scalability/consistency, trade-offs (e.g., token expiration), and efficiency\u2014strong separation between good and weak candidates.",
           "composite": 9.333333333333334
         }
       },
@@ -1861,7 +1861,7 @@
           "relevance": 9,
           "clarity": 8,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core ETL skills (read/transform/load) with pandas (data transformation) and PostgreSQL, matching role; minor ding for assuming DB access in entry-level screening (-1). Clarity: Clear and well-scoped but lacks specific constraints like CSV structure or table schema (-1 for missing constraints, -1 for bundled testing requirement). Discriminative: Excellent test of applied ETL pipeline with error handling and trade-offs, strongly separates candidates able to write working code from those who can't.",
+          "reasoning": "Relevance: Directly tests core ETL skills (read/transform/load) with pandas (data transformation) and PostgreSQL, perfect for entry-level ETL role; minor ding as scheduling not included (-1). Clarity: Clear and well-scoped but lacks specific constraints like CSV structure or table schema. Discriminative: Requires applied ETL pipeline with error handling and testing, distinguishes practical skills from theory.",
           "composite": 8.666666666666666
         }
       },
@@ -1873,7 +1873,7 @@
           "relevance": 9,
           "clarity": 8,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly targets core role responsibility of designing plugin architecture for service discovery/documentation (-1 for no explicit tech stack mention). Clarity: Clear intent and well-formed, but lacks minor constraints like scale or specific tech (-2). Discriminative: Excellent test of applied architecture knowledge, trade-offs in safety/validation, distinguishes strong candidates.",
+          "reasoning": "Relevance: Directly tests core plugin architecture skill from role (-1 for no explicit tech stack mention). Clarity: Clear intent and well-formed, but lacks minor constraints like scale or time (-2). Discriminative: Excellent at probing trade-offs in dynamic registration, safety, and validation, distinguishing strong architects.",
           "composite": 8.666666666666666
         }
       },
@@ -1882,11 +1882,11 @@
         "role_title": "Backend Engineer - Query Optimization",
         "question": "\"Explain how you would use PostgreSQL's `EXPLAIN (ANALYZE)` to identify a query that has a poor execution plan, and walk through a step-by-step process to diagnose and fix the issue using index recommendations based on query patterns and data distribution.\"",
         "scores": {
-          "relevance": 10,
+          "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly targets PostgreSQL query optimization, slow query detection, plan analysis, and index recommendations\u2014core role skills (no red flags). Clarity: Well-formed and unambiguous with clear step-by-step expectation; minor deduction for lacking explicit time/format constraints. Discriminative: Tests applied diagnostic process, trade-offs in indexing based on patterns/distribution, distinguishing strong practitioners from basics.",
-          "composite": 9.333333333333334
+          "reasoning": "Relevance: Directly tests core PostgreSQL query optimization, slow query detection, plan analysis, and index recommendations (-1 for assuming PG as main stack, though fits perfectly). Clarity: Crystal clear, well-scoped step-by-step process with no ambiguity or missing constraints. Discriminative: Requires applied knowledge of EXPLAIN ANALYZE, diagnosis, patterns, and data distribution trade-offs, strongly separates skilled optimizers from basics.",
+          "composite": 9.0
         }
       },
       {
@@ -1894,11 +1894,11 @@
         "role_title": "Senior Backend Engineer - SLO Automation",
         "question": "\"Design a system to track error budgets and generate burn rate alerts for a set of SLOs. Your solution should use Go and Prometheus to monitor application errors and detect when an SLO is approaching its error budget. Explain how you would structure the data model in Prometheus, how you\u2019d implement the burn rate calculation, and how you\u2019d trigger alerts when the burn rate exceeds a threshold. Include a brief explanation of how you\u2019d handle incident escalation if the burn rate exceeds the threshold.\"",
         "scores": {
-          "relevance": 9,
-          "clarity": 8,
+          "relevance": 10,
+          "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core SLO/error budget tracking, burn rate alerting, and escalation from role; specifies Go/Prometheus (relevant observability stack, no red flags). Clarity: Well-scoped with specific components, but 'design a system' lacks minor constraints like scale. Discriminative: Probes deep applied knowledge (data model, calculations, alerting, escalation) with trade-offs, strongly separates candidates.",
-          "composite": 8.666666666666666
+          "reasoning": "Directly tests core SLO/error budget tracking, burn rate alerting, and incident escalation from role desc. Specifies Go/Prometheus (relevant stack). Crystal clear with specific components asked. Strong differentiation via design, data modeling, calculations, and trade-offs; minor deduction for no explicit time constraint.",
+          "composite": 9.333333333333334
         }
       },
       {
@@ -1909,7 +1909,7 @@
           "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests Kong plugin development, JWT handling, Redis integration, and request/response modification\u2014core to API gateway plugin role (-1 minor for not covering transformations/enrichment). Clarity: Precise steps, clear requirements, well-scoped for screening. Discriminative: Requires applied knowledge of Kong lifecycle, JWT parsing/verification, Redis ops, and error handling; tests trade-offs like async Redis checks and config management.",
+          "reasoning": "Relevance: Directly tests Kong plugin development, JWT handling, Redis integration, and request/response modification\u2014core to API gateway plugin role (-1 minor for no explicit blacklist Redis details in desc). Clarity: Precise steps, clear requirements, well-scoped for screening. Discriminative: Requires integration of auth, config, Redis, and error handling; tests applied Kong/JWT knowledge with trade-offs (e.g., Redis perf, error cases).",
           "composite": 9.0
         }
       },
@@ -1920,9 +1920,9 @@
         "scores": {
           "relevance": 7,
           "clarity": 9,
-          "discriminative": 9,
-          "reasoning": "Relevance: Directly tests container scanning and vulnerability detection core to role, but Trivy is unspecified in JD (-2 for tech not listed); Clarity: Crystal clear, well-scoped steps with specific integration example; Discriminative: Tests applied configuration, policy setup, thresholds, and CI/CD integration requiring practical understanding and trade-offs for strong separation.",
-          "composite": 8.333333333333334
+          "discriminative": 8,
+          "reasoning": "Relevance: Tests core vulnerability scanning skills with Trivy (highly relevant to container scanning role), but deduct -2 for focusing only on one minor tool (Trivy) while ignoring role's main areas like base image management/policy enforcement, and -1 for generic CI/CD without role-specific tech. Clarity: Crystal clear, well-scoped steps with specific expectations, no ambiguity or bundling issues. Discriminative: Requires applied knowledge of configuration, policy setup, thresholds, and integration, testing practical understanding and trade-offs effectively.",
+          "composite": 8.0
         }
       },
       {
@@ -1930,11 +1930,11 @@
         "role_title": "Backend Engineer - Experiment Tracking",
         "question": "\"Imagine you're setting up a new experiment tracking system using MLflow and PostgreSQL for storing experiment metadata and metrics. You want to log a model's performance across different hyperparameters, including accuracy, precision, recall, and F1-score. In addition, you want to store model artifacts (e.g., a saved model file) in S3.",
         "scores": {
-          "relevance": 7,
+          "relevance": 9,
           "clarity": 8,
-          "discriminative": 6,
-          "reasoning": "Relevance: Tests core experiment tracking (MLflow) and storage (PostgreSQL/S3) from role, but generic setup lacks depth on model comparison; minor ding for not hitting all role aspects (-1). Clarity: Clear scenario and components, but no constraints on implementation details or scope (-1 from red flag). Discriminative: Tests integration knowledge but reads like recall/setup instructions rather than trade-offs or applied problem-solving (-2 for weak separation).",
-          "composite": 7.0
+          "discriminative": 8,
+          "reasoning": "Relevance: Directly tests core skills (experiment tracking, metric logging, artifact storage) with exact tech stack (MLflow, PostgreSQL, S3) from role; minor deduction for no -1 generic feel. Clarity: Clear scenario and requirements, but lacks explicit constraints on implementation details or scope (-1 for minor vagueness). Discriminative: Requires applied MLflow knowledge, integration trade-offs (DB vs S3), distinguishes candidates with hands-on experience from theorists.",
+          "composite": 8.333333333333334
         }
       },
       {
@@ -1945,7 +1945,7 @@
           "relevance": 10,
           "clarity": 9,
           "discriminative": 10,
-          "reasoning": "Directly targets core role skills (real-time pipelines, rule engines, ML integration, fraud scoring) with no red flags. Crystal clear with specific components requested, well-scoped for screening despite minor lack of time constraint. Excellent at probing trade-offs, architecture, and production concerns to separate strong candidates.",
+          "reasoning": "Directly targets core role skills (real-time fraud pipelines, rule engines, ML integration, drift handling). Crystal clear with specific subpoints scoping response perfectly. Tests deep trade-offs and production concerns, strongly separating strong candidates; no red flags.",
           "composite": 9.666666666666666
         }
       },
@@ -1954,11 +1954,11 @@
         "role_title": "Backend Engineer - Alert Routing",
         "question": "\"Design a smart routing strategy for alerts in a distributed system using Alertmanager. Consider a scenario where alerts from different services (e.g., API gateway, database, cache) are routed based on business impact levels (e.g., high, medium, low). Describe how you would implement alert routing with escalation policies, silence management, and deduplication. Include how you would handle alerts from the same service but with different error types (e.g., 500 vs 404), and how you would ensure alerts are not duplicated during high-volume events (e.g., a database crash affecting multiple endpoints).\"",
         "scores": {
-          "relevance": 9,
+          "relevance": 10,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core role skills (routing, escalation, silence, deduplication) using Alertmanager, perfectly matching role focus (-0 red flags). Clarity: Well-scoped with specific scenario, services, and considerations; unambiguous for screening. Discriminative: Probes applied knowledge, trade-offs (e.g., dedup in high-volume, error-type handling), distinguishes deep understanding from superficial recall.",
-          "composite": 9.0
+          "reasoning": "Relevance: Perfectly matches role's core needs (routing, grouping, escalation, silence, deduplication) and directly uses Alertmanager for alert infrastructure. Clarity: Crystal clear scenario and requirements, well-scoped; minor deduction for no explicit time/format constraints. Discriminative: Tests deep applied knowledge, trade-offs in routing/escalation/dedup across scenarios, strongly separates candidates able to design vs recite basics.",
+          "composite": 9.333333333333334
         }
       },
       {
@@ -1966,11 +1966,11 @@
         "role_title": "Junior Backend Engineer - Full-text Search",
         "question": "How would you implement a full-text search query in PostgreSQL to find all products with a description containing \"wireless\" and a price less than $100, using a ranking function to prioritize results based on relevance? Include a brief explanation of how the ranking works.",
         "scores": {
-          "relevance": 10,
+          "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests PostgreSQL full-text search (tsvector, ranking) core to role, no red flags. Clarity: Crystal clear, well-scoped query example with explanation request; minor deduction possible for unspecified index but excellent overall. Discriminative: Requires applied knowledge of FTS syntax, ranking (ts_rank), filtering, and explanation of trade-offs like relevance scoring, strongly separates candidates.",
-          "composite": 9.333333333333334
+          "reasoning": "Directly tests PostgreSQL full-text search (tsvector/ranking) core to role; clear, scoped query with explanation; distinguishes via applied knowledge of implementation and ranking trade-offs. Minor relevance ding as price filter is tangential but relevant.",
+          "composite": 9.0
         }
       },
       {
@@ -1979,10 +1979,10 @@
         "question": "Design a presence system that tracks user connections in real time using Go, WebSocket, and Redis. How would you ensure that presence state is updated reliably and consistently across clients, especially during network interruptions or client disconnects?",
         "scores": {
           "relevance": 9,
-          "clarity": 9,
+          "clarity": 8,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly targets core role skills (presence, connections, state sync) with exact tech stack (Go, WebSocket, Redis); no red flags. Clarity: Precise scope for screening, unambiguous intent, well-formed with specific failure scenarios. Discriminative: Probes applied knowledge of trade-offs (heartbeats, Redis consistency, reconnections), distinguishes strong architects from basics.",
-          "composite": 9.0
+          "reasoning": "Relevance: Directly targets core role skills (presence, connections, state sync) with exact tech stack (Go, WebSocket, Redis); minor deduction for not mentioning heartbeats explicitly. Clarity: Well-scoped design question with clear focus on reliability/edge cases, but lacks explicit constraints like scale or time. Discriminative: Probes deep trade-offs in protocols, consistency, and failure handling, strongly separating strong architects from juniors.",
+          "composite": 8.666666666666666
         }
       },
       {
@@ -1993,7 +1993,7 @@
           "relevance": 10,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Perfectly matches role's core needs (CDC pipelines, schema changes, snapshots, exactly-once) with exact tech stack implied for role. Clarity: Crystal clear, well-scoped with specific elements requested, minor deduction for no explicit time constraint. Discriminative: Tests deep applied knowledge, trade-offs, and specifics like example scenario, strongly separates candidates.",
+          "reasoning": "Directly targets core role skills (CDC, schema changes, snapshots, exactly-once) with exact tech stack. Crystal clear and well-scoped for screening; minor deduction for no explicit time constraint. Strong trade-off testing via design + specific example distinguishes deep applied knowledge.",
           "composite": 9.333333333333334
         }
       },
@@ -2003,10 +2003,10 @@
         "question": "\"Design a reconciliation loop for a Kubernetes cluster using ArgoCD with Helm charts, ensuring that the cluster state is kept in sync with the Git repository. Include considerations for handling drift, partial updates, and rollbacks in your design.\"",
         "scores": {
           "relevance": 9,
-          "clarity": 9,
+          "clarity": 8,
           "discriminative": 9,
-          "reasoning": "Directly tests core GitOps skills (reconciliation, drift, rollbacks) using exact tech (Kubernetes, ArgoCD, Helm) from role; crystal clear with specific scope and considerations; evaluates applied design knowledge and trade-offs, strongly distinguishing candidates. Minor ding for no time constraint but well-scoped overall.",
-          "composite": 9.0
+          "reasoning": "Relevance: Directly targets core GitOps skills (reconciliation, drift, rollbacks) with exact tech (ArgoCD, Helm, K8s); minor ding for not explicitly mentioning tooling design (-1). Clarity: Clear and well-scoped for screening, but lacks explicit constraints like time or detail level (-2). Discriminative: Excellent at testing applied design, trade-offs (drift/partial/rollbacks), separates strong GitOps experts from juniors.",
+          "composite": 8.666666666666666
         }
       },
       {
@@ -2017,7 +2017,7 @@
           "relevance": 9,
           "clarity": 8,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core role skills (pool sizing, failover) with PgBouncer/K8s relevant to DB scaling (-1 for assuming PgBouncer not explicitly listed). Clarity: Clear intent and scope but lacks explicit constraints like time/format (-2). Discriminative: Excellent at testing applied knowledge, trade-offs in dynamic sizing/failover/stability under load.",
+          "reasoning": "Relevance: Directly tests core role skills (pool sizing, failover) with relevant tech (Go, PgBouncer, PostgreSQL, Kubernetes); minor ding as PgBouncer/K8s not explicitly listed (-1). Clarity: Clear and well-scoped, but lacks explicit constraints like time or metrics sources (-1, -1). Discriminative: Excellent at probing trade-offs in dynamic sizing, failover, and stability under load, separating strong candidates.",
           "composite": 8.666666666666666
         }
       },
@@ -2026,11 +2026,11 @@
         "role_title": "Junior Backend Engineer - CI Pipelines",
         "question": "\u201cWrite a GitHub Actions workflow that builds and tests a Python package using Docker. Include caching of pip dependencies and parallel job execution for faster testing.\u201d",
         "scores": {
-          "relevance": 10,
+          "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Directly tests core GitHub Actions workflow syntax, pip caching strategies, Docker usage, and test parallelization\u2014perfect match for entry-level CI pipeline role. Crystal clear with specific requirements; minor deduction for no explicit time/format constraints but well-scoped overall. Strong separation via applied knowledge of trade-offs in caching/parallelism vs. rote recall.",
-          "composite": 9.333333333333334
+          "reasoning": "Relevance: Directly tests GitHub Actions workflows, Docker builds, pip caching, and parallel testing\u2014core to role's CI pipeline focus (-1 minor for no explicit time constraint). Clarity: Precise scope, unambiguous requirements, well-formed for screening. Discriminative: Requires applied knowledge of syntax, caching strategies, and parallelization trade-offs, separating capable entry-level candidates effectively.",
+          "composite": 9.0
         }
       },
       {
@@ -2041,7 +2041,7 @@
           "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core chaos engineering skills (failure injection, recovery) with Kubernetes and Chaos Mesh, perfectly matching role focus (-0 red flags). Clarity: Crystal clear, specific scope, detailed config requests without ambiguity or bundling. Discriminative: Requires applied knowledge of Chaos Mesh configs, trade-offs in blast radius/recovery, distinguishes experts from superficial knowledge.",
+          "reasoning": "Relevance: Directly tests core chaos engineering skills (failure injection, recovery validation) with Kubernetes and Chaos Mesh, matching role focus; minor ding as Chaos Mesh not explicitly listed (-1). Clarity: Crystal clear, well-scoped with specific config details requested, no ambiguity. Discriminative: Requires applied knowledge of Chaos Mesh configs, trade-offs in blast radius/recovery, and integration\u2014strong separation of experts from novices.",
           "composite": 9.0
         }
       },
@@ -2053,7 +2053,7 @@
           "relevance": 9,
           "clarity": 8,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core GraphQL Federation skills (query planning, entity resolution, schema handling) from role; minor deduction for not explicitly mentioning stitching (-1). Clarity: Well-scoped with specific types/fields, clear intent, but lacks explicit constraints like time or format (-1) and bundles schema+explanation (-1). Discriminative: Requires deep applied knowledge of federation mechanics, trade-offs in resolution/conflicts, distinguishes strong candidates effectively.",
+          "reasoning": "Relevance: Directly tests core federated GraphQL skills (query planning, schema, entity resolution) from role; minor ding for not explicitly mentioning stitching (-1). Clarity: Clear and well-scoped example, but lacks explicit constraints on response format/depth (-1) and bundles schema+planning+explanation (-1). Discriminative: Excellent at testing applied deep understanding of federation mechanics, trade-offs in resolution, and execution\u2014strong separation of experts from juniors.",
           "composite": 8.666666666666666
         }
       },
@@ -2065,7 +2065,7 @@
           "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly targets core mTLS automation in microservices/K8s (9, minor -1 for not covering full zero trust but spot-on for listed skill). Clarity: Precise scope with specific tech (SPIFFE/SPIRE, Envoy, K8s API) and 'only one detail' constraint (9). Discriminative: Requires applied architecture knowledge, trade-offs in renewal, and enforcement layers, separating strong zero-trust experts (9).",
+          "reasoning": "Relevance: Directly tests core mTLS automation in Kubernetes microservices (-0 red flags). Clarity: Unambiguous, well-scoped with specific tech (SPIFFE/SPIRE, Envoy, K8s API) and single detail constraint. Discriminative: Requires applied knowledge of integration, enforcement, and trade-offs like cert renewal, distinguishing strong architects.",
           "composite": 9.0
         }
       },
@@ -2077,7 +2077,7 @@
           "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core vector search/indexing skills for the role; Pinecone is relevant for semantic retrieval, custom stacks match infrastructure focus (-0 red flags). Clarity: Unambiguous, well-scoped evaluation criteria with no bundling or vagueness. Discriminative: Requires deep trade-off analysis across key dimensions (perf/scalability/cost/accuracy), strongly separates candidates with production experience from superficial knowledge.",
+          "reasoning": "Relevance: Directly tests core vector search/indexing skills with role-relevant tech (Pinecone, Redis+Postgres for hybrid search); minor ding as Pinecone not explicitly listed but fits perfectly (-1). Clarity: Crystal clear, well-scoped evaluation criteria, no ambiguity. Discriminative: Forces trade-off analysis across key dimensions, distinguishes deep production knowledge from superficial recall.",
           "composite": 9.0
         }
       },
@@ -2087,10 +2087,10 @@
         "question": "Explain how you would design a system to process partial refunds in a payments platform, ensuring data consistency and auditability across distributed components like Kafka, PostgreSQL, and Redis, while handling ledger reconciliation during reconciliation windows. Consider edge cases like provider callbacks, duplicate refunds, and system failures.",
         "scores": {
           "relevance": 9,
-          "clarity": 9,
-          "discriminative": 10,
-          "reasoning": "Relevance: Directly targets core role skills (partial refunds, ledger reconciliation, provider callbacks, audit trails) using exact tech stack (Kafka, PostgreSQL, Redis); minor deduction as role doesn't explicitly list these techs (-1). Clarity: Well-scoped system design with specific components, edge cases, and constraints; no bundling or vagueness. Discriminative: Probes deep trade-offs in distributed consistency, failures, and reconciliation, strongly separating strong candidates.",
-          "composite": 9.333333333333334
+          "clarity": 8,
+          "discriminative": 9,
+          "reasoning": "Relevance: Directly tests core refund processing, ledger reconciliation, audit trails, and provider callbacks from role; uses specified tech (Kafka, PostgreSQL, Redis) - minor deduction for no explicit 'partial refund support' emphasis. Clarity: Clear intent and scope, but 'design a system' lacks explicit time/format constraints. Discriminative: Excellent at probing trade-offs, edge cases, and deep distributed systems understanding for strong candidate separation.",
+          "composite": 8.666666666666666
         }
       },
       {
@@ -2101,7 +2101,7 @@
           "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests Go API development, JSON handling, validation, and template/variable substitution\u2014core to dashboard management role (-1 minor for not explicitly mentioning sharing). Clarity: Precise scope, clear requirements, well-defined payload/format\u2014no ambiguity or missing constraints. Discriminative: Requires applied Go skills (parsing, substitution, validation), error handling, and trade-offs (e.g., security in substitution), strongly separating strong candidates.",
+          "reasoning": "Relevance: Directly tests Go API development, JSON handling, and variable substitution core to dashboard template role (-1 for no explicit role tech stack like DB/storage). Clarity: Well-scoped design question with precise requirements and validation rules. Discriminative: Requires applied Go skills, validation logic, substitution implementation, and edge-case handling to separate strong candidates.",
           "composite": 9.0
         }
       },
@@ -2110,11 +2110,11 @@
         "role_title": "Junior Backend Engineer - Search Analytics",
         "question": "Explain how you would design a system to log and analyze search queries for a web application, including how you'd collect query data, store it, and visualize it using Elasticsearch and Kibana. Focus on the key components and trade-offs.",
         "scores": {
-          "relevance": 8,
+          "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly targets core search analytics (query logging, analysis) and specifies ES/Kibana, but entry-level role may expect learning rather than prior design expertise (-2 generic design feel). Clarity: Crystal clear, well-scoped with specific tech and focus on components/trade-offs. Discriminative: Excellent at testing applied knowledge, trade-offs, and system design thinking to separate strong entry-level candidates.",
-          "composite": 8.666666666666666
+          "reasoning": "Directly targets core role skills (query logging, analytics) with exact tech stack (Elasticsearch/Kibana). Crystal clear with focused scope on components/trade-offs; strong separation via design reasoning and trade-offs, not recall. Minor ding for entry-level breadth but well-scoped for screening.",
+          "composite": 9.0
         }
       },
       {
@@ -2125,7 +2125,7 @@
           "relevance": 9,
           "clarity": 8,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core role skills (room mgmt, selective broadcast, reconnection) with exact tech stack (Socket.io, Redis); minor generic feel but no red flags. Clarity: Well-scoped with specific tech and requirements, but lacks explicit constraints like scale or time (-1 for minor vagueness on depth). Discriminative: Probes deep applied knowledge, trade-offs in state management and reconnection, strong separation of strong vs weak candidates.",
+          "reasoning": "Relevance: Directly tests core role skills (room mgmt, selective broadcast, reconnection) with exact tech stack (Socket.io, Redis); minor generic feel -1. Clarity: Well-scoped design question with clear requirements, but lacks explicit constraints like scale or time (-1 from red flag). Discriminative: Probes deep applied knowledge, trade-offs in state mgmt/pub-sub/reconnection, excellent separation of strong vs weak candidates.",
           "composite": 8.666666666666666
         }
       },
@@ -2134,11 +2134,11 @@
         "role_title": "Senior Backend Engineer - Data Catalog",
         "question": "\"Describe how you would design a system to automatically extract and store lineage information from a data pipeline using Apache Atlas, Kafka, and Airflow. Include details on how you would capture the source and target of data movements, how you would handle schema changes, and how you would ensure data lineage is updated in real-time as the pipeline runs.\"",
         "scores": {
-          "relevance": 9,
+          "relevance": 10,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core lineage tracking and metadata extraction using relevant tools (Apache Atlas fits data catalog/governance, Kafka/Airflow for pipelines); minor ding as role doesn't explicitly list these exact tools (-1). Clarity: Crystal clear, well-scoped with specific aspects (source/target, schema changes, real-time), no ambiguity. Discriminative: Requires applied knowledge of tool integration, trade-offs in real-time lineage (e.g., Kafka streaming vs batch), schema evolution handling\u2014strong separation of strong vs weak candidates.",
-          "composite": 9.0
+          "reasoning": "Relevance: Perfectly targets core role skills (lineage tracking, automated metadata) using relevant tools; no red flags. Clarity: Crystal clear, well-scoped with specific aspects to cover; minor deduction for lacking explicit time/format constraints. Discriminative: Tests applied design knowledge, trade-offs (schema changes, real-time), distinguishes strong big data engineers.",
+          "composite": 9.333333333333334
         }
       },
       {
@@ -2149,7 +2149,7 @@
           "relevance": 9,
           "clarity": 8,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly targets core role skills (cost attribution, team allocation) with exact tech stack (Go/K8s/Prometheus); minor generic feel but no red flags (-0). Clarity: Clear intent and well-scoped for screening, but lacks explicit constraints like scale/time (-1, not bundled or overly broad). Discriminative: Excellent test of challenges, trade-offs, and applied design using specified stack, strongly separates deep thinkers.",
+          "reasoning": "Relevance: Directly targets core role skills (cost attribution, team allocation) and matches tech stack (Go, K8s, Prometheus for cloud resource tracking); minor ding for not explicitly mentioning tagging/chargebacks. Clarity: Clear intent and well-scoped for screening, but lacks specific constraints like scale or time. Discriminative: Excellent at probing challenges (accuracy, tagging issues) and design trade-offs (e.g., Prometheus metrics for costs, K8s integration), separating strong systems thinkers from weak ones.",
           "composite": 8.666666666666666
         }
       },
@@ -2158,11 +2158,11 @@
         "role_title": "Principal Engineer - Data Architecture",
         "question": "\"Design a data architecture for a company that processes 10 million transactions per day and runs daily analytics on 50 million rows of data. The system must support low-latency transactional operations (sub-second response time) and real-time dashboards with a 10-second latency requirement. The solution must be scalable, resilient, and maintain data consistency across all workloads. Suggest the component structure, data flow, and technologies for each component. Explain how you would ensure data consistency between transactional and analytical workloads, and how you would handle data freshness and latency requirements. Be specific about how you would balance OLTP and OLAP workloads. Also, describe how you would monitor and validate data quality across the system.\"",
         "scores": {
-          "relevance": 7,
-          "clarity": 7,
+          "relevance": 10,
+          "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core data architecture skills for analytics/transactional workloads and tech selection, but generic (no specific stack mentioned; -3 red flag). Clarity: Clear intent but lacks explicit constraints like budget/team size (-1); multiple aspects bundled (-2). Discriminative: Excellent at probing trade-offs, deep understanding of OLTP/OLAP balance, consistency, and monitoring, strongly separating candidates.",
-          "composite": 7.666666666666667
+          "reasoning": "Relevance: Directly tests core data architecture strategy for mixed OLTP/OLAP workloads, scalability, tech selection, and team guidance as per role; no red flags. Clarity: Well-scoped with specific volumes, latencies, and requirements; minor deduction for lacking explicit time/format constraints. Discriminative: Probes deep trade-offs in consistency, freshness, balancing workloads, monitoring\u2014strong separation of strong vs weak candidates; not trivial recall or overly broad.",
+          "composite": 9.333333333333334
         }
       },
       {
@@ -2173,7 +2173,7 @@
           "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests Ansible for deployment scripts (core to role), with relevant Docker/AWS context (-0 red flags). Clarity: Precise scope, unambiguous task with exact requirements. Discriminative: Requires applied Ansible knowledge (module usage, params), explanation tests understanding of idempotency/permissions, distinguishes strong candidates.",
+          "reasoning": "Relevance: Directly tests Ansible for config management and deployment scripting, core to role (-0 red flags). Clarity: Precise scope, unambiguous task with exact requirements. Discriminative: Requires applied Ansible knowledge (module usage, params), explanation tests understanding of idempotency/permissions, strong separation without being trivial or broad.",
           "composite": 9.0
         }
       },
@@ -2182,11 +2182,11 @@
         "role_title": "Backend Engineer - Canary Deployments",
         "question": "\"Design a canary deployment strategy using Istio and ArgoCD to promote a new version of a Go service with automated rollback based on traffic and metrics. Explain how you would ensure reliability during the rollout, including traffic shifting, monitoring, and rollback triggers.\"",
         "scores": {
-          "relevance": 10,
-          "clarity": 9,
+          "relevance": 9,
+          "clarity": 8,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core role skills (canary deployments, traffic shifting, metrics, rollback) with exact tech (Istio/ArgoCD) implied for infra role; no red flags. Clarity: Well-scoped design question with clear components, minor deduction for lacking explicit time/format constraints. Discriminative: Probes applied knowledge, trade-offs in strategy/monitoring/triggers, distinguishes deep expertise from superficial.",
-          "composite": 9.333333333333334
+          "reasoning": "Relevance: Directly targets core role skills (canary deployments, traffic shifting, metrics, rollback) with Istio/ArgoCD fitting infra focus; minor deduct for assuming specific tools not explicitly listed (-1). Clarity: Well-scoped design question but lacks explicit constraints like time or metrics thresholds (-1, -1 red flag). Discriminative: Excellent at testing applied knowledge, trade-offs in reliability, monitoring, and triggers; strong separation of strong vs weak candidates.",
+          "composite": 8.666666666666666
         }
       },
       {
@@ -2197,7 +2197,7 @@
           "relevance": 10,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Perfect match to role's core needs (usage tracking, quotas, pricing, billing) and exact tech stack (Go, PostgreSQL, Redis); no red flags. Clarity: Crystal clear with specific requirements, though lacks explicit time/format constraints (-1). Discriminative: Tests deep applied knowledge of distributed systems, real-time enforcement, multi-tenancy, and trade-offs (e.g., Redis for rate limiting, DB for persistence), strongly separates candidates.",
+          "reasoning": "Relevance: Directly tests core role skills (usage tracking, quotas, pricing tiers) with exact tech stack (Go, PostgreSQL, Redis). No red flags. Clarity: Crystal clear with specific requirements, but lacks minor constraints like time limit (-1). Discriminative: Tests applied system design, trade-offs (real-time enforcement, multi-level limiting), and deep understanding; strong separation without being too broad.",
           "composite": 9.333333333333334
         }
       },
@@ -2209,7 +2209,7 @@
           "relevance": 7,
           "clarity": 8,
           "discriminative": 9,
-          "reasoning": "Relevance: Tests core WAF custom rules, attack detection (SQLi), rate limiting, but assumes Go/Nginx/ModSecurity/Redis stack not explicitly listed (-2 for unlisted tech, -1 generic elements). Clarity: Clear specific scenario and components, well-scoped, minor ambiguity on Nginx integration details. Discriminative: Requires applied knowledge of rule syntax, Go implementation, rate limiting logic, Redis integration, and trade-offs in real-time blocking/logging, strongly separates skilled candidates.",
+          "reasoning": "Relevance: Tests core WAF rule management, attack pattern detection (SQLi), rate limiting, and logging\u2014directly matches role focus, but Go/Nginx/ModSecurity not explicitly listed (-2 for unlisted tech, -1 generic elements). Clarity: Well-scoped with specific example and components, minor ambiguity on Nginx-Go integration. Discriminative: Requires applied knowledge of rules, integration, rate limiting trade-offs, and Redis\u2014strong separation of strong vs weak candidates.",
           "composite": 8.0
         }
       },
@@ -2218,11 +2218,11 @@
         "role_title": "Staff Engineer - Model Registry",
         "question": "\"Design a model registry system using MLflow and S3 for storing model versions, with automatic versioning and metadata tracking. How would you implement a solution that ensures each model version is uniquely identifiable, tracks metadata (e.g., model parameters, training date, environment), and handles version conflicts when multiple teams are developing and deploying models concurrently?\"",
         "scores": {
-          "relevance": 10,
+          "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly targets core role skills (model registry, versioning, governance) using relevant tech (MLflow, S3); no red flags. Clarity: Well-scoped design question with specific requirements, minor deduction for lacking explicit time/format constraints. Discriminative: Tests applied architecture knowledge, trade-offs (e.g., concurrency conflicts), and integration depth for strong candidate separation.",
-          "composite": 9.333333333333334
+          "reasoning": "Directly targets core role skills (model registry, versioning, governance) using specified tech (MLflow, S3). Crystal clear with precise scope, tests applied design knowledge, trade-offs (e.g., conflicts), and multi-team concurrency. Minor ding for no explicit time constraint, but well-scoped overall.",
+          "composite": 9.0
         }
       },
       {
@@ -2233,7 +2233,7 @@
           "relevance": 10,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly targets core role skills (signature verification, idempotency, event processing) with exact tech (Python FastAPI, Stripe). No red flags. Clarity: Well-scoped with specific considerations; minor deduction for lacking exact constraints like response format/time. Discriminative: Requires applied knowledge, trade-offs (e.g., race conditions, security), distinguishes strong entry-level candidates able to reason through design.",
+          "reasoning": "Directly tests core role skills (signature verification, idempotency, event processing) with exact tech stack (Python FastAPI, Stripe). Crystal clear and well-scoped for screening, though minor deduction for no explicit time constraint. Strong trade-off testing (safety considerations) differentiates strong entry-level candidates.",
           "composite": 9.333333333333334
         }
       },
@@ -2245,7 +2245,7 @@
           "relevance": 9,
           "clarity": 9,
           "discriminative": 10,
-          "reasoning": "Relevance: Directly targets core role skill (tail sampling) with exact tech stack (OpenTelemetry, Kafka, ClickHouse, Go); minor -1 for assuming Kafka/ClickHouse not explicitly listed. Clarity: Precise scope, constraints, and expectations; no bundling or vagueness. Discriminative: Probes deep applied knowledge, trade-offs, scalability, and edge cases like rare events, strongly separating strong candidates.",
+          "reasoning": "Relevance: Directly targets core role skill (tail sampling in span pipeline) with exact tech (OpenTelemetry, Kafka, ClickHouse, Go); minor ding as ClickHouse storage not explicitly core but fits optimization. Clarity: Precise scope, constraints (0.1%, high-volume), unambiguous despite length. Discriminative: Excellent at probing deep trade-offs, scalability, fault-tolerance, and rare event handling, strongly separating experts.",
           "composite": 9.333333333333334
         }
       },
@@ -2257,7 +2257,7 @@
           "relevance": 9,
           "clarity": 8,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core role skills (feature engineering, LTR pipelines) with perfect tech stack alignment (Elasticsearch); no red flags. Clarity: Clear intent and well-scoped, but lacks explicit constraints like time or scale metrics (-1 for missing constraints, -1 for 'design' without tight bounds). Discriminative: Excellent at probing applied knowledge, trade-offs (scalability, quality), and deep understanding; strong separation potential.",
+          "reasoning": "Relevance: Directly targets core role skills (feature engineering, LTR pipelines) with minor ding for specifying Elasticsearch (-1, not in role desc). Clarity: Well-formed and scoped but lacks explicit constraints like time/depth (-1, 8 range) or A/B testing mention. Discriminative: Excellent at probing applied ML engineering, trade-offs (scalability, quality), distinguishes deep thinkers from superficial ones.",
           "composite": 8.666666666666666
         }
       },
@@ -2269,7 +2269,7 @@
           "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly targets core state synchronization and room-based multiplayer (key role focus), specifies exact tech stack (Go, WebSocket, Redis); minor deduction as anti-cheat/matchmaking not covered. Clarity: Well-scoped design question with clear constraints (rooms, immediate reflection, same-room only), no bundling or vagueness. Discriminative: Requires applied knowledge of real-time systems, trade-offs in latency/disconnections, strong separation of strong vs weak candidates.",
+          "reasoning": "Relevance: Directly tests core state synchronization for multiplayer game backend with exact tech stack (Go, WebSocket, Redis); minor deduction as role also emphasizes matchmaking/anti-cheat. Clarity: Crystal clear scope (room-based, immediate client reflection, specific tech), well-constrained for screening. Discriminative: Requires applied knowledge of real-time systems, trade-offs in latency/disconnections, strong separation of strong vs weak candidates.",
           "composite": 9.0
         }
       },
@@ -2281,7 +2281,7 @@
           "relevance": 10,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core data freshness checks in Snowflake using dbt/Great Expectations, matching role's warehouse pipeline monitoring focus; no red flags. Clarity: Precise, well-scoped steps with no ambiguity or bundling issues. Discriminative: Requires applied knowledge of tool integration, scheduling, and alerting logic, testing trade-offs like window thresholds; not mere recall.",
+          "reasoning": "Relevance: Directly targets core data quality monitoring (freshness checks) in Snowflake warehouse with exact tools (dbt, Great Expectations) from role. No red flags. Clarity: Precise, well-scoped steps; minor vagueness on scheduling details but excellent overall. Discriminative: Requires applied knowledge of tool integration, configuration, and alerting logic for strong candidate separation; tests trade-offs implicitly (e.g., time windows).",
           "composite": 9.333333333333334
         }
       },
@@ -2293,7 +2293,7 @@
           "relevance": 10,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Perfectly matches role's core requirements (namespace isolation, quotas, TTL cleanup) and specifies exact tech stack (Kubernetes, ArgoCD, Terraform, Go). No red flags.\nClarity: Crystal clear, well-scoped high-level design with specific requirements; minor deduction for lacking explicit time/format constraints typical in screening.\nDiscriminative: Strong test of applied knowledge, trade-offs in multi-tool integration, and deep understanding; distinguishes candidates who can architect vs. superficial knowledge. Not overly broad for screening.",
+          "reasoning": "Relevance: Perfectly matches role's core requirements (namespace isolation, quotas, TTL cleanup) and specifies exact tech stack (Kubernetes, ArgoCD, Terraform, Go). No red flags.\nClarity: Crystal clear, well-scoped high-level design with specific requirements and components; minor deduction for lacking explicit time/format constraints.\nDiscriminative: Tests deep applied knowledge, trade-offs in system design, and integration of multiple tools, strongly separating strong candidates.",
           "composite": 9.333333333333334
         }
       },
@@ -2305,7 +2305,7 @@
           "relevance": 2,
           "clarity": 3,
           "discriminative": 4,
-          "reasoning": "Relevance: Directly mentions read replica routing (core skill), but incomplete question provides no task/context to test implementation; superficially relevant (-3 generic/incomplete, -2 misses role focus like lag handling). Clarity: Incomplete sentence trails off, multiple interpretations of what's asked (implement? explain?), grammatically broken (-2). Discriminative: Vague setup without problem to solve tests nothing substantial.",
+          "reasoning": "Relevance: Directly mentions read replica routing (core to role) but no role description provided to confirm tech stack; feels generic/incomplete (-3 generic). Clarity: Incomplete question cuts off mid-sentence, leaving formula undefined and no actual ask (multiple interpretations, broken). Discriminative: Partial setup hints at lag/trade-offs but no task specified, so trivial or impossible to answer properly.",
           "composite": 3.0
         }
       },
@@ -2317,7 +2317,7 @@
           "relevance": 10,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Perfectly matches role's core skills (GitOps, multi-env promotion, approvals, rollbacks) with specified tools like ArgoCD; no red flags. Clarity: Crystal clear and well-scoped for screening, minor deduction for lacking explicit time/format constraints. Discriminative: Excellent at testing applied knowledge, trade-offs (security/reliability decisions), and architecture depth to separate strong candidates.",
+          "reasoning": "Relevance: Perfectly matches role's core focus on GitOps pipelines, multi-env promotion, approvals, rollbacks; directly tests required skills with relevant tools (ArgoCD aligns with GitOps, GitHub Actions common for CI/CD). No red flags. Clarity: Well-scoped design question with specific components listed; minor deduction as no explicit time/format constraints but excellent for screening. Discriminative: Requires architecture, trade-offs (security/reliability decisions), applied GitOps knowledge; strong separation of strong vs weak candidates. Minor deduction for potential breadth exceeding 10min if overly verbose.",
           "composite": 9.333333333333334
         }
       },
@@ -2329,7 +2329,7 @@
           "relevance": 10,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core role responsibilities (PRR, reliability standards, SRE practices) with Kubernetes example fitting modern infra; no red flags. Clarity: Well-scoped scenario with clear components requested; minor deduction for not specifying response format/length. Discriminative: Requires applied SRE knowledge, trade-offs in metrics/SLAs, and evaluation reasoning, strongly separating experienced candidates; concrete example adds depth without being too broad.",
+          "reasoning": "Relevance: Directly tests core role responsibilities (reliability standards, PRR, SRE practices) with Kubernetes context fitting production deployment; no red flags. Clarity: Well-scoped scenario with specific asks (metrics, failure modes, response), minor deduction for lacking explicit time/format constraints. Discriminative: Requires applied SRE knowledge, trade-offs in SLAs/metrics, and evaluation skills, strongly separating experienced SREs from juniors; not mere recall.",
           "composite": 9.333333333333334
         }
       },
@@ -2341,7 +2341,7 @@
           "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests WireMock (core API mocking tool) for request matching via headers, response templating, and conditional responses\u2014perfect match for role's API mocking, request matching, response templating needs (-0 red flags). Clarity: Precise scenarios with exact headers/conditions, unambiguous templating requirement, well-scoped for screening. Discriminative: Requires applied WireMock knowledge (stubs, matchers, transformers), trade-offs in header matching/templating, distinguishes those who can configure vs. theorize.",
+          "reasoning": "Relevance: Directly tests WireMock (core for API mocking), request matching via headers, response templating, and conditional responses - matches role's focus perfectly (-0 red flags). Clarity: Precise scenarios, specific headers/responses, well-scoped for screening, unambiguous. Discriminative: Requires applied WireMock knowledge (matchers, transformers, templating), trade-offs in setup, distinguishes practical expertise from theory.",
           "composite": 9.0
         }
       },
@@ -2350,11 +2350,11 @@
         "role_title": "Senior Backend Engineer - Audit Logging",
         "question": "How would you design a tamper-proof audit logging system using Go, Kafka, and ClickHouse, ensuring that log entries are immutable, securely stored, and can be queried efficiently for compliance purposes?",
         "scores": {
-          "relevance": 9,
-          "clarity": 8,
+          "relevance": 10,
+          "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly targets core role skills (tamper-proof storage, immutability, querying) using exact tech stack (Go, Kafka, ClickHouse); minor deduction for no explicit retention policy mention (-1). Clarity: Clear intent and scope for screening, but lacks time/format constraints (-1) and is slightly design-heavy. Discriminative: Excellent at testing trade-offs in immutability, streaming, and querying with specific stack, separating strong architects from weak ones.",
-          "composite": 8.666666666666666
+          "reasoning": "Relevance: Directly tests core role skills (tamper-proof storage, immutability, querying for compliance) using exact tech stack (Go, Kafka, ClickHouse). Clarity: Crystal clear intent and scope for screening, minor deduction for lacking explicit time/format constraints. Discriminative: Requires deep trade-offs in immutability, distributed systems, and tech integration, strongly separating strong candidates.",
+          "composite": 9.333333333333334
         }
       },
       {
@@ -2365,7 +2365,7 @@
           "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Directly tests core role skills (model loading, batching, monitoring) with exact tech (FastAPI, .pkl); clear scope for entry-level; probes applied knowledge, trade-offs (batching benefits, Redis use); minor ding for unmentioned Redis but highly relevant to production deployment. No red flags.",
+          "reasoning": "Directly tests core role skills (model loading from .pkl, FastAPI deployment, batching, monitoring) for entry-level ML API engineer. Crystal clear with specific components and scope; asks for applied structure + explanations of trade-offs (batching benefits, Redis use), distinguishing strong candidates. Minor ding for assuming Redis familiarity, but fits production context well.",
           "composite": 9.0
         }
       },
@@ -2377,7 +2377,7 @@
           "relevance": 10,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly targets core role skills (batch processing, bank payouts, validation, reconciliation) with exact tech domain focus; no red flags. Clarity: Well-scoped system design with specific scale (10k+ merchants), components (data flow, error handling, auditability), and constraints; minor deduction for no explicit time limit. Discriminative: Probes deep applied knowledge, trade-offs (failures, consistency), and system thinking to separate strong architects from basic coders; appropriately scoped for screening (~10min outline).",
+          "reasoning": "Relevance: Perfectly matches role's core focus on payout systems, batch processing, bank handling, validation, and reconciliation; no red flags. Clarity: Crystal clear with specific scale (10k+ merchants), requirements, and scoped to approach/data flow/error handling; minor deduction for lacking exact time/format constraints. Discriminative: Tests applied system design, trade-offs in failures/consistency/auditability, strongly separates candidates with real-world understanding from superficial ones; not trivial or overly broad.",
           "composite": 9.333333333333334
         }
       },
@@ -2389,7 +2389,7 @@
           "relevance": 9,
           "clarity": 8,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly targets core role skills (continuous profiling, flame graphs, baseline comparison) and specifies Go/K8s matching infrastructure focus (-1 for introducing Pyroscope, unmentioned in role). Clarity: Well-scoped with clear components but lacks explicit constraints like scale or time (-2 for minor missing constraints). Discriminative: Requires applied design knowledge, trade-offs in collection/storage/analysis/regressions, strongly separates capable candidates.",
+          "reasoning": "Relevance: Directly tests core skills (continuous profiling, flame graphs, baseline comparison) and matches role focus; minor ding for specifying Pyroscope (not in role desc, -1) but it's profiling infra. Clarity: Well-scoped with specifics but lacks minor constraints like scale (-1 from 9). Discriminative: Requires applied design knowledge, trade-offs in K8s/Pyroscope/Go, strong separation of strong vs weak candidates.",
           "composite": 8.666666666666666
         }
       },
@@ -2401,7 +2401,7 @@
           "relevance": 9,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Directly tests core Elasticsearch/search platform optimization skills critical for defining enterprise strategy and operational excellence; minor deduction as role doesn't explicitly list ES but it's central to 'search platform' (-1). Clarity: Crystal clear scenario with specific issues, well-scoped for screening without ambiguity or missing constraints. Discriminative: Excellent at separating candidates via trade-offs (e.g., query rewriting, ngrams, caching, indexing vs. reliability), applied deep knowledge beyond basics.",
+          "reasoning": "Relevance: Directly tests core Elasticsearch/search platform optimization skills critical for defining enterprise strategy and operational excellence (-0 red flags). Clarity: Crystal clear scenario with specific issues, well-scoped for screening (no red flags). Discriminative: Requires deep applied knowledge of ES query pitfalls, caching, diagnosis (logs/metrics), and trade-offs (e.g., ngrams vs wildcards, query rewriting), strongly separating experts from juniors.",
           "composite": 9.0
         }
       },
@@ -2413,7 +2413,7 @@
           "relevance": 10,
           "clarity": 9,
           "discriminative": 9,
-          "reasoning": "Relevance: Perfectly matches role's focus on streaming infrastructure, event schemas (implied), delivery guarantees (exactly-once), and fan-out patterns; directly tests core skills with throughput spec. Clarity: Crystal clear and well-scoped for screening, specific requirements given; minor deduction for no explicit time/format constraint. Discriminative: Excellent at testing architecture trade-offs, tool choices, and deep understanding of exactly-once/fan-out challenges, strongly separates strong candidates.",
+          "reasoning": "Relevance: Perfectly matches role's focus on streaming infrastructure, event schemas (implied), delivery guarantees (exactly-once), and fan-out patterns; no red flags. Clarity: Crystal clear and well-scoped with throughput and specifics, minor deduction for no explicit time constraint. Discriminative: Tests deep applied knowledge, trade-offs in tools/architecture, fan-out, and system-level guarantees, strongly separates candidates; not trivial or recall-based.",
           "composite": 9.333333333333334
         }
       }
