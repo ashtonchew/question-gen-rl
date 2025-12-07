@@ -32,17 +32,22 @@ class QuestionGenEnv(BaseTextEnv):
         self._prompt: Optional[str] = None
         self._role_id: Optional[str] = None
 
-    def _extract_prompt_text(self, prompt: List[Dict[str, Any]]) -> str:
-        """Extract text content from conversation format prompt."""
-        # SkyRL passes prompt as ConversationType (List of message dicts)
-        # Extract the user message content
-        for msg in prompt:
-            if msg.get("role") == "user":
-                return msg.get("content", "")
-        # Fallback: if no user message, try first message or join all
-        if prompt:
-            return prompt[0].get("content", str(prompt))
-        return ""
+    def _extract_prompt_text(self, prompt) -> str:
+        """Extract text content from prompt (handles both str and conversation format)."""
+        # Handle plain string prompt
+        if isinstance(prompt, str):
+            return prompt
+
+        # Handle conversation format (List of message dicts)
+        if isinstance(prompt, list):
+            for msg in prompt:
+                if isinstance(msg, dict) and msg.get("role") == "user":
+                    return msg.get("content", "")
+            # Fallback: first message content or string representation
+            if prompt and isinstance(prompt[0], dict):
+                return prompt[0].get("content", str(prompt))
+
+        return str(prompt)
 
     def _extract_role_id(self, prompt_text: str) -> Optional[str]:
         """Extract role_id from prompt text (format: **ID:** <id>)."""
@@ -88,14 +93,14 @@ class QuestionGenEnv(BaseTextEnv):
         if len(question) > self.config.max_question_length:
             question = question[:self.config.max_question_length]
 
-        # Guard against step() being called before init() or with empty prompt
+        # Guard against missing or empty prompt
         if not self._prompt:
             return BaseTextEnvStepOutput(
                 observation="",
                 reward=-1.0,
                 terminated=True,
                 truncated=False,
-                info={"error": "step() called before init()"}
+                info={"error": "No prompt available (init() not called or prompt extraction failed)"}
             )
 
         # Get reward from judge - use stored prompt as role context
