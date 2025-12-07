@@ -15,6 +15,7 @@ def format_prompt(role: dict) -> str:
     return f"""You are a technical recruiter creating screening questions.
 
 ## Role: {role['title']}
+**ID:** {role['id']}
 **Level:** {role['level']}
 **Focus Area:** {focus}
 **Tech Stack:** {stack_str}

@@ -1,4 +1,5 @@
 """SkyRL environment for technical question generation."""
+import re
 from dataclasses import dataclass
 from typing import Optional, List, Dict, Any
 
@@ -29,6 +30,7 @@ class QuestionGenEnv(BaseTextEnv):
         super().__init__()
         self.config = config or QuestionGenEnvConfig()
         self._prompt: Optional[str] = None
+        self._role_id: Optional[str] = None
 
     def _extract_prompt_text(self, prompt: List[Dict[str, Any]]) -> str:
         """Extract text content from conversation format prompt."""
@@ -42,6 +44,11 @@ class QuestionGenEnv(BaseTextEnv):
             return prompt[0].get("content", str(prompt))
         return ""
 
+    def _extract_role_id(self, prompt_text: str) -> Optional[str]:
+        """Extract role_id from prompt text (format: **ID:** <id>)."""
+        match = re.search(r'\*\*ID:\*\*\s*(\S+)', prompt_text)
+        return match.group(1) if match else None
+
     def init(self, prompt):
         """Initialize the environment with the prompt from the dataset.
 
@@ -53,6 +60,7 @@ class QuestionGenEnv(BaseTextEnv):
         """
         # Store the prompt text for use in step()
         self._prompt = self._extract_prompt_text(prompt)
+        self._role_id = self._extract_role_id(self._prompt)
         return prompt, {}
 
     def step(self, action: str) -> BaseTextEnvStepOutput:
@@ -80,6 +88,16 @@ class QuestionGenEnv(BaseTextEnv):
         if len(question) > self.config.max_question_length:
             question = question[:self.config.max_question_length]
 
+        # Guard against step() being called before init()
+        if self._prompt is None:
+            return BaseTextEnvStepOutput(
+                observation="",
+                reward=-1.0,
+                terminated=True,
+                truncated=False,
+                info={"error": "step() called before init()"}
+            )
+
         # Get reward from judge - use stored prompt as role context
         reward, judge_details = judge_question(
             role_description=self._prompt,
@@ -94,5 +112,6 @@ class QuestionGenEnv(BaseTextEnv):
             info={
                 "question": question,
                 "judge_scores": judge_details,
+                "role_id": self._role_id,
             }
         )
