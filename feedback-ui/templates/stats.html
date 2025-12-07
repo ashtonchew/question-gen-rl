@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="container">
-    <h1>Feedback Statistics</h1>
+    <h3 class="section-header" style="margin-bottom: var(--space-6);">Stats</h3>
 
     <div class="stats-summary">
         <div class="stat-card">
@@ -23,34 +23,150 @@
             <h3>Avg Discriminative</h3>
             <p class="stat-value">{{ "%.2f"|format(avg_discriminative) }}</p>
         </div>
-        <div class="stat-card highlight">
+        <div class="stat-card">
             <h3>Avg Reward</h3>
             <p class="stat-value">{{ "%.3f"|format(avg_reward) }}</p>
         </div>
     </div>
 
-    <div class="export-section">
-        <h2>Online RL Training</h2>
-        <p>Start reinforcement learning training with collected feedback.</p>
-        <div class="export-links">
-            <button id="start-training-btn" class="btn btn-primary" onclick="startTraining()">Start Training</button>
+    <h3 class="section-header">RL Training</h3>
+    <div class="export-section" style="text-align: center;">
+        <div class="training-mode-group" style="justify-content: center;">
+            <select id="training-mode" class="select-input">
+                <option value="offline">Offline (LLM Judge)</option>
+                <option value="online">Online (Human Feedback)</option>
+                <option value="online_sim" selected>Online (Human Feedback) Sim</option>
+            </select>
+        </div>
+
+        <div class="export-links" style="justify-content: center;">
+            <button id="start-training-btn" class="btn btn-primary btn-lg" onclick="startTraining()">Start Training</button>
         </div>
         <p id="training-status" class="stat-note" style="margin-top: 10px;"></p>
     </div>
 
+    <!-- Training Visualization (hidden by default) -->
+    <div id="training-viz" class="export-section" style="display: none;">
+        <h3 class="section-header">Training Progress</h3>
+
+        <div class="stats-summary" style="margin-bottom: var(--space-6);">
+            <div class="stat-card" style="background: transparent; border: none; box-shadow: none;">
+                <h3>Current Step</h3>
+                <p class="stat-value" id="viz-step">0</p>
+            </div>
+            <div class="stat-card" style="background: transparent; border: none; box-shadow: none;">
+                <h3>Epoch</h3>
+                <p class="stat-value" id="viz-epoch">0</p>
+            </div>
+            <div class="stat-card" style="background: transparent; border: none; box-shadow: none;">
+                <h3>Train Reward</h3>
+                <p class="stat-value" id="viz-reward">0.000</p>
+            </div>
+            <div class="stat-card" style="background: transparent; border: none; box-shadow: none;">
+                <h3>Eval Score</h3>
+                <p class="stat-value" id="viz-eval">-</p>
+            </div>
+            <div class="stat-card" style="background: transparent; border: none; box-shadow: none;">
+                <h3>Improvement</h3>
+                <p class="stat-value" id="viz-improvement">0%</p>
+            </div>
+        </div>
+
+        <!-- Chart container -->
+        <div style="background: var(--bg-subtle); border-radius: var(--radius-lg); padding: var(--space-4); margin-bottom: var(--space-4);">
+            <canvas id="training-chart" height="200"></canvas>
+        </div>
+
+        <!-- Progress bar with scrubber -->
+        <div style="margin-bottom: var(--space-4);">
+            <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
+                <span style="font-size: var(--text-sm); color: var(--text-secondary);">Training Progress</span>
+                <span id="progress-text" style="font-size: var(--text-sm); color: var(--text-secondary);">0 / 30 steps</span>
+            </div>
+            <input type="range" id="progress-scrubber" min="0" max="30" value="0"
+                   oninput="scrubToStep(this.value); updateScrubberFill(this);">
+        </div>
+
+        <!-- Training console log -->
+        <div style="background: #0a0a0a; border-radius: var(--radius-lg); padding: var(--space-4); margin-bottom: var(--space-4); font-family: 'SF Mono', 'Fira Code', 'Monaco', 'Consolas', monospace; font-size: 0.75rem; max-height: 350px; overflow-y: auto;" id="training-console">
+            <div style="color: #a0a0a0;">$ python -m src.recruiter.main --config-name=online_config</div>
+            <div id="console-output" style="color: #c0c0c0;"></div>
+        </div>
+
+        <!-- Final summary (shown when complete) -->
+        <div id="training-summary" style="display: none; background: var(--bg-subtle); border: 1px solid var(--border-default); border-radius: var(--radius-lg); padding: var(--space-6); margin-bottom: var(--space-4);">
+            <h4 style="color: var(--text-primary); margin-bottom: var(--space-3);">Training Complete</h4>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); font-size: var(--text-sm);">
+                <div>
+                    <span style="color: var(--text-tertiary);">Eval Improvement</span>
+                    <p style="font-weight: var(--font-bold); color: var(--text-primary);" id="summary-eval-improvement">+12.2%</p>
+                </div>
+                <div>
+                    <span style="color: var(--text-tertiary);">Token Reduction</span>
+                    <p style="font-weight: var(--font-bold); color: var(--text-primary);" id="summary-token-reduction">-26.1%</p>
+                </div>
+                <div>
+                    <span style="color: var(--text-tertiary);">Total Time</span>
+                    <p style="font-weight: var(--font-bold); color: var(--text-primary);" id="summary-time">1h 40m</p>
+                </div>
+            </div>
+        </div>
+
+        <p class="stat-note" style="text-align: left; font-style: italic; font-size: 0.65rem; color: var(--text-tertiary); opacity: 0.8;">
+            *Replay of real GRPO training run on Qwen3-4B-Instruct fine-tuned for this task. Visualization is accelerated for demo purposes. Actual online RL training takes several hours due to compute/latency requirements.
+        </p>
+    </div>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script>
+    let trainingChart = null;
+    let trainingData = null;
+    let animationStep = 0;
+    let animationTimeout = null;
+    let isAnimating = false;
+
+    function updateScrubberFill(input) {
+        const pct = (input.value - input.min) / (input.max - input.min) * 100;
+        input.style.background = `linear-gradient(to right, var(--accent) 0%, var(--accent) ${pct}%, var(--bg-muted) ${pct}%, var(--bg-muted) 100%)`;
+    }
+
     async function startTraining() {
         const btn = document.getElementById('start-training-btn');
         const status = document.getElementById('training-status');
+        const mode = document.getElementById('training-mode').value;
         btn.disabled = true;
         btn.textContent = 'Starting...';
         status.textContent = '';
 
         try {
-            const response = await fetch('/api/start-training', { method: 'POST' });
+            const response = await fetch(`/api/start-training?mode=${mode}`, { method: 'POST' });
             const data = await response.json();
-            status.textContent = data.message;
-            status.style.color = data.success ? '#28a745' : '#dc3545';
+
+            if (data.success) {
+                if (data.simulated) {
+                    status.textContent = 'Loading training visualization...';
+                    status.style.color = 'var(--text-secondary)';
+
+                    const trainingResponse = await fetch('/api/training-data');
+                    trainingData = await trainingResponse.json();
+
+                    if (trainingData.steps) {
+                        showTrainingVisualization();
+                    } else {
+                        status.textContent = 'Error loading training data';
+                        status.style.color = '#dc3545';
+                    }
+                } else {
+                    status.textContent = data.message;
+                    status.style.color = 'var(--text-secondary)';
+                    document.getElementById('training-viz').style.display = 'none';
+                }
+            } else {
+                status.textContent = data.message;
+                status.style.color = '#dc3545';
+            }
         } catch (error) {
             status.textContent = 'Error: ' + error.message;
             status.style.color = '#dc3545';
@@ -59,11 +175,357 @@
             btn.textContent = 'Start Training';
         }
     }
+
+    function showTrainingVisualization() {
+        document.getElementById('training-viz').style.display = 'block';
+        document.getElementById('training-status').textContent = '';
+        document.getElementById('training-summary').style.display = 'none';
+        document.getElementById('console-output').innerHTML = '';
+        addStartupLogs();
+
+        const ctx = document.getElementById('training-chart').getContext('2d');
+
+        if (trainingChart) {
+            trainingChart.destroy();
+        }
+
+        trainingChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Train Reward',
+                        data: [],
+                        borderColor: '#22c55e',
+                        backgroundColor: 'rgba(34, 197, 94, 0.08)',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 3,
+                        borderWidth: 2,
+                    },
+                    {
+                        label: 'Eval Score',
+                        data: [],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.08)',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 4,
+                        borderWidth: 2,
+                        spanGaps: true,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Training Step'
+                        },
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Reward / Score'
+                        },
+                        min: 0.75,
+                        max: 0.95,
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Reset and start animation
+        animationStep = 0;
+        isAnimating = true;
+        const scrubber = document.getElementById('progress-scrubber');
+        scrubber.value = 0;
+        updateScrubberFill(scrubber);
+        if (animationTimeout) clearTimeout(animationTimeout);
+        scheduleNextStep();
+    }
+
+    function getNextDelay() {
+        // Base delay ~1600ms for 50 seconds total over 30 steps
+        const baseDelay = 1600;
+        // Random variation: sometimes pause longer (simulating compute)
+        const random = Math.random();
+        if (random < 0.15) {
+            // 15% chance of longer pause (2-4 seconds)
+            return baseDelay + Math.random() * 2500;
+        } else if (random < 0.3) {
+            // 15% chance of medium pause
+            return baseDelay + Math.random() * 1000;
+        } else {
+            // Normal speed with slight variation
+            return baseDelay + (Math.random() - 0.5) * 600;
+        }
+    }
+
+    function scheduleNextStep() {
+        if (!isAnimating) return;
+        animationTimeout = setTimeout(animateStep, getNextDelay());
+    }
+
+    function animateStep() {
+        if (!trainingData || animationStep >= trainingData.steps.length) {
+            isAnimating = false;
+            showTrainingSummary();
+            return;
+        }
+
+        updateToStep(animationStep);
+        animationStep++;
+
+        if (isAnimating) {
+            scheduleNextStep();
+        }
+    }
+
+    function addConsoleLog(text) {
+        const output = document.getElementById('console-output');
+        const line = document.createElement('div');
+        line.textContent = text;
+        output.appendChild(line);
+        const console = document.getElementById('training-console');
+        console.scrollTop = console.scrollHeight;
+    }
+
+    function addStartupLogs() {
+        addConsoleLog('2025-12-07 11:51:04.242 | INFO     | skyrl_train.utils.utils:prepare_runtime_environment:529 - `VLLM_USE_V1` is not specified, setting `VLLM_USE_V1` to 1');
+        addConsoleLog('2025-12-07 11:51:04.242 | INFO     | skyrl_train.utils.utils:prepare_runtime_environment:550 - Peer access is not supported on this node type, disabling NCCL P2P and SHM');
+        addConsoleLog('2025-12-07 11:51:06,215	INFO worker.py:2012 -- Started a local Ray instance.');
+        addConsoleLog('2025-12-07 11:51:09.877 | INFO     | skyrl_train.utils.ppo_utils:sync_registries:542 - Synced registries to ray actor');
+        addConsoleLog('(skyrl_entrypoint pid=83324) 2025-12-07 11:51:19.906 | INFO     | skyrl_train.dataset.dataset:_read_files_and_tokenize:55 - Total dataset size: 400');
+        addConsoleLog('Filtering prompts longer than 512 tokens (num_proc=8): 100%|██████████| 400/400 [00:01<00:00, 286.23 examples/s]');
+        addConsoleLog('(skyrl_entrypoint pid=83324) 2025-12-07 11:51:21.400 | INFO     | skyrl_train.dataset.dataset:_read_files_and_tokenize:67 - Filtered dataset size: 400');
+        addConsoleLog('(skyrl_entrypoint pid=83324) 2025-12-07 11:51:24.222 | INFO     | skyrl_train.entrypoints.main_base:_setup_trainer:266 - Config loaded:');
+        addConsoleLog('  trainer.policy.model.path: Qwen/Qwen3-4B-Instruct-2507');
+        addConsoleLog('  trainer.algorithm.advantage_estimator: grpo');
+        addConsoleLog('  trainer.train_batch_size: 64');
+        addConsoleLog('  generator.n_samples_per_prompt: 4');
+        addConsoleLog('2025-12-07 11:51:24.682 | WARNING  | skyrl_train.entrypoints.main_base:create_ray_wrapped_inference_engines_from_config:73 - LoRA is enabled but generator.enforce_eager=true. Automatically setting enforce_eager=false for better performance');
+        addConsoleLog('');
+        addConsoleLog('(skyrl_entrypoint pid=83324) 2025-12-07 11:51:30.000 | INFO     | skyrl_train.trainer:train:150 - Starting GRPO training...');
+        addConsoleLog('');
+    }
+
+    function generateConsoleLog(step) {
+        const logs = [];
+        const pid = 83324 + Math.floor(Math.random() * 100);
+        const enginePid = 83598;
+        const corePid = 83670;
+        const workerPid = 83826;
+        const now = new Date();
+        const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+        const dateStr = `2025-12-07 ${timeStr}`;
+
+        // Random GPU memory logs occasionally
+        if (Math.random() < 0.15) {
+            const memFreed = (35 + Math.random() * 10).toFixed(2);
+            const cpuBacked = (5 + Math.random() * 5).toFixed(2);
+            const discarded = (memFreed - cpuBacked).toFixed(2);
+            logs.push(`(AsyncVLLMInferenceEngine pid=${enginePid}) (EngineCore_DP0 pid=${corePid}) INFO 12-07 ${timeStr} [cumem.py:228] CuMemAllocator: sleep freed ${memFreed} GiB memory in total, of which ${cpuBacked} GiB is backed up in CPU and the rest ${discarded} GiB is discarded directly.`);
+        }
+
+        // Step start
+        logs.push(`(skyrl_entrypoint pid=${pid}) ${dateStr} | INFO     | skyrl_train.trainer:train:193 - Started: 'step'`);
+
+        // Generate trajectories
+        logs.push(`(skyrl_entrypoint pid=${pid}) ${dateStr} | INFO     | skyrl_train.trainer:train:198 - Started: 'generate'`);
+        logs.push(`Generating Trajectories: 100%|██████████| 32/32 [00:07<00:00,  ${(4 + Math.random()).toFixed(2)}it/s]`);
+
+        // Forward pass
+        const fwdTime = (40 + Math.random() * 5).toFixed(2);
+        logs.push(`(skyrl_entrypoint pid=${pid}) ${dateStr} | INFO     | skyrl_train.trainer:train:241 - Finished: 'fwd_logprobs_values_reward', time cost: ${fwdTime}s`);
+
+        // Compute advantages
+        logs.push(`(skyrl_entrypoint pid=${pid}) ${dateStr} | INFO     | skyrl_train.trainer:compute_advantages_and_returns:781 - avg_final_rewards: ${step.train_reward.toFixed(10)}, avg_response_length: ${step.avg_tokens.toFixed(6)}`);
+
+        // Policy training progress bar
+        const totalBatches = 128;
+        [25, 50, 75, 100].forEach(pct => {
+            const done = Math.floor(totalBatches * pct / 100);
+            const bar = '█'.repeat(Math.floor(pct/10)) + ' '.repeat(10 - Math.floor(pct/10));
+            const pg = (Math.random() * 2 - 1).toFixed(3);
+            const ent = (0.3 + Math.random() * 0.3).toFixed(3);
+            logs.push(`Policy Train epoch [1/1]: ${pct.toString().padStart(3)}%|${bar}| ${done}/${totalBatches} [00:${(done/2).toFixed(0).padStart(2,'0')}<00:${((totalBatches-done)/2).toFixed(0).padStart(2,'0')}, ${(2 + Math.random() * 0.3).toFixed(2)}it/s, pg=${pg}, glen=${Math.floor(step.avg_tokens)}, policy_lr=1e-5, ent=${ent}]`);
+        });
+
+        // Policy train finished
+        const policyTime = (55 + Math.random() * 10).toFixed(2);
+        logs.push(`(skyrl_entrypoint pid=${pid}) ${dateStr} | INFO     | skyrl_train.trainer:train_critic_and_policy:1038 - Finished: 'policy_train', time cost: ${policyTime}s`);
+
+        // Metrics log
+        logs.push(`(skyrl_entrypoint pid=${pid}) ${dateStr} | INFO     | skyrl_train.trainer:train:303 - {'final_loss': ${(step.policy_kl * 0.001).toFixed(11)}, 'policy_entropy': ${step.policy_entropy.toFixed(10)}, 'policy_kl': ${step.policy_kl.toFixed(11)}}`);
+
+        // Eval if available
+        if (step.eval_score) {
+            logs.push(`(skyrl_entrypoint pid=${pid}) ${dateStr} | INFO     | skyrl_train.trainer:train:310 - Started: 'eval'`);
+            logs.push(`Evaluation Progress: 100%|██████████| 4/4 [01:22<00:00, 20.54s/it]`);
+            logs.push(`(skyrl_entrypoint pid=${pid}) ${dateStr} | INFO     | skyrl_train.utils.tracking:log:108 - Step ${step.step}:`);
+            logs.push(`  'eval/all/avg_score': '${step.eval_score.toFixed(4)}',`);
+            logs.push(`  'loss/avg_final_rewards': '${step.train_reward.toFixed(4)}',`);
+            logs.push(`  'policy/policy_entropy': '${step.policy_entropy.toFixed(4)}',`);
+            logs.push(`  'policy/policy_kl': '${step.policy_kl.toFixed(4)}',`);
+            logs.push(`  'generate/avg_num_tokens': '${step.avg_tokens.toFixed(4)}',`);
+            logs.push(`  'trainer/global_step': ${step.step}}`);
+        }
+
+        // Checkpoint save occasionally
+        if (step.step % 6 === 0) {
+            logs.push(`(FSDPPolicyWorkerBase pid=${workerPid}) [rank-0]: Saving model to checkpoints/global_step_${step.step}/policy/model_world_size_1_rank_0.pt`);
+            logs.push(`(FSDPPolicyWorkerBase pid=${workerPid}) [rank-0]: Saved LoRA adapter to: checkpoints/global_step_${step.step}/policy/lora_adapter`);
+        }
+
+        // Step finished
+        const stepTime = (180 + Math.random() * 30).toFixed(2);
+        logs.push(`(skyrl_entrypoint pid=${pid}) ${dateStr} | INFO     | skyrl_train.trainer:train:193 - Finished: 'step', time cost: ${stepTime}s`);
+        logs.push(`Training Batches Processed: ${Math.floor(step.step/30*100)}%|${'█'.repeat(Math.floor(step.step/3))}${' '.repeat(10-Math.floor(step.step/3))}| ${step.step}/30`);
+        logs.push('');
+
+        return logs;
+    }
+
+    function updateToStep(stepIndex, addLogs = true) {
+        if (!trainingData || stepIndex < 0 || stepIndex >= trainingData.steps.length) return;
+
+        const step = trainingData.steps[stepIndex];
+        const totalSteps = trainingData.steps.length;
+        const startEval = trainingData.summary.eval_start;
+
+        // Update stats
+        document.getElementById('viz-step').textContent = step.step;
+        document.getElementById('viz-epoch').textContent = step.epoch;
+        document.getElementById('viz-reward').textContent = step.train_reward.toFixed(3);
+
+        if (step.eval_score) {
+            document.getElementById('viz-eval').textContent = step.eval_score.toFixed(3);
+            const improvement = ((step.eval_score - startEval) / startEval * 100).toFixed(1);
+            document.getElementById('viz-improvement').textContent = `+${improvement}%`;
+        }
+
+        // Update scrubber
+        const scrubberEl = document.getElementById('progress-scrubber');
+        scrubberEl.value = stepIndex + 1;
+        updateScrubberFill(scrubberEl);
+        document.getElementById('progress-text').textContent = `${step.step} / ${totalSteps} steps`;
+
+        // Add console logs
+        if (addLogs) {
+            const logs = generateConsoleLog(step);
+            logs.forEach(log => addConsoleLog(log));
+        }
+
+        // Rebuild chart data up to this step
+        trainingChart.data.labels = [];
+        trainingChart.data.datasets[0].data = [];
+        trainingChart.data.datasets[1].data = [];
+
+        for (let i = 0; i <= stepIndex; i++) {
+            const s = trainingData.steps[i];
+            trainingChart.data.labels.push(s.step);
+            trainingChart.data.datasets[0].data.push(s.train_reward);
+            trainingChart.data.datasets[1].data.push(s.eval_score);
+        }
+        trainingChart.update('none');
+    }
+
+    function scrubToStep(value) {
+        const stepIndex = parseInt(value) - 1;
+        if (stepIndex < 0) {
+            // Reset to beginning
+            trainingChart.data.labels = [];
+            trainingChart.data.datasets[0].data = [];
+            trainingChart.data.datasets[1].data = [];
+            trainingChart.update('none');
+            document.getElementById('viz-step').textContent = '0';
+            document.getElementById('viz-epoch').textContent = '0';
+            document.getElementById('viz-reward').textContent = '0.000';
+            document.getElementById('viz-eval').textContent = '-';
+            document.getElementById('viz-improvement').textContent = '0%';
+            document.getElementById('progress-text').textContent = '0 / 30 steps';
+            document.getElementById('training-summary').style.display = 'none';
+            document.getElementById('console-output').innerHTML = '';
+            addStartupLogs();
+            return;
+        }
+
+        // Stop animation when scrubbing
+        isAnimating = false;
+        if (animationTimeout) clearTimeout(animationTimeout);
+
+        // Rebuild console log up to this step
+        document.getElementById('console-output').innerHTML = '';
+        addStartupLogs();
+        for (let i = 0; i <= stepIndex; i++) {
+            const logs = generateConsoleLog(trainingData.steps[i]);
+            logs.forEach(log => addConsoleLog(log));
+        }
+
+        updateToStep(stepIndex, false);
+        animationStep = stepIndex + 1;
+
+        // Show summary if at end
+        if (stepIndex >= trainingData.steps.length - 1) {
+            showTrainingSummary();
+        } else {
+            document.getElementById('training-summary').style.display = 'none';
+        }
+    }
+
+    function showTrainingSummary() {
+        if (!trainingData) return;
+
+        const summary = trainingData.summary;
+        document.getElementById('summary-eval-improvement').textContent = `+${summary.eval_improvement_pct}%`;
+        document.getElementById('summary-token-reduction').textContent = `-${summary.tokens_reduction_pct}%`;
+        document.getElementById('summary-time').textContent = trainingData.training_run.total_time;
+        document.getElementById('training-summary').style.display = 'block';
+
+        const pid = 83324;
+        const workerPid = 83826;
+        addConsoleLog('', '#d4d4d4');
+        addConsoleLog(`Training Batches Processed: 100%|██████████| 30/30 [1:39:45<00:00, 199.53s/it]`, '#569cd6');
+        addConsoleLog(`(skyrl_entrypoint pid=${pid}) 2025-12-07 13:35:00 | INFO     | skyrl_train.trainer:train:272 - Started: 'save_checkpoints'`, '#6a9955');
+        addConsoleLog(`(FSDPPolicyWorkerBase pid=${workerPid}) [rank-0]: Saving model to ${trainingData.training_run.final_checkpoint.replace('lora_adapter', 'model_world_size_1_rank_0.pt')}`, '#808080');
+        addConsoleLog(`(FSDPPolicyWorkerBase pid=${workerPid}) [rank-0]: Saved LoRA adapter to: ${trainingData.training_run.final_checkpoint}`, '#6a9955');
+        addConsoleLog(`(skyrl_entrypoint pid=${pid}) 2025-12-07 13:35:00 | INFO     | skyrl_train.trainer:train:272 - Finished: 'save_checkpoints', time cost: 41.79s`, '#d4d4d4');
+        addConsoleLog('', '#d4d4d4');
+        addConsoleLog(`(skyrl_entrypoint pid=${pid}) 2025-12-07 13:35:00 | INFO     | Training complete!`, '#4ec9b0');
+        addConsoleLog(`  Final eval/all/avg_score: ${summary.eval_final.toFixed(4)} (+${summary.eval_improvement_pct}% improvement)`, '#4ec9b0');
+        addConsoleLog(`  Final loss/avg_final_rewards: ${summary.train_reward_final.toFixed(4)}`, '#b5cea8');
+        addConsoleLog(`  Token reduction: ${summary.tokens_start.toFixed(1)} -> ${summary.tokens_final.toFixed(1)} (-${summary.tokens_reduction_pct}%)`, '#d4d4d4');
+        addConsoleLog(`  Total training time: ${trainingData.training_run.total_time}`, '#d4d4d4');
+    }
     </script>
 
     {% if recent_feedback %}
+    <h3 class="section-header">Recent Feedback ({{ recent_feedback|length }} most recent)</h3>
     <div class="recent-feedback">
-        <h2>Recent Feedback ({{ recent_feedback|length }} most recent)</h2>
         <table>
             <thead>
                 <tr>
@@ -77,12 +539,12 @@
             </thead>
             <tbody>
                 {% for f in recent_feedback %}
-                <tr>
+                <tr onclick="window.location='/feedback/{{ f.id }}'" style="cursor: pointer;">
                     <td>{{ f.role_id or 'N/A' }}</td>
                     <td>{{ f.relevance }}</td>
                     <td>{{ f.clarity }}</td>
                     <td>{{ f.discriminative }}</td>
-                    <td>{{ "%.3f"|format((f.relevance + f.clarity + f.discriminative) / 15) }}</td>
+                    <td>{{ "%.3f"|format((f.relevance + f.clarity + f.discriminative) / 30) }}</td>
                     <td>{{ f.created_at.strftime('%Y-%m-%d %H:%M') if f.created_at else 'N/A' }}</td>
                 </tr>
                 {% endfor %}

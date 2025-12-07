@@ -1,7 +1,7 @@
 """Database models and setup for feedback storage."""
 from datetime import datetime
 from pathlib import Path
-from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, CheckConstraint
+from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, CheckConstraint, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -50,6 +50,41 @@ class Feedback(Base):
             "source": self.source,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "avg_score": (self.relevance + self.clarity + self.discriminative) / 3
+        }
+
+
+class PendingQuestion(Base):
+    """Queue for questions waiting for human feedback (online RL)."""
+    __tablename__ = "pending_questions"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    request_id = Column(String(50), unique=True, nullable=False)  # Unique ID from training
+    question = Column(Text, nullable=False)
+    role_context = Column(Text, nullable=True)
+    role_id = Column(String(50), nullable=True)
+    status = Column(String(20), default="pending")  # pending, rated, expired
+    relevance = Column(Integer, nullable=True)
+    clarity = Column(Integer, nullable=True)
+    discriminative = Column(Integer, nullable=True)
+    reward = Column(Float, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    rated_at = Column(DateTime, nullable=True)
+
+    def to_dict(self):
+        """Convert to dictionary for JSON response."""
+        return {
+            "id": self.id,
+            "request_id": self.request_id,
+            "question": self.question,
+            "role_context": self.role_context,
+            "role_id": self.role_id,
+            "status": self.status,
+            "relevance": self.relevance,
+            "clarity": self.clarity,
+            "discriminative": self.discriminative,
+            "reward": self.reward,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "rated_at": self.rated_at.isoformat() if self.rated_at else None,
         }
 
 

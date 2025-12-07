@@ -3,8 +3,10 @@ import os
 import json
 import random
 import logging
+import threading
+from queue import Queue, Empty
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Tuple, Optional
 from dotenv import load_dotenv
 from xai_sdk import Client
 from xai_sdk.chat import system, user
@@ -24,6 +26,12 @@ client = Client(api_key=_api_key, timeout=600) if _api_key else None
 
 # Role data cache
 _roles: List[Dict] = []
+
+# Pre-warming cache for questions
+_question_cache: Queue[Tuple[Dict, str]] = Queue(maxsize=3)
+_cache_lock = threading.Lock()
+_warming_thread: Optional[threading.Thread] = None
+_stop_warming = threading.Event()
 
 # System prompt for question generation (same as src/recruiter/prompts.py)
 GENERATOR_SYSTEM_PROMPT = """You are an expert technical recruiter creating screening questions.
@@ -103,3 +111,75 @@ def generate_question(role: Dict) -> str:
     except Exception as e:
         logger.error(f"Error generating question: {e}")
         return f"[Error generating question: {str(e)}]"
+
+
+# ============== Pre-warming Cache System ==============
+
+def _warm_cache():
+    """Background thread to keep the question cache full."""
+    logger.info("Question pre-warming thread started")
+    while not _stop_warming.is_set():
+        try:
+            # Only generate if cache not full
+            if _question_cache.qsize() < 3:
+                role = get_random_role()
+                question = generate_question(role)
+                if not question.startswith("[Error"):
+                    _question_cache.put((role, question), timeout=1)
+                    logger.info(f"Pre-warmed question for {role['id']} (cache size: {_question_cache.qsize()})")
+            else:
+                # Cache is full, wait a bit
+                _stop_warming.wait(0.5)
+        except Exception as e:
+            logger.error(f"Error in pre-warming thread: {e}")
+            _stop_warming.wait(1)
+    logger.info("Question pre-warming thread stopped")
+
+
+def start_warming():
+    """Start the background pre-warming thread."""
+    global _warming_thread
+    with _cache_lock:
+        if _warming_thread is None or not _warming_thread.is_alive():
+            _stop_warming.clear()
+            _warming_thread = threading.Thread(target=_warm_cache, daemon=True)
+            _warming_thread.start()
+            logger.info("Started question pre-warming")
+
+
+def stop_warming():
+    """Stop the background pre-warming thread."""
+    _stop_warming.set()
+    if _warming_thread:
+        _warming_thread.join(timeout=2)
+
+
+def get_prewarmed_question() -> Tuple[Dict, str]:
+    """Get a pre-warmed question from cache, or generate one if cache is empty.
+
+    Returns:
+        (role, question) tuple
+    """
+    # Ensure warming is running
+    start_warming()
+
+    try:
+        # Try to get from cache (non-blocking)
+        role, question = _question_cache.get_nowait()
+        logger.info(f"Served pre-warmed question for {role['id']} (cache size: {_question_cache.qsize()})")
+        return role, question
+    except Empty:
+        # Cache empty, generate synchronously (fallback)
+        logger.warning("Cache empty, generating synchronously")
+        role = get_random_role()
+        question = generate_question(role)
+        return role, question
+
+
+def get_cache_status() -> dict:
+    """Get the current cache status."""
+    return {
+        "size": _question_cache.qsize(),
+        "max_size": 3,
+        "warming_active": _warming_thread is not None and _warming_thread.is_alive()
+    }

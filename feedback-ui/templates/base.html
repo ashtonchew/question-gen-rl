@@ -6,15 +6,11 @@
     <title>{% block title %}Online RL Technical Question Feedback{% endblock %}</title>
 
     <!-- Preconnect for font performance -->
-    <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <!-- Satoshi (primary) from Fontshare -->
-    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet">
-
-    <!-- Plus Jakarta Sans (fallback) from Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Inter from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="/static/styles.css">
 
@@ -24,7 +20,7 @@
 <body>
     <nav>
         <div class="nav-content">
-            <span class="logo">Online RL Technical Question Feedback</span>
+            <a href="/" class="logo">Online RL Technical Question Feedback</a>
             <div class="nav-links">
                 <a href="/">Rate Questions</a>
                 <a href="/stats">Statistics</a>
@@ -34,6 +30,15 @@
     <main>
         {% block content %}{% endblock %}
     </main>
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        <span>Feedback submitted successfully!</span>
+    </div>
     <footer>
         <p>Human Feedback Collection for Question Generation RL</p>
     </footer>
@@ -48,6 +53,25 @@
                 e.preventDefault();
             }
         });
+    });
+
+    // Show toast notification on successful submission
+    document.addEventListener('DOMContentLoaded', function() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('success') === '1') {
+            const toast = document.getElementById('toast');
+            if (toast) {
+                // Small delay to ensure CSS transition works
+                requestAnimationFrame(() => {
+                    toast.classList.add('show');
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                    }, 3000);
+                });
+            }
+            // Clean up URL without reload
+            window.history.replaceState({}, '', window.location.pathname);
+        }
     });
     </script>
     {% block scripts %}{% endblock %}

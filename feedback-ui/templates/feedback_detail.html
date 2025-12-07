@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Feedback Detail - Question Feedback{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>Feedback Detail</h1>
+        <a href="/stats" class="btn btn-secondary">Back to Stats</a>
+    </div>
+
+    <div class="role-info">
+        <h2>{{ role_context.title if role_context and role_context.title else feedback.role_id or 'Unknown Role' }}</h2>
+
+        {% if role_context %}
+        <div class="role-meta">
+            {% if role_context.level %}
+            <div class="badge-group">
+                <span class="badge-label">Level</span>
+                <span class="badge">{{ role_context.level }}</span>
+            </div>
+            {% endif %}
+            {% if role_context.department %}
+            <div class="badge-group">
+                <span class="badge-label">Department</span>
+                <span class="badge">{{ role_context.department }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if role_context.description %}
+        <div class="role-field">
+            <span class="role-field-label">Description</span>
+            <p>{{ role_context.description }}</p>
+        </div>
+        {% endif %}
+
+        {% if role_context.responsibilities %}
+        <div class="role-field">
+            <span class="role-field-label">Responsibilities</span>
+            <ul style="margin-left: 1.5rem; color: var(--text-secondary);">
+                {% for resp in role_context.responsibilities %}
+                <li>{{ resp }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% if role_context.required_skills %}
+        <div class="role-field">
+            <span class="role-field-label">Required Skills</span>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
+                {% for skill in role_context.required_skills %}
+                <span class="badge">{{ skill }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+    </div>
+
+    <div class="question-display">
+        <h3>Question</h3>
+        <blockquote>{{ feedback.question }}</blockquote>
+    </div>
+
+    <div class="stats-summary" style="margin-bottom: 2rem; grid-template-columns: repeat(4, 1fr);">
+        <div class="stat-card">
+            <h3>Relevance</h3>
+            <p class="stat-value">{{ feedback.relevance }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Clarity</h3>
+            <p class="stat-value">{{ feedback.clarity }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Discriminative</h3>
+            <p class="stat-value">{{ feedback.discriminative }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Reward</h3>
+            <p class="stat-value">{{ "%.3f"|format(reward) }}</p>
+        </div>
+    </div>
+
+    {% if feedback.comments %}
+    <div class="export-section" style="text-align: left;">
+        <h2>Comments</h2>
+        <p style="white-space: pre-wrap;">{{ feedback.comments }}</p>
+    </div>
+    {% endif %}
+
+    <div class="export-section" style="text-align: left;">
+        <h2>Metadata</h2>
+        <p><strong>Source:</strong> {{ feedback.source or 'generated' }}</p>
+        <p><strong>Created:</strong> {{ feedback.created_at.strftime('%Y-%m-%d %H:%M:%S') if feedback.created_at else 'N/A' }}</p>
+        <p><strong>Feedback ID:</strong> {{ feedback.id }}</p>
+    </div>
+</div>
+{% endblock %}
