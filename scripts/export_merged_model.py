@@ -212,6 +212,7 @@ def generate_model_card(output_path: str, base_model: str, repo_id: str | None =
 
     readme_content = f"""---
 license: apache-2.0
+library_name: transformers
 base_model: {base_model}
 tags:
   - question-generation
