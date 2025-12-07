@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Rate Question - Question Feedback{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Rate This Question</h1>
+
+    <section class="role-info">
+        <h2>{{ role.title }}</h2>
+        <div class="role-meta">
+            <span class="badge">{{ role.level }}</span>
+            <span class="badge">{{ role.focus }}</span>
+        </div>
+        <p><strong>Tech Stack:</strong> {{ role.stack | join(', ') }}</p>
+        <p><strong>Description:</strong> {{ role.description }}</p>
+        <p><strong>Key Skills:</strong> {{ role.key_skills | join(', ') }}</p>
+    </section>
+
+    <section class="question-display">
+        <h3>Generated Question:</h3>
+        <blockquote>{{ question }}</blockquote>
+    </section>
+
+    <form action="/submit" method="POST" class="rating-form">
+        <input type="hidden" name="question" value="{{ question }}">
+        <input type="hidden" name="role_context" value="{{ role_json }}">
+        <input type="hidden" name="role_id" value="{{ role.id }}">
+
+        <div class="rating-group">
+            <label class="rating-label">
+                <span class="rating-title">Relevance</span>
+                <span class="rating-desc">Does this question test skills actually needed for the role?</span>
+            </label>
+            <div class="radio-group">
+                {% for i in range(1, 6) %}
+                <label class="radio-label">
+                    <input type="radio" name="relevance" value="{{ i }}" required>
+                    <span class="radio-value">{{ i }}</span>
+                </label>
+                {% endfor %}
+            </div>
+            <div class="scale-labels">
+                <span>Poor</span>
+                <span>Excellent</span>
+            </div>
+        </div>
+
+        <div class="rating-group">
+            <label class="rating-label">
+                <span class="rating-title">Clarity</span>
+                <span class="rating-desc">Is the question unambiguous and well-formed?</span>
+            </label>
+            <div class="radio-group">
+                {% for i in range(1, 6) %}
+                <label class="radio-label">
+                    <input type="radio" name="clarity" value="{{ i }}" required>
+                    <span class="radio-value">{{ i }}</span>
+                </label>
+                {% endfor %}
+            </div>
+            <div class="scale-labels">
+                <span>Poor</span>
+                <span>Excellent</span>
+            </div>
+        </div>
+
+        <div class="rating-group">
+            <label class="rating-label">
+                <span class="rating-title">Discriminative Power</span>
+                <span class="rating-desc">Would this question distinguish good candidates from weak ones?</span>
+            </label>
+            <div class="radio-group">
+                {% for i in range(1, 6) %}
+                <label class="radio-label">
+                    <input type="radio" name="discriminative" value="{{ i }}" required>
+                    <span class="radio-value">{{ i }}</span>
+                </label>
+                {% endfor %}
+            </div>
+            <div class="scale-labels">
+                <span>Poor</span>
+                <span>Excellent</span>
+            </div>
+        </div>
+
+        <div class="comment-group">
+            <label for="comments">Comments (optional):</label>
+            <textarea name="comments" id="comments" rows="3" placeholder="Any additional feedback about this question..."></textarea>
+        </div>
+
+        <div class="button-group">
+            <button type="submit" class="btn btn-primary">Submit & Next Question</button>
+            <a href="/" class="btn btn-secondary">Skip (New Question)</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

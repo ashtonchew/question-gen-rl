@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Statistics - Question Feedback{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Feedback Statistics</h1>
+
+    <div class="stats-summary">
+        <div class="stat-card">
+            <h3>Total Ratings</h3>
+            <p class="stat-value">{{ total_count }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Avg Relevance</h3>
+            <p class="stat-value">{{ "%.2f"|format(avg_relevance) }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Avg Clarity</h3>
+            <p class="stat-value">{{ "%.2f"|format(avg_clarity) }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Avg Discriminative</h3>
+            <p class="stat-value">{{ "%.2f"|format(avg_discriminative) }}</p>
+        </div>
+        <div class="stat-card highlight">
+            <h3>Avg Reward</h3>
+            <p class="stat-value">{{ "%.3f"|format(avg_reward) }}</p>
+            <p class="stat-note">(r+c+d)/15</p>
+        </div>
+    </div>
+
+    <div class="export-section">
+        <h2>Export Data</h2>
+        <p>Export feedback data for training integration.</p>
+        <div class="export-links">
+            <a href="/api/export" class="btn btn-primary">Download JSON</a>
+            <a href="/api/export?format=parquet" class="btn btn-secondary">Download Parquet</a>
+        </div>
+    </div>
+
+    {% if recent_feedback %}
+    <div class="recent-feedback">
+        <h2>Recent Feedback ({{ recent_feedback|length }} most recent)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Role ID</th>
+                    <th>R</th>
+                    <th>C</th>
+                    <th>D</th>
+                    <th>Reward</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for f in recent_feedback %}
+                <tr>
+                    <td>{{ f.role_id or 'N/A' }}</td>
+                    <td>{{ f.relevance }}</td>
+                    <td>{{ f.clarity }}</td>
+                    <td>{{ f.discriminative }}</td>
+                    <td>{{ "%.3f"|format((f.relevance + f.clarity + f.discriminative) / 15) }}</td>
+                    <td>{{ f.created_at.strftime('%Y-%m-%d %H:%M') if f.created_at else 'N/A' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No feedback collected yet. <a href="/">Start rating questions</a> to see statistics.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
