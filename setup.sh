@@ -3,6 +3,9 @@ set -e
 
 echo "=== Question Gen RL Setup ==="
 
+# Get script directory BEFORE changing dirs
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 # Install uv
 curl -LsSf https://astral.sh/uv/install.sh | sh
 source ~/.bashrc
@@ -13,8 +16,7 @@ if [ ! -d "SkyRL" ]; then
     git clone https://github.com/NovaSky-AI/SkyRL.git
 fi
 
-# Setup your project (use directory where script is located)
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# Setup your project
 cd "$SCRIPT_DIR"
 uv venv --python 3.12 --seed
 source .venv/bin/activate
