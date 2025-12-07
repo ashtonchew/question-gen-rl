@@ -137,41 +137,16 @@ def generate_question_openai(role: dict, model: str) -> str:
     if not OPENAI_API_KEY:
         raise ValueError("OPENAI_API_KEY environment variable not set")
 
+    from openai import OpenAI
+    client = OpenAI(api_key=OPENAI_API_KEY)
+
     prompt = format_prompt(role)
-    response = httpx.post(
-        "https://api.openai.com/v1/responses",
-        headers={
-            "Authorization": f"Bearer {OPENAI_API_KEY}",
-            "Content-Type": "application/json"
-        },
-        json={
-            "model": model,
-            "input": prompt
-        },
-        timeout=60.0
+    response = client.responses.create(
+        model=model,
+        input=prompt
     )
-    result = response.json()
 
-    # Check for API error response
-    if "error" in result and result["error"] is not None:
-        err = result["error"]
-        if isinstance(err, dict):
-            error_msg = err.get("message", str(err))
-        else:
-            error_msg = str(err)
-        raise ValueError(f"OpenAI API error: {error_msg}")
-
-    # Extract text from the response
-    text_field = result.get("text")
-    if text_field is None:
-        raise ValueError(f"Unexpected OpenAI response format: {list(result.keys())} - {str(result)[:500]}")
-
-    # text field might be a dict with format info
-    if isinstance(text_field, dict):
-        content = text_field.get("content") or text_field.get("text") or str(text_field)
-        raise ValueError(f"text is dict with keys: {list(text_field.keys())} - {str(text_field)[:500]}")
-
-    return text_field.strip()
+    return response.output_text.strip()
 
 
 def generate_question(role: dict, model_alias: str, checkpoint_path: Optional[str] = None) -> str:
