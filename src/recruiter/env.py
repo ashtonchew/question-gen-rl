@@ -83,11 +83,10 @@ class QuestionGenEnv(BaseTextEnv):
         # Basic validation
         if len(question) < self.config.min_question_length:
             return BaseTextEnvStepOutput(
-                observation="",  # No further observation needed
-                reward=-0.5,     # Penalty for too-short output
-                terminated=True,
-                truncated=False,
-                info={"error": "Question too short"}
+                observations=[],  # Empty list for single-turn
+                reward=-0.5,      # Penalty for too-short output
+                done=True,
+                metadata={"error": "Question too short"}
             )
 
         if len(question) > self.config.max_question_length:
@@ -96,11 +95,10 @@ class QuestionGenEnv(BaseTextEnv):
         # Guard against missing or empty prompt
         if not self._prompt:
             return BaseTextEnvStepOutput(
-                observation="",
+                observations=[],
                 reward=-1.0,
-                terminated=True,
-                truncated=False,
-                info={"error": "No prompt available (init() not called or prompt extraction failed)"}
+                done=True,
+                metadata={"error": "No prompt available (init() not called or prompt extraction failed)"}
             )
 
         # Get reward from judge - use stored prompt as role context
@@ -110,11 +108,10 @@ class QuestionGenEnv(BaseTextEnv):
         )
 
         return BaseTextEnvStepOutput(
-            observation="",
+            observations=[],
             reward=reward,
-            terminated=True,  # Single-turn: always done
-            truncated=False,
-            info={
+            done=True,  # Single-turn: always done
+            metadata={
                 "question": question,
                 "judge_scores": judge_details,
                 "role_id": self._role_id,
