@@ -1,4 +1,5 @@
 """Reward function using Grok API as judge."""
+import json
 import os
 import re
 import logging
@@ -97,37 +98,29 @@ def extract_json(text: str) -> str:
         text = re.sub(r'\n?```\s*$', '', text)
         text = text.strip()
 
-    # Find JSON object boundaries
-    start = text.find('{')
-    if start == -1:
+    # Sanitize control characters first
+    text = sanitize_json_string(text)
+
+    # Try parsing whole text first (fast path)
+    try:
+        json.loads(text)
         return text
+    except json.JSONDecodeError:
+        pass
 
-    # Find matching closing brace
-    depth = 0
-    in_string = False
-    escape = False
-    for i, c in enumerate(text[start:], start):
-        if escape:
-            escape = False
-            continue
-        if c == '\\' and in_string:
-            escape = True
-            continue
-        if c == '"' and not escape:
-            in_string = not in_string
-            continue
-        if in_string:
-            continue
+    # Try raw_decode from each '{' position - this is 100% robust
+    # as it uses Python's JSON parser instead of manual brace-matching
+    decoder = json.JSONDecoder()
+    for i, c in enumerate(text):
         if c == '{':
-            depth += 1
-        elif c == '}':
-            depth -= 1
-            if depth == 0:
-                json_str = text[start:i+1]
-                # Sanitize control characters before returning
-                return sanitize_json_string(json_str)
+            try:
+                obj, _ = decoder.raw_decode(text, i)
+                return json.dumps(obj)  # Re-encode guarantees valid JSON
+            except json.JSONDecodeError:
+                continue
 
-    return sanitize_json_string(text[start:])
+    # No valid JSON found
+    raise ValueError(f"No valid JSON object found in: {text[:100]}...")
 
 
 def judge_question(role_description: str, question: str) -> Tuple[float, dict]:

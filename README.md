@@ -40,6 +40,16 @@ python scripts/export_merged_model.py \
     --verify
 ```
 
+### Export Options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--max_model_len` | 8192 | Max context length (vLLM compatible). Set to 0 to keep original. |
+| `--torch_dtype` | bfloat16 | Model dtype: float32, float16, or bfloat16 |
+| `--verify` | - | Run generation test after export |
+| `--push_to_hub` | - | Upload to HuggingFace Hub |
+| `--create_endpoint` | - | Create inference endpoint after push |
+
 ## Using the Exported Model
 
 ```python
@@ -89,6 +99,53 @@ python scripts/export_merged_model.py \
     --hub_repo your-username/your-model-name
 ```
 
+## Deploying to HuggingFace Inference Endpoints
+
+Create an inference endpoint programmatically after pushing to Hub:
+
+```bash
+# Push to Hub AND create endpoint (T4 GPU, vLLM v0.8.5)
+python scripts/export_merged_model.py \
+    --checkpoint checkpoints/global_step_100 \
+    --output exports/qwen3-4b-question-gen \
+    --push_to_hub \
+    --hub_repo your-username/your-model-name \
+    --create_endpoint
+```
+
+This creates an endpoint with:
+- **vLLM v0.8.5** (stable for T4/older GPUs)
+- **Nvidia T4** GPU (16GB, $0.50/hr)
+- **Public access** (no authentication required)
+- **Scale-to-zero** after 1 hour of inactivity
+
+### Endpoint Options
+
+```bash
+# Use L4 GPU instead of T4 (better for larger models)
+python scripts/export_merged_model.py \
+    --checkpoint checkpoints/global_step_100 \
+    --output exports/qwen3-4b-question-gen \
+    --push_to_hub \
+    --create_endpoint \
+    --instance_type nvidia-l4
+
+# Custom endpoint name
+python scripts/export_merged_model.py \
+    --checkpoint checkpoints/global_step_100 \
+    --output exports/qwen3-4b-question-gen \
+    --push_to_hub \
+    --create_endpoint \
+    --endpoint_name my-question-gen
+```
+
+### Manual Endpoint Creation
+
+If creating manually via the HuggingFace UI, use these settings for T4 compatibility:
+- **vLLM version**: `vllm/vllm-openai:v0.8.5` (v0.11.0 has bugs on T4)
+- **Instance**: Nvidia T4 or L4
+- **max_position_embeddings** in config.json should be ≤8192 (set automatically by export script)
+
 ## Testing the Inference Endpoint
 
 After deploying to HuggingFace Inference Endpoints:
@@ -122,7 +179,7 @@ python scripts/format_prompts.py
 python scripts/eval.py --model grok-4-1
 
 # Evaluate multiple models (parallelized)
-python scripts/eval.py --model grok-4-1 claude-4-5-haiku gpt-5-nano
+python scripts/eval.py --model grok-4-1 claude-4-5-haiku gpt-5-mini
 
 # Evaluate RL checkpoint (must export first!)
 python scripts/export_merged_model.py --checkpoint checkpoints/global_step_31 --output exports/rl-step31
@@ -137,7 +194,7 @@ python scripts/eval.py --model baseline rl --checkpoint exports/rl-step31
 |-------|-------|----------|
 | `grok-4-1` | grok-4-1-fast-non-reasoning | xAI |
 | `claude-4-5-haiku` | claude-haiku-4-5-20251001 | Anthropic |
-| `gpt-5-nano` | gpt-5-nano-2025-08-07 | OpenAI |
+| `gpt-5-mini` | gpt-5-mini-2025-08-07 | OpenAI |
 | `baseline` | Qwen3-4B-Instruct | Local (vLLM) |
 | `rl` | RL checkpoint | Local (vLLM) |
 
@@ -181,12 +238,18 @@ data/backend_roles.json  →  data/raw/*.parquet  →  data/processed/*.parquet 
 │   ├── prepare_dataset.py     # JSON → raw parquet
 │   ├── format_prompts.py      # raw parquet → formatted parquet
 │   ├── export_merged_model.py # Export trained model to HuggingFace format
+│   ├── eval.py                # Model evaluation on test set
+│   ├── analyze_results.py     # Results analysis and visualization
 │   └── test_endpoint.py       # Test HuggingFace inference endpoint
 ├── src/recruiter/
 │   ├── main.py                # Training entrypoint
 │   ├── env.py                 # SkyRL environment
 │   ├── reward.py              # Grok judge reward function
-│   └── prompts.py             # Prompt formatting (edit this!)
+│   ├── prompts.py             # Prompt formatting (edit this!)
+│   ├── dataset.py             # Dataset loading
+│   └── schemas.py             # Pydantic schemas
+├── results/
+│   └── eval_results.json      # Evaluation results
 └── Makefile
 ```
 

@@ -34,7 +34,7 @@ MODEL_ALIASES = {
     # SOTA models
     "grok-4-1": {"model": "grok-4-1-fast-non-reasoning", "provider": "xai"},
     "claude-4-5-haiku": {"model": "claude-haiku-4-5-20251001", "provider": "anthropic"},
-    "gpt-5-nano": {"model": "gpt-5-nano-2025-08-07", "provider": "openai"},
+    "gpt-5-mini": {"model": "gpt-5-mini-2025-08-07", "provider": "openai"},
     # Local models
     "baseline": {"model": "Qwen/Qwen3-4B-Instruct-2507", "provider": "local"},
     "rl": {"model": None, "provider": "local"},  # Requires --checkpoint
@@ -416,14 +416,14 @@ def main():
         epilog="""
 Examples:
   python scripts/eval.py --model grok-4-1
-  python scripts/eval.py --model grok-4-1 claude-4-5-haiku gpt-5-nano
+  python scripts/eval.py --model grok-4-1 claude-4-5-haiku gpt-5-mini
   python scripts/eval.py --model baseline rl --checkpoint checkpoints/step_100
   python scripts/eval.py --model all
 
 Available models:
   grok-4-1       - Grok 4.1 (xAI)
   claude-4-5-haiku - Claude 4.5 Haiku (Anthropic)
-  gpt-5-nano     - GPT-5 Nano (OpenAI)
+  gpt-5-mini     - GPT-5 Mini (OpenAI)
   baseline       - Qwen3-4B-Instruct (local, no RL)
   rl             - RL-trained checkpoint (requires --checkpoint)
   all            - All available models

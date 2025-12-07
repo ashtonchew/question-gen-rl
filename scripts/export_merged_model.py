@@ -3,23 +3,47 @@ Export script to merge LoRA adapters from SkyRL checkpoint with base model
 and save as a standalone HuggingFace model.
 
 Usage:
+    # Basic export with verification
     python scripts/export_merged_model.py \
         --checkpoint checkpoints/global_step_100 \
         --output exports/qwen3-4b-question-gen \
         --verify
 
-    # Push to HuggingFace Hub (set HF_TOKEN and HF_REPO env vars, or use --hub_repo)
+    # Push to HuggingFace Hub
     python scripts/export_merged_model.py \
         --checkpoint checkpoints/global_step_100 \
         --output exports/qwen3-4b-question-gen \
-        --push_to_hub
+        --push_to_hub \
+        --hub_repo username/model-name
+
+    # Push to Hub AND create inference endpoint (T4 GPU, vLLM v0.8.5)
+    python scripts/export_merged_model.py \
+        --checkpoint checkpoints/global_step_100 \
+        --output exports/qwen3-4b-question-gen \
+        --push_to_hub \
+        --hub_repo username/model-name \
+        --create_endpoint
+
+    # Create endpoint with L4 GPU instead of T4
+    python scripts/export_merged_model.py \
+        --checkpoint checkpoints/global_step_100 \
+        --output exports/qwen3-4b-question-gen \
+        --push_to_hub \
+        --create_endpoint \
+        --instance_type nvidia-l4
 
 Environment Variables:
     HF_TOKEN: HuggingFace API token for authentication
     HF_REPO: Default repository name (optional, can be overridden with --hub_repo)
+
+Notes:
+    - Default max_model_len is 8192 (vLLM compatible, fits on T4)
+    - Inference endpoints use vLLM v0.8.5 (stable for T4/older GPUs)
+    - Endpoints are public with scale-to-zero after 1 hour by default
 """
 
 import argparse
+import json
 import os
 import time
 from pathlib import Path
@@ -29,6 +53,10 @@ from dotenv import load_dotenv
 from huggingface_hub import HfApi, login
 from peft import LoraConfig, PeftModel, get_peft_model
 from transformers import AutoModelForCausalLM, AutoTokenizer
+
+# Default max model length for vLLM compatibility
+# Qwen3 base models have 262144, which is too large for most GPUs
+DEFAULT_MAX_MODEL_LEN = 8192
 
 load_dotenv()
 
@@ -187,6 +215,7 @@ def save_merged_model(
     model: AutoModelForCausalLM,
     tokenizer: AutoTokenizer,
     output_path: str,
+    max_model_len: int | None = None,
 ) -> None:
     """Save merged model in HuggingFace format with safetensors."""
     output_dir = Path(output_path)
@@ -199,6 +228,20 @@ def save_merged_model(
 
     # Save tokenizer
     tokenizer.save_pretrained(output_dir)
+
+    # Update config.json with max_model_len for vLLM compatibility
+    if max_model_len is not None:
+        config_path = output_dir / "config.json"
+        with open(config_path) as f:
+            config = json.load(f)
+
+        original_len = config.get("max_position_embeddings", "unknown")
+        config["max_position_embeddings"] = max_model_len
+
+        with open(config_path, "w") as f:
+            json.dump(config, f, indent=2)
+
+        print(f"  - Updated max_position_embeddings: {original_len} -> {max_model_len}")
 
     print("Model saved successfully!")
     print(f"  - Config: {output_dir / 'config.json'}")
@@ -304,6 +347,99 @@ def push_to_hub(output_path: str, repo_id: str, max_retries: int = 3) -> str:
     return url
 
 
+def create_inference_endpoint(
+    repo_id: str,
+    endpoint_name: str | None = None,
+    instance_type: str = "nvidia-t4",
+    region: str = "us-east-1",
+    vendor: str = "aws",
+    min_replica: int = 0,
+    max_replica: int = 1,
+    scale_to_zero_timeout: int = 60,
+    public: bool = True,
+) -> str:
+    """
+    Create a HuggingFace Inference Endpoint with vLLM v0.8.5 (stable for T4 GPUs).
+
+    Args:
+        repo_id: HuggingFace model repository (e.g., "username/model-name")
+        endpoint_name: Name for the endpoint (defaults to model name)
+        instance_type: GPU type - "nvidia-t4", "nvidia-l4", "nvidia-a10g"
+        region: Cloud region (default: us-east-1)
+        vendor: Cloud provider - "aws", "gcp", "azure"
+        min_replica: Minimum replicas (0 for scale-to-zero)
+        max_replica: Maximum replicas
+        scale_to_zero_timeout: Minutes before scaling to zero (default: 60)
+        public: Whether endpoint is publicly accessible (default: True)
+
+    Returns:
+        Endpoint URL
+    """
+    from huggingface_hub import create_inference_endpoint
+
+    print(f"\n=== Creating Inference Endpoint ===")
+
+    # Authenticate
+    hf_token = os.getenv("HF_TOKEN")
+    if not hf_token:
+        raise ValueError("HF_TOKEN environment variable required for endpoint creation")
+
+    login(token=hf_token)
+
+    # Generate endpoint name from repo if not provided
+    if endpoint_name is None:
+        endpoint_name = repo_id.split("/")[-1].lower().replace("_", "-")[:32]
+
+    print(f"Endpoint name: {endpoint_name}")
+    print(f"Model: {repo_id}")
+    print(f"Instance: {instance_type} (1x GPU, 16GB)")
+    print(f"Region: {vendor}/{region}")
+    print(f"vLLM Engine: vllm/vllm-openai:v0.8.5")
+    print(f"Access: {'public' if public else 'protected'}")
+    print(f"Scale-to-zero: After {scale_to_zero_timeout} minutes")
+
+    try:
+        endpoint = create_inference_endpoint(
+            name=endpoint_name,
+            repository=repo_id,
+            framework="pytorch",
+            task="text-generation",
+            accelerator="gpu",
+            instance_type=instance_type,
+            instance_size="x1",
+            region=region,
+            vendor=vendor,
+            min_replica=min_replica,
+            max_replica=max_replica,
+            scale_to_zero_timeout=scale_to_zero_timeout,
+            type="public" if public else "protected",
+            custom_image={
+                "health_route": "/health",
+                "url": "vllm/vllm-openai:v0.8.5",
+                "port": 8000,
+            },
+            token=hf_token,
+        )
+
+        print(f"\nEndpoint created successfully!")
+        print(f"Status: {endpoint.status}")
+        print(f"URL: {endpoint.url}")
+        print(f"\nNote: Endpoint may take a few minutes to start.")
+        print(f"Monitor at: https://ui.endpoints.huggingface.co/{endpoint.namespace}/{endpoint_name}")
+
+        return endpoint.url
+
+    except Exception as e:
+        print(f"\nFailed to create endpoint: {e}")
+        print("\nYou can manually create the endpoint at:")
+        print(f"  https://ui.endpoints.huggingface.co/new?repository={repo_id}")
+        print("\nRecommended settings:")
+        print(f"  - Instance: {instance_type} (1x GPU)")
+        print(f"  - vLLM version: vllm/vllm-openai:v0.8.5")
+        print(f"  - Region: {vendor}/{region}")
+        raise
+
+
 def verify_export(output_path: str, test_prompt: str | None = None) -> bool:
     """Verify the exported model loads and generates correctly."""
     print("\n=== Verification Test ===")
@@ -396,6 +532,31 @@ def main():
         default=None,
         help="HuggingFace Hub repository (default: HF_REPO env var)",
     )
+    parser.add_argument(
+        "--max_model_len",
+        type=int,
+        default=DEFAULT_MAX_MODEL_LEN,
+        help=f"Max model length for vLLM compatibility (default: {DEFAULT_MAX_MODEL_LEN}). "
+        "Set to 0 to keep original value from base model.",
+    )
+    parser.add_argument(
+        "--create_endpoint",
+        action="store_true",
+        help="Create a HuggingFace Inference Endpoint after pushing to hub",
+    )
+    parser.add_argument(
+        "--endpoint_name",
+        type=str,
+        default=None,
+        help="Custom name for the inference endpoint (default: derived from model name)",
+    )
+    parser.add_argument(
+        "--instance_type",
+        type=str,
+        default="nvidia-t4",
+        choices=["nvidia-t4", "nvidia-l4", "nvidia-a10g", "nvidia-a100"],
+        help="GPU instance type for the endpoint (default: nvidia-t4)",
+    )
 
     args = parser.parse_args()
 
@@ -430,7 +591,8 @@ def main():
         )
 
     # Save merged model
-    save_merged_model(merged_model, tokenizer, args.output)
+    max_model_len = args.max_model_len if args.max_model_len > 0 else None
+    save_merged_model(merged_model, tokenizer, args.output, max_model_len=max_model_len)
 
     # Verify if requested
     if args.verify:
@@ -446,6 +608,18 @@ def main():
         # Generate model card before uploading
         generate_model_card(args.output, args.base_model, hub_repo)
         push_to_hub(args.output, hub_repo)
+
+        # Create inference endpoint if requested
+        if args.create_endpoint:
+            endpoint_url = create_inference_endpoint(
+                repo_id=hub_repo,
+                endpoint_name=args.endpoint_name,
+                instance_type=args.instance_type,
+            )
+            print(f"\nEndpoint URL: {endpoint_url}")
+
+    elif args.create_endpoint:
+        parser.error("--create_endpoint requires --push_to_hub")
 
 
 if __name__ == "__main__":
