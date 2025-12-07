@@ -104,6 +104,50 @@ python scripts/test_endpoint.py
 python scripts/test_endpoint.py --prompt "Generate a screening question for a DevOps engineer:"
 ```
 
+## Evaluation
+
+Evaluate and compare models on the held-out test set:
+
+```bash
+# Set API keys
+export XAI_API_KEY=your-xai-key        # Required (for judge + Grok eval)
+export ANTHROPIC_API_KEY=your-key      # For Claude eval
+export OPENAI_API_KEY=your-key         # For GPT eval
+
+# Generate test set (if not already done)
+python scripts/prepare_dataset.py
+python scripts/format_prompts.py
+
+# Evaluate single model
+python scripts/eval.py --model grok-4-1
+
+# Evaluate multiple models (parallelized)
+python scripts/eval.py --model grok-4-1 claude-4-5-haiku gpt-5-nano
+
+# Evaluate with RL checkpoint
+python scripts/eval.py --model baseline rl --checkpoint checkpoints/step_100
+
+# Evaluate all models
+python scripts/eval.py --model all --checkpoint checkpoints/step_100
+```
+
+**Available models:**
+| Alias | Model | Provider |
+|-------|-------|----------|
+| `grok-4-1` | grok-4-1-fast-non-reasoning | xAI |
+| `claude-4-5-haiku` | claude-haiku-4-5-20251001 | Anthropic |
+| `gpt-5-nano` | gpt-5-nano-2025-08-07 | OpenAI |
+| `baseline` | Qwen3-4B-Instruct | Local (vLLM) |
+| `rl` | RL checkpoint | Local (vLLM) |
+
+**Metrics** (scored 0-10 by LLM judge):
+- **Relevance**: Does the question test skills needed for the role?
+- **Clarity**: Is the question unambiguous and well-formed?
+- **Discriminative Power**: Does it distinguish good candidates from weak ones?
+- **Composite**: Average of the three metrics
+
+The judge model is always `grok-4-1-fast-non-reasoning` for fair comparison.
+
 ## Changing Prompts
 
 All prompt logic lives in `src/recruiter/prompts.py`. To change the prompt format:
@@ -158,7 +202,9 @@ Key settings in `configs/train_config.yaml`:
 
 | Variable | Description |
 |----------|-------------|
-| `XAI_API_KEY` | API key for Grok judge (required for training) |
+| `XAI_API_KEY` | API key for Grok (required for training + evaluation judge) |
+| `ANTHROPIC_API_KEY` | API key for Claude evaluation |
+| `OPENAI_API_KEY` | API key for GPT evaluation |
 | `HF_TOKEN` | HuggingFace API token (required for --push_to_hub and endpoint) |
 | `HF_REPO` | HuggingFace repository name, e.g., `username/model-name` |
 | `HF_ENDPOINT_URL` | HuggingFace Inference Endpoint URL |
