@@ -63,11 +63,16 @@ Generate ONE technical screening question for this role. The question should:
 
 Question:"""
 
-    def init(self) -> str:
-        """Return the initial prompt for the model."""
-        if self._initial_prompt is None:
-            raise ValueError("Must call set_role() before init()")
-        return self._initial_prompt
+    def init(self, prompt):
+        """Initialize the environment with the prompt from the dataset.
+
+        Args:
+            prompt: The prompt/conversation from the dataset
+
+        Returns:
+            Tuple of (prompt, metadata_dict) as expected by SkyRL
+        """
+        return prompt, {}
 
     def step(self, action: str) -> BaseTextEnvStepOutput:
         """
