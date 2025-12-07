@@ -87,7 +87,38 @@ def load_and_merge_model(
 ) -> AutoModelForCausalLM:
     """
     Load base model, apply LoRA weights from checkpoint, and merge.
+
+    SkyRL saves LoRA adapters in PEFT format at: checkpoint/policy/lora_adapter/
     """
+    # Check for PEFT-format lora_adapter directory (SkyRL default)
+    lora_adapter_path = checkpoint_path / "policy" / "lora_adapter"
+
+    if lora_adapter_path.exists() and (lora_adapter_path / "adapter_config.json").exists():
+        print(f"Found PEFT adapter at {lora_adapter_path}")
+        print(f"Loading base model: {base_model_path}")
+        base_model = AutoModelForCausalLM.from_pretrained(
+            base_model_path,
+            torch_dtype=torch_dtype,
+            device_map="auto",
+            trust_remote_code=True,
+        )
+        print("Loading LoRA adapter...")
+        peft_model = PeftModel.from_pretrained(base_model, lora_adapter_path)
+        print("Merging LoRA weights with base model...")
+        return peft_model.merge_and_unload()
+
+    # Fallback: try loading from model state file
+    model_state_path = checkpoint_path / "policy" / "model_state.pt"
+    if not model_state_path.exists():
+        # Try FSDP sharded format
+        model_state_path = checkpoint_path / "policy" / "model_world_size_1_rank_0.pt"
+
+    if not model_state_path.exists():
+        raise FileNotFoundError(
+            f"No LoRA adapter or model state found in {checkpoint_path}/policy/. "
+            f"Expected either 'lora_adapter/' directory or 'model_state.pt' file."
+        )
+
     print(f"Loading base model: {base_model_path}")
     base_model = AutoModelForCausalLM.from_pretrained(
         base_model_path,
