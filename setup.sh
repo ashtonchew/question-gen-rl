@@ -25,6 +25,9 @@ uv pip install torch==2.8.0
 # Install SkyRL from local clone (--no-build-isolation for flash-attn)
 uv pip install -e ~/SkyRL/skyrl-train[vllm] --no-build-isolation
 uv pip install -e ~/SkyRL/skyrl-gym
+
+# Install project (ensure we're in project directory)
+cd "$SCRIPT_DIR"
 uv pip install -e .
 
 # Prepare dataset
