@@ -1,43 +1,16 @@
-"""Convert backend_roles.json to SkyRL parquet format."""
+"""Convert backend_roles.json to raw parquet format.
+
+Stores raw role data only - prompt formatting is separate (format_prompts.py).
+
+Workflow:
+    1. python scripts/prepare_dataset.py   # Creates data/raw/*.parquet (run once)
+    2. python scripts/format_prompts.py    # Creates data/processed/*.parquet (run when prompts change)
+    3. python -m src.recruiter.main        # Train
+"""
 import json
 import pandas as pd
 from pathlib import Path
 import argparse
-
-
-def format_prompt(role: dict) -> list:
-    """Format role into chat conversation for instruction-tuned models.
-
-    Returns a list of message dicts with proper system/user separation
-    for Qwen3-Instruct and similar chat models.
-    """
-    # Handle both old schema (domain) and new schema (focus, stack)
-    focus = role.get('focus', role.get('domain', 'backend'))
-    stack = role.get('stack', [])
-    stack_str = ', '.join(stack) if stack else 'Not specified'
-
-    system_message = """You are an expert technical recruiter creating screening questions.
-Your goal is to generate clear, relevant questions that test practical knowledge.
-Questions should be answerable in 2-5 minutes and appropriate for the candidate's level."""
-
-    user_message = f"""Generate ONE technical screening question for this role:
-
-## Role: {role['title']}
-**ID:** {role['id']}
-**Level:** {role['level']}
-**Focus Area:** {focus}
-**Tech Stack:** {stack_str}
-
-**Description:** {role['description']}
-
-**Key Skills:** {', '.join(role['key_skills'])}
-
-Question:"""
-
-    return [
-        {"role": "system", "content": system_message},
-        {"role": "user", "content": user_message}
-    ]
 
 
 def main(input_path: str, output_dir: str, train_split: float = 0.8):
@@ -48,20 +21,16 @@ def main(input_path: str, output_dir: str, train_split: float = 0.8):
     with open(input_path) as f:
         roles = json.load(f)
 
-    # Convert to SkyRL format
-    # SkyRL expects: prompt (str) and optionally other metadata
+    # Store raw role data only - no prompt formatting here
     records = []
     for role in roles:
-        # Handle both old and new schema
         focus = role.get('focus', role.get('domain', 'backend'))
         records.append({
-            "prompt": format_prompt(role),
+            "role_json": json.dumps(role),
             "role_id": role["id"],
             "role_title": role["title"],
             "role_level": role["level"],
             "role_focus": focus,
-            # Store full role as JSON string for env access
-            "role_json": json.dumps(role)
         })
 
     df = pd.DataFrame(records)
@@ -78,12 +47,13 @@ def main(input_path: str, output_dir: str, train_split: float = 0.8):
     print(f"Created {len(train_df)} training examples")
     print(f"Created {len(test_df)} test examples")
     print(f"Saved to {output_dir}")
+    print(f"\nNext: run 'python scripts/format_prompts.py' to format prompts")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", default="data/backend_roles.json")
-    parser.add_argument("--output_dir", default="data/processed")
+    parser.add_argument("--output_dir", default="data/raw")  # Changed to data/raw
     parser.add_argument("--train_split", type=float, default=0.8)
     args = parser.parse_args()
 

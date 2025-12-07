@@ -1,14 +1,23 @@
 """Reward function using Grok API as judge."""
 import os
-import json
-import httpx
+import logging
 from typing import Tuple
 from dotenv import load_dotenv
+from xai_sdk import Client
+from xai_sdk.chat import system, user
+from src.recruiter.schemas import JudgeResponse
 
 load_dotenv()
 
-GROK_API_KEY = os.environ.get("XAI_API_KEY")
-GROK_API_URL = "https://api.x.ai/v1/chat/completions"
+logger = logging.getLogger(__name__)
+
+# Initialize xai-sdk client with 10 minute timeout
+# SDK has built-in retry with exponential backoff
+_api_key = os.environ.get("XAI_API_KEY")
+if not _api_key:
+    logger.warning("XAI_API_KEY not set - judge_question will fail")
+
+client = Client(api_key=_api_key, timeout=600) if _api_key else None
 
 JUDGE_SYSTEM_PROMPT = """You are an expert technical recruiter evaluating screening questions.
 
@@ -28,17 +37,26 @@ Score the following technical screening question on three criteria (0-10 each):
    - 0: Anyone could answer OR no one could answer
    - 5: Moderate differentiation
    - 10: Strong candidates would excel, weak candidates would struggle
-
-Respond with ONLY a JSON object:
-{"relevance": <int>, "clarity": <int>, "discriminative": <int>, "reasoning": "<brief explanation>"}
 """
 
 
 def judge_question(role_description: str, question: str) -> Tuple[float, dict]:
     """
     Call Grok API to score a generated question.
-    Returns (normalized_reward, details_dict)
+
+    Uses xai-sdk which has built-in retry with exponential backoff.
+
+    Args:
+        role_description: The role context for evaluation
+        question: The generated screening question to score
+
+    Returns:
+        (normalized_reward, details_dict) where reward is 0-1
     """
+    if client is None:
+        logger.error("XAI_API_KEY not set, cannot call judge API")
+        return 0.0, {"error": "XAI_API_KEY not set"}
+
     user_prompt = f"""## Role Description
 {role_description}
 
@@ -47,37 +65,21 @@ def judge_question(role_description: str, question: str) -> Tuple[float, dict]:
 
 Score this question:"""
 
-    response = httpx.post(
-        GROK_API_URL,
-        headers={
-            "Authorization": f"Bearer {GROK_API_KEY}",
-            "Content-Type": "application/json"
-        },
-        json={
-            "model": "grok-4-1-fast-non-reasoning",
-            "messages": [
-                {"role": "system", "content": JUDGE_SYSTEM_PROMPT},
-                {"role": "user", "content": user_prompt}
-            ],
-            "temperature": 0.0  # Deterministic scoring
-        },
-        timeout=30.0
-    )
-
-    result = response.json()
-    content = result["choices"][0]["message"]["content"]
-
-    # Parse JSON from response
     try:
-        scores = json.loads(content)
-        relevance = scores.get("relevance", 0)
-        clarity = scores.get("clarity", 0)
-        discriminative = scores.get("discriminative", 0)
+        chat = client.chat.create(
+            model="grok-4-1-fast-non-reasoning",
+            messages=[system(JUDGE_SYSTEM_PROMPT)]
+        )
+        chat.append(user(user_prompt))
+
+        # Use structured outputs - guaranteed schema compliance
+        response, scores = chat.parse(JudgeResponse)
 
         # Normalize to 0-1 range, weighted average
-        reward = (relevance + clarity + discriminative) / 30.0
+        reward = (scores.relevance + scores.clarity + scores.discriminative) / 30.0
 
-        return reward, scores
-    except json.JSONDecodeError:
-        # Fallback if parsing fails
-        return 0.0, {"error": "Failed to parse judge response", "raw": content}
+        return reward, scores.model_dump()
+
+    except Exception as e:
+        logger.error(f"Error calling judge API: {e}")
+        return 0.0, {"error": str(type(e).__name__), "details": str(e)}

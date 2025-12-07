@@ -6,10 +6,16 @@ from pathlib import Path
 from typing import Optional
 import pandas as pd
 import httpx
+from xai_sdk import Client
+from xai_sdk.chat import system, user
+from src.recruiter.schemas import JudgeResponse
 
 # API configuration
 XAI_API_KEY = os.environ.get("XAI_API_KEY")
-XAI_API_URL = "https://api.x.ai/v1/chat/completions"
+
+# Initialize xai-sdk client with 10 minute timeout
+# SDK has built-in retry with exponential backoff
+xai_client = Client(api_key=XAI_API_KEY, timeout=600) if XAI_API_KEY else None
 
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
 ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages"
@@ -100,29 +106,18 @@ def generate_question_rl(role: dict, checkpoint_path: str) -> str:
 def generate_question_sota(role: dict, provider: str = "grok") -> str:
     """
     Generate question using SOTA model (Grok or Claude).
+    Uses xai-sdk for Grok with built-in retry and 10min timeout.
     """
     prompt = format_prompt(role)
 
     if provider == "grok":
-        if not XAI_API_KEY:
+        if xai_client is None:
             raise ValueError("XAI_API_KEY environment variable not set")
 
-        response = httpx.post(
-            XAI_API_URL,
-            headers={
-                "Authorization": f"Bearer {XAI_API_KEY}",
-                "Content-Type": "application/json"
-            },
-            json={
-                "model": "grok-4-1-fast-reasoning",
-                "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.7,
-                "max_tokens": 256
-            },
-            timeout=60.0
-        )
-        result = response.json()
-        return result["choices"][0]["message"]["content"].strip()
+        chat = xai_client.chat.create(model="grok-4-1-fast-non-reasoning")
+        chat.append(user(prompt))
+        response = chat.sample()
+        return response.content.strip()
 
     elif provider == "claude":
         if not ANTHROPIC_API_KEY:
@@ -149,15 +144,7 @@ def generate_question_sota(role: dict, provider: str = "grok") -> str:
         raise ValueError(f"Unknown provider: {provider}")
 
 
-def judge_question(role_description: str, question: str) -> dict:
-    """
-    Score a question using Grok as judge.
-    Returns dict with relevance, clarity, discriminative, and composite scores.
-    """
-    if not XAI_API_KEY:
-        raise ValueError("XAI_API_KEY environment variable not set")
-
-    judge_prompt = f"""You are an expert technical recruiter evaluating screening questions.
+JUDGE_SYSTEM_PROMPT = """You are an expert technical recruiter evaluating screening questions.
 
 Score the following technical screening question on three criteria (0-10 each):
 
@@ -175,43 +162,38 @@ Score the following technical screening question on three criteria (0-10 each):
    - 0: Anyone could answer OR no one could answer
    - 5: Moderate differentiation
    - 10: Strong candidates would excel, weak candidates would struggle
+"""
 
-## Role Description
+
+def judge_question(role_description: str, question: str) -> dict:
+    """
+    Score a question using Grok as judge.
+    Uses xai-sdk structured outputs for guaranteed schema compliance.
+    Returns dict with relevance, clarity, discriminative, and composite scores.
+    """
+    if xai_client is None:
+        raise ValueError("XAI_API_KEY environment variable not set")
+
+    user_prompt = f"""## Role Description
 {role_description}
 
 ## Generated Screening Question
 {question}
 
-Respond with ONLY a JSON object:
-{{"relevance": <int>, "clarity": <int>, "discriminative": <int>, "reasoning": "<brief explanation>"}}"""
+Score this question:"""
 
-    response = httpx.post(
-        XAI_API_URL,
-        headers={
-            "Authorization": f"Bearer {XAI_API_KEY}",
-            "Content-Type": "application/json"
-        },
-        json={
-            "model": "grok-4-1-fast-reasoning",
-            "messages": [{"role": "user", "content": judge_prompt}],
-            "temperature": 0.0
-        },
-        timeout=60.0
+    chat = xai_client.chat.create(
+        model="grok-4-1-fast-non-reasoning",
+        messages=[system(JUDGE_SYSTEM_PROMPT)]
     )
+    chat.append(user(user_prompt))
 
-    result = response.json()
-    content = result["choices"][0]["message"]["content"]
+    # Use structured outputs - guaranteed schema compliance
+    response, scores = chat.parse(JudgeResponse)
 
-    try:
-        scores = json.loads(content)
-        scores["composite"] = (
-            scores.get("relevance", 0) +
-            scores.get("clarity", 0) +
-            scores.get("discriminative", 0)
-        ) / 3.0
-        return scores
-    except json.JSONDecodeError:
-        return {"error": "Failed to parse", "raw": content, "composite": 0.0}
+    result = scores.model_dump()
+    result["composite"] = (scores.relevance + scores.clarity + scores.discriminative) / 3.0
+    return result
 
 
 def evaluate_model(
