@@ -11,7 +11,7 @@ from skyrl_train.utils import validate_cfg
 from skyrl_train.utils.utils import initialize_ray
 from skyrl_gym.envs import register
 
-from .env import QuestionGenEnv, QuestionGenEnvConfig
+from .env import QuestionGenEnv, QuestionGenEnvConfig, QuestionGenOnlineEnv, QuestionGenOnlineEnvConfig
 
 
 # Project root (two levels up from this file)
@@ -85,7 +85,7 @@ def ensure_data_formatted():
 
 class QuestionGenEnvWrapper(QuestionGenEnv):
     """
-    Wrapper for SkyRL environment registration.
+    Wrapper for SkyRL environment registration (offline mode - LLM judge).
     SkyRL passes the prompt to init(), not __init__.
     Optionally logs rewards to metrics JSON.
     """
@@ -112,17 +112,62 @@ class QuestionGenEnvWrapper(QuestionGenEnv):
         return result
 
 
+class QuestionGenOnlineEnvWrapper(QuestionGenOnlineEnv):
+    """
+    Wrapper for SkyRL environment registration (online mode - human feedback).
+    """
+    _step_count = 0
+
+    def __init__(self, **kwargs):
+        # Get config from environment variables or use defaults
+        api_url = os.environ.get("HUMAN_FEEDBACK_API_URL", "http://localhost:8000")
+        timeout = int(os.environ.get("HUMAN_FEEDBACK_TIMEOUT", "300"))
+        poll_interval = int(os.environ.get("HUMAN_FEEDBACK_POLL_INTERVAL", "2"))
+
+        config = QuestionGenOnlineEnvConfig(
+            api_url=api_url,
+            timeout=timeout,
+            poll_interval=poll_interval
+        )
+        super().__init__(config)
+
+    def step(self, action: str):
+        """Override step to optionally log rewards."""
+        result = super().step(action)
+
+        logger = get_metrics_logger()
+        if logger is not None:
+            QuestionGenOnlineEnvWrapper._step_count += 1
+            if QuestionGenOnlineEnvWrapper._step_count % 1 == 0:  # Log every step for online
+                logger.log_step(
+                    step=QuestionGenOnlineEnvWrapper._step_count,
+                    reward=result.reward,
+                )
+
+        return result
+
+
 @ray.remote(num_cpus=1)
-def skyrl_entrypoint(cfg: DictConfig, metrics_dir: Optional[str] = None):
+def skyrl_entrypoint(cfg: DictConfig, metrics_dir: Optional[str] = None, human_feedback_config: Optional[dict] = None):
     # Enable metrics logging in this Ray worker
     if metrics_dir:
         os.environ["METRICS_JSON_ENABLED"] = "1"
         os.environ["METRICS_JSON_DIR"] = metrics_dir
 
-    # Register our custom environment
+    # Set human feedback config if provided
+    if human_feedback_config:
+        os.environ["HUMAN_FEEDBACK_API_URL"] = human_feedback_config.get("api_url", "http://localhost:8000")
+        os.environ["HUMAN_FEEDBACK_TIMEOUT"] = str(human_feedback_config.get("timeout", 300))
+        os.environ["HUMAN_FEEDBACK_POLL_INTERVAL"] = str(human_feedback_config.get("poll_interval", 2))
+
+    # Register both environments
     register(
         id="question-gen",
         entry_point="src.recruiter.main:QuestionGenEnvWrapper",
+    )
+    register(
+        id="question-gen-online",
+        entry_point="src.recruiter.main:QuestionGenOnlineEnvWrapper",
     )
 
     # Run training
@@ -143,9 +188,23 @@ def main(cfg: DictConfig) -> None:
         metrics_dir = str(output_dir / "metrics")
         print(f"Metrics JSON logging enabled: {metrics_dir}")
 
+    # Check training mode and get human feedback config if online
+    human_feedback_config = None
+    mode = cfg.get("mode", "offline")
+    if mode == "online":
+        hf_cfg = cfg.get("human_feedback", {})
+        human_feedback_config = {
+            "api_url": hf_cfg.get("api_url", "http://localhost:8000"),
+            "timeout": hf_cfg.get("timeout", 300),
+            "poll_interval": hf_cfg.get("poll_interval", 2),
+        }
+        print(f"Online RL mode: waiting for human feedback from {human_feedback_config['api_url']}")
+    else:
+        print("Offline RL mode: using LLM judge for rewards")
+
     validate_cfg(cfg)
     initialize_ray(cfg)
-    ray.get(skyrl_entrypoint.remote(cfg, metrics_dir))
+    ray.get(skyrl_entrypoint.remote(cfg, metrics_dir, human_feedback_config))
 
 
 if __name__ == "__main__":
