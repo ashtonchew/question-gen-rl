@@ -1,10 +1,15 @@
 """Evaluation script for comparing models on question generation quality."""
 import json
 import os
+import sys
 import argparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Optional
+
+# Add project root to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 import pandas as pd
 import httpx
 from dotenv import load_dotenv
