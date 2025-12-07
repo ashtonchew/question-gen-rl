@@ -206,6 +206,60 @@ def save_merged_model(
     print(f"  - Tokenizer: {output_dir / 'tokenizer.json'}")
 
 
+def generate_model_card(output_path: str, base_model: str, repo_id: str | None = None) -> None:
+    """Generate a README.md model card."""
+    model_name = repo_id.split("/")[-1] if repo_id else Path(output_path).name
+
+    readme_content = f"""---
+license: apache-2.0
+base_model: {base_model}
+tags:
+  - question-generation
+  - rl
+  - grpo
+  - lora
+pipeline_tag: text-generation
+---
+
+# {model_name}
+
+Fine-tuned model for generating technical screening questions, trained using GRPO (Group Relative Policy Optimization) with LoRA adapters.
+
+## Base Model
+
+- **Base**: [{base_model}](https://huggingface.co/{base_model})
+- **Training**: LoRA fine-tuning with RL (GRPO algorithm)
+
+## Usage
+
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+model = AutoModelForCausalLM.from_pretrained("{repo_id or model_name}")
+tokenizer = AutoTokenizer.from_pretrained("{repo_id or model_name}")
+
+prompt = "Generate a technical screening question for a senior backend engineer:"
+inputs = tokenizer(prompt, return_tensors="pt")
+outputs = model.generate(**inputs, max_new_tokens=256)
+print(tokenizer.decode(outputs[0], skip_special_tokens=True))
+```
+
+Or with vLLM for faster inference:
+
+```python
+from vllm import LLM, SamplingParams
+
+llm = LLM(model="{repo_id or model_name}")
+outputs = llm.generate(["Generate a technical screening question for a senior backend engineer:"], SamplingParams(max_tokens=256))
+print(outputs[0].outputs[0].text)
+```
+"""
+
+    readme_path = Path(output_path) / "README.md"
+    readme_path.write_text(readme_content)
+    print(f"  - Model card: {readme_path}")
+
+
 def push_to_hub(output_path: str, repo_id: str, max_retries: int = 3) -> str:
     """Push the exported model to HuggingFace Hub."""
     print(f"\n=== Pushing to HuggingFace Hub ===")
@@ -388,6 +442,8 @@ def main():
             parser.error(
                 "--push_to_hub requires --hub_repo or HF_REPO environment variable"
             )
+        # Generate model card before uploading
+        generate_model_card(args.output, args.base_model, hub_repo)
         push_to_hub(args.output, hub_repo)
 
 
