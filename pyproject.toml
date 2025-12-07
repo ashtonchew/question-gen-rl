@@ -18,6 +18,13 @@ train = [
     "torch>=2.0.0",
     "vllm>=0.4.0",
 ]
+export = [
+    "peft>=0.10.0",
+    "safetensors>=0.4.0",
+    "accelerate>=0.27.0",
+    "torch>=2.0.0",
+    "transformers>=4.40.0",
+]
 
 [build-system]
 requires = ["hatchling"]

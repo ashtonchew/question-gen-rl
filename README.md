@@ -25,6 +25,44 @@ python -m src.recruiter.main
 
 That's it. Prompt formatting happens automatically when training starts.
 
+## Exporting the Trained Model
+
+After training, merge LoRA adapters with the base model and export as a standalone HuggingFace model:
+
+```bash
+# Install export dependencies
+pip install -e ".[export]"
+
+# Export from checkpoint
+python scripts/export_merged_model.py \
+    --checkpoint checkpoints/global_step_100 \
+    --output exports/qwen3-4b-question-gen \
+    --verify
+```
+
+## Using the Exported Model
+
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+model = AutoModelForCausalLM.from_pretrained("exports/qwen3-4b-question-gen")
+tokenizer = AutoTokenizer.from_pretrained("exports/qwen3-4b-question-gen")
+
+inputs = tokenizer("Your prompt here", return_tensors="pt")
+outputs = model.generate(**inputs, max_new_tokens=100)
+print(tokenizer.decode(outputs[0]))
+```
+
+Or with vLLM for faster inference:
+
+```python
+from vllm import LLM, SamplingParams
+
+llm = LLM(model="exports/qwen3-4b-question-gen")
+outputs = llm.generate(["Your prompt here"], SamplingParams(max_tokens=100))
+print(outputs[0].outputs[0].text)
+```
+
 ## Changing Prompts
 
 All prompt logic lives in `src/recruiter/prompts.py`. To change the prompt format:
@@ -55,7 +93,8 @@ data/backend_roles.json  →  data/raw/*.parquet  →  data/processed/*.parquet 
 │   └── processed/             # Formatted parquet (with prompts)
 ├── scripts/
 │   ├── prepare_dataset.py     # JSON → raw parquet
-│   └── format_prompts.py      # raw parquet → formatted parquet
+│   ├── format_prompts.py      # raw parquet → formatted parquet
+│   └── export_merged_model.py # Export trained model to HuggingFace format
 ├── src/recruiter/
 │   ├── main.py                # Training entrypoint
 │   ├── env.py                 # SkyRL environment
