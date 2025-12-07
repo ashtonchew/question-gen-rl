@@ -153,7 +153,7 @@ def generate_question_openai(role: dict, model: str) -> str:
     result = response.json()
 
     # Check for API error response
-    if "error" in result:
+    if "error" in result and result["error"] is not None:
         err = result["error"]
         if isinstance(err, dict):
             error_msg = err.get("message", str(err))
