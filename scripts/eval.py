@@ -146,7 +146,7 @@ def generate_question_openai(role: dict, model: str) -> str:
         },
         json={
             "model": model,
-            "max_tokens": 256,
+            "max_completion_tokens": 256,
             "messages": [{"role": "user", "content": prompt}]
         },
         timeout=60.0
